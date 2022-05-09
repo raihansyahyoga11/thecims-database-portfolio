@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'thecimsa03.urls'
@@ -83,14 +83,17 @@ WSGI_APPLICATION = 'thecimsa03.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd95llics7v519t',
+        'USER': 'ehoffkynbcnyid',
+        'PASSWORD': '1f515a734f8af3c9ddca9487f3b4d7b8bac1df18a21edbf8c7a063f8dd0b1a79',
+        'HOST': 'ec2-54-172-175-251.compute-1.amazonaws.com',
+        'PORT':  '5432'
     }
 }
 
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
-
 
 
 # Password validation
@@ -130,11 +133,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-#location where django collect all static files
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
+# location where django collect all static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # location where you will store your static files
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'thecimsa03/static')
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'thecimsa03/static')]
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
