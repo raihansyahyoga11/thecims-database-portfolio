@@ -28,7 +28,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 SECRET_KEY = 'django-insecure-+_9+c#$uk-hf)jbneo2)#8g+=*+lgzpuxz^jp27wlw%&hk!$oc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost',
                  '127.0.0.1', 'thecimsa03.herokuapp.com']
@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
     'coverage',
+
+    'frontend',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +65,9 @@ ROOT_URLCONF = 'thecimsa03.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,6 +79,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'thecimsa03.wsgi.application'
 
@@ -135,9 +140,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # location where django collect all static files
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # location where you will store your static files
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'thecimsa03/static')]
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 

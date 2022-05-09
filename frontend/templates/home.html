@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Sena, Yoga, Dinda, Michael</title>
+{% endblock meta %}
+
+{% block content %}
+<style>
+  body {
+      margin: 0;
+  }
+  .hero-container {
+      background-color: #CFE4EC;
+  }
+  .nav-bar {
+      background-color: #3CAAD6;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      height: 160px;
+  }
+  .nav-bar a {
+      text-decoration: none;
+      color: white;
+      font-size: 30px;
+      font-family: Poppins;
+  }
+</style>
+<div class="hero-container">
+  <div class="nav-bar">
+      <a href="" id="nav-1">Home</a>
+      <a href="" id="nav-2">Tokoh</a>
+      <a href="" id="nav-3">Pekerjaan</a>
+      <a href="" id="nav-4">Misi</a>
+      <a href="" id="nav-5">Makan</a>
+      <a href="" id="nav-6">Koleksi</a>
+      <a href="" id="nav-7">Penggunaan</a>
+      <a href="" id="nav-8">Login</a>
+  </div>
+</div>
+{% endblock content %}
