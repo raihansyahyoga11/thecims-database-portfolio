@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Login page</title>
+{% endblock meta %}
+
+{% block content %}
+<style>
+    html {
+        background-color: #CFE4EC;
+    }
+</style>
+
+<div class="hero-container">
+    <h1>Halo {{ username }}</h1>
+    <h3>{{ email }}</h3>
+    <h3>{{ no_hp }}</h3>
+    <h3>{{ koin }}</h3>
+    <a href="{% url 'frontend:logout' %}">Logout</a>
+</div>
+{% endblock content %}
