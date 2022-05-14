@@ -111,6 +111,26 @@ def read_misi_utama(request) :
 
 
 
+def detail_misi_utama(request) :
+    cursor = connection.cursor()
+    cursor.execute("set search_path to public")
+    try :
+        Role = request.session['account-type']
+    except:
+        return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
+    cursor.execute("select * from misi_utama ")
+    username = request.session.get('username')
+    cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completition_time, reward_koin, reward_xp
+                        FROM MISI 
+                        WHERE """)
+    result = cursor.fetchall()
+    return render(request, 'misi_utama.html', {'content': result})
+
+
+
+
+
 
 
 

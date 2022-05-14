@@ -10,14 +10,21 @@
 {% block content %}
     <table style="width:100%">
         <tr>
-            <th>Name</th>
-            <th>Action</th>
+            <th>DETAIL MISI UTAMA</th>
         </tr>
         {% if content %}
         {% for data in content %}
           <tr>
-            <td>{{data.0}}</td>
-            <td><a href="/detail-misi-utama">[Detail] </a></td>
+            Nama :
+            Efek Energi :
+            Efek Hubungan Sosial:
+            Efek Kelaparan:
+            Syarat Energi:
+            Syarat Hubungan Sosial:
+            Syarat Kelapatan:
+            Completition Time:
+            Reward Koin:
+            Reward XP:
           </tr>
           {% endfor %}
           {% endif %}

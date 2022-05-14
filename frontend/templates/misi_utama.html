@@ -10,15 +10,18 @@
 {% block content %}
  {% if content %}
     {% for data in content %}
-    <tr>
-        <!-- <td>{{ forloop.counter }}</td> -->
-        <td>{{data.0}}</td> 
-        <!-- <td>{{ data.1 }}</td>
-        <td>{{ data.2 }}</td>  -->
-        <!-- <td>
-            <a href={{ forloop.counter }}>Daftar</a>
-        </td> -->
-    </tr>
+    <table style="width:100%">
+        <tr>
+          <th>Nama</th>
+          <th>Action</th>
+        </tr>
+        <tr>
+          <td> {{data.0}}</td>
+        </tr>
+        <tr>
+            <td> {{data.1}}</td>
+          </tr>
+      </table>
     {% endfor %}
 
 {% endif %}
