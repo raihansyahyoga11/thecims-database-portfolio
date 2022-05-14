@@ -1,0 +1,26 @@
+{% extends 'base_with_navbar.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Login page</title>
+{% endblock meta %}
+
+
+{% block content %}
+ {% if content %}
+    {% for data in content %}
+    <tr>
+        <!-- <td>{{ forloop.counter }}</td> -->
+        <td>{{data.0}}</td> 
+        <!-- <td>{{ data.1 }}</td>
+        <td>{{ data.2 }}</td>  -->
+        <!-- <td>
+            <a href={{ forloop.counter }}>Daftar</a>
+        </td> -->
+    </tr>
+    {% endfor %}
+
+{% endif %}
+
+{% endblock content %}

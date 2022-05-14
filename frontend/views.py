@@ -33,7 +33,7 @@ def login(request):
             request.session['account-type'] = 'pemain'
 
             return redirect('frontend:user-dashboard')
-        elif (len(var_y) == 0):
+        elif (len(var_y) != 0):
             print("KETEMU KAMU ADMIN YA @" + username_form)
             request.session.modified = True
             request.session['username'] = username_form
@@ -75,3 +75,42 @@ def logout(request):
     request.session.clear()
     return render(request, 'home.html')
 # Create your views here.
+
+
+
+
+def read_misi_utama(request) :
+    cursor = connection.cursor()
+    cursor.execute("set search_path to public")
+    try :
+        Role = request.session['account-type']
+    except:
+        return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
+    cursor.execute("select * from misi_utama ")
+
+    if request.session['account-type'] == 'pemain' :
+        print("UHUYY")
+        username = request.session.get('username')
+        cursor.execute(f"""SELECT MU.nama_misi 
+                            FROM misi_utama MU 
+                            JOIN menjalankan_misi_utama MMU ON MU.nama_misi = MMU.nama_misi 
+                            JOIN Tokoh T ON MMU.nama_tokoh = T.nama 
+                            WHERE T.username_pengguna = '{username}';""")
+        result = cursor.fetchall()
+        return render(request, 'misi_utama.html', {'content': result})
+
+    elif request.session['account-type'] == 'admin' :
+        username = request.session.get('username')
+        cursor.execute(f"""SELECT MU.nama_misi 
+                            FROM misi_utama MU 
+                            JOIN menjalankan_misi_utama MMU ON MU.nama_misi = MMU.nama_misi 
+                            JOIN Tokoh T ON MMU.nama_tokoh = T.nama;""")
+        result = cursor.fetchall()
+        return render(request, 'misi_utama_admin.html', {'content': result})
+
+
+
+
+
+
