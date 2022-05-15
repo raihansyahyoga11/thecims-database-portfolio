@@ -10,6 +10,7 @@
 {% block content %}
     <table style="width:100%">
         <tr>
+            <th>Username_Pengguna</th>
             <th>Tokoh</th>
             <th>Nama Makanan</th>
             <th>Waktu</th>
@@ -17,6 +18,7 @@
         {% if content %}
         {% for data in content %}
           <tr>
+            <td>{{data.0}}</td>
             <td>{{data.1}}</td>
             <td>{{data.2}}</td>
             <td>{{data.3}}</td>

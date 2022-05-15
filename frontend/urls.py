@@ -35,7 +35,7 @@ urlpatterns = [
     path('create-makanan/',views.create_makanan, name='create_makanan'),
     path('update-makanan/',views.ubah_makanan, name='create_makanan'),
     # makan 
-    path('makan/',views.create_makanan, name='read_amakan'),
+    path('makan/',views.read_makan, name='read_amakan'),
     path('create-makan/', views.create_makan, name='create_makan'),
     path('warna-kulit/', views.warna_kulit, name='warna_kulit'),
     path('create-warna-kulit/', views.create_warna_kulit, name='create_warna_kulit'),
