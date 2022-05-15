@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Create</title>
+{% endblock meta %}
+
+
+{% block content %}
+   <h1>CREATE BARANG</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="input-username" class="form-label">Nama Tokoh</label>
+        <input type="text" class="form-control" name="nama-tokoh">
+        <label for="input-username" class="form-label">ID Barang</label>
+        <input type="text" class="form-control" name="id-barang">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+{% endblock content %}

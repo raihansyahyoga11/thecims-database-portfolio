@@ -8,4 +8,4 @@ Anggota kelompok :
 - Raihansyah Yoga Adhitama
 - Setasena Randata Ramadanie
 
-Link Aplikasi : https://thecims-a03.herokuapp.com/
+Link Aplikasi : https://thecimsa03.herokuapp.com/
