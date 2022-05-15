@@ -14,17 +14,14 @@
         </tr>
         <tr>
         <form action="/makanan/" method="post" >
-            {% csrf_token %} 
-            <td>
+        {% csrf_token %} 
+        <td>
 
             {% if content %}
-            (% for data in content %)
-          
-
-            Nama Tokoh: {{data.0}} <br>
-
-            Nama Misi Utama :{{data.1}} <br>
-            {% endfor %}
+                (% for data in content %)
+                    Nama Tokoh: {{data.0}} <br>
+                    Nama Misi Utama :{{data.1}} <br>
+                {% endfor %}
             {% endif %}
             Status : <input type="text" placeholder="Belum selesai" required> <br>
             <br>

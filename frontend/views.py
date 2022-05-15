@@ -301,7 +301,7 @@ def ubah_menjalankan_misi_utama(request) :
         cursor.execute("set search_path to keluarga_yoga")
         cursor.execute("select * from menjalankan_misi_utama ")
         ubah_menjalankan_misi_utama = request.POST.get('ubah_menjalankan_misi_utama')
-        return render(request, 'makanan/ubah_menjalankan_misi_utama.html', {'content': ubah_menjalankan_misi_utama})
+        return render(request, 'menjalankan_misi_utama/ubah_menjalankan_misi_utama.html', {'content': ubah_menjalankan_misi_utama})
     else :
         return redirect('/')
 
