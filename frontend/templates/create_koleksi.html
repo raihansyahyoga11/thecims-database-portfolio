@@ -1,0 +1,162 @@
+{% extends 'base_with_navbar.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>The Cims</title>
+{% endblock meta %}
+
+{% block content %}
+{% if content_app %}
+{% if content_pek %}
+
+<style>
+    #rambut{
+        display:none;
+    }
+    #mata{
+        display:none;
+    }
+    #rumah{
+        display:none;
+    }
+    #barang{
+        display:none;
+    }
+
+    #apparel{
+        display:none;
+    }
+</style>
+
+<p>Menu List Koleksi</p>
+<button onclick="rambutFunct()">Rambut</button>
+    <div id="rambut">
+    <p>Form untuk Rambut</p>
+    <label>Id</label>
+    <input type = "text" disabled> <br>
+    <label>Harga Jual</label>
+    <input type = "text"> <br>
+    <label>Tipe Rambut</label>
+    <input type = "text"> <br>
+    <button>Submit</button>
+    </div>
+<br>
+<button onclick="mataFunct()">Mata</button>
+<div id="mata">
+    <p>Form untuk Rambut</p>
+    <label>Id</label>
+    <input type = "text" disabled> <br>
+    <label>Harga Jual</label>
+    <input type = "text"> <br>
+    <label>Warna Mata</label>
+    <input type = "text"> <br>
+    <button>Submit</button>
+    </div>
+<br>
+<button onclick="rumahFunct()">Rumah</button>
+<div id="rumah">
+    <label>Id</label>
+    <input type = "text" disabled> <br>
+    <label>Nama</label>
+    <input type = "text"> <br>
+    <label>Harga Jual</label>
+    <input type = "text"> <br>
+    <label>Harga Beli</label>
+    <input type = "text"> <br>
+    <label>Kapasitas Barang</label>
+    <input type = "text"> <br>
+    <button>Submit</button>
+    </div>
+<br>
+<button onclick="barangFunct()">Barang</button>
+<div id="barang">
+    <label>Id</label>
+    <input type = "text" disabled> <br>
+    <label>Nama</label>
+    <input type = "text"> <br>
+    <label>Harga Jual</label>
+    <input type = "text"> <br>
+    <label>Harga Beli</label>
+    <input type = "text"> <br>
+    <label>Tingkat Energi</label>
+    <input type = "text"> <br>
+    <button>Submit</button>
+    </div>
+<br>
+<button onclick="apparelFunct()">Apparel</button>
+<div id="apparel">
+    <label>Id</label>
+    <input type = "text" disabled> <br>
+    <label>Nama</label>
+    <input type = "text"> <br>
+    <label>Harga Jual</label>
+    <input type = "text"> <br>
+    <label>Harga Beli</label>
+    <input type = "text"> <br>
+    <label>Kategori Apparel</label>
+    <select>
+        {% for data in content_app %}
+            <option>{{data.0}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label>Nama Pekerjaan</label>
+    <select>
+        {% for data in content_pek %}
+            <option>{{data.0}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <button>Submit</button>
+    </div>
+<br>
+
+<script>
+    function rambutFunct() {
+      var x = document.getElementById("rambut");
+      if (x.style.display == "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+    }
+    function mataFunct() {
+      var x = document.getElementById("mata");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+    }
+    function rumahFunct() {
+      var x = document.getElementById("rumah");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+    }
+    function barangFunct() {
+      var x = document.getElementById("barang");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+    }
+    function apparelFunct() {
+      var x = document.getElementById("apparel");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+    }
+
+</script>
+
+
+{% endif %}
+{% endif %}
+{% endblock content %}
