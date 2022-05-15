@@ -1,0 +1,36 @@
+{% extends 'base_with_navbar_admin.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Detail Misi Utama</title>
+{% endblock meta %}
+
+
+{% block content %}
+    <table style="width:100%">
+        <tr>
+            <th>FORM UPDATE MAKANAN</th>
+        </tr>
+        <tr>
+        <form action="/makanan/" method="post" >
+            {% csrf_token %} 
+            <td>
+
+            {% if content %}
+            (% for data in content %)
+          
+
+            Nama Tokoh: {{data.0}} <br>
+
+            Nama Misi Utama :{{data.1}} <br>
+            {% endfor %}
+            {% endif %}
+            Status : <input type="text" placeholder="Belum selesai" required> <br>
+            <br>
+            <button type="submit" >SIMPAN</button>
+        </td>
+        </tr>
+        
+</table>
+{% endblock content %}

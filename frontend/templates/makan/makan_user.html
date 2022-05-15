@@ -1,0 +1,31 @@
+{% extends 'base_with_navbar_user.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Makanan user</title>
+{% endblock meta %}
+
+
+{% block content %}
+    <table style="width:100%">
+        <tr>
+            <th>Nama</th>
+            <th>Harga</th>
+            <th>Tingkat Energi</th>
+            <th>Tingkat Kelaparan</th>
+        </tr>
+        {% if content %}
+        {% for data in content %}
+          <tr>
+            <td>{{data.0}}</td>
+            <td>{{data.1}}</td>
+            <td>{{data.2}}</td>
+            <td>{{data.3}}</td>
+          </tr>
+          {% endfor %}
+          {% endif %}
+      </table>
+  
+
+{% endblock content %}

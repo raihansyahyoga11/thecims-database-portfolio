@@ -1,5 +1,6 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'base_with_navbar_user.html' %}
 {% load static %}
+
 
 {% block meta %}
 <title>Login page</title>
@@ -14,6 +15,9 @@
 
 <div class="hero-container">
     <h1>Halo {{ username }}</h1>
+    <h3>{{ email }}</h3>
+    <h3>{{ no_hp }}</h3>
+    <h3>{{ koin }}</h3>
     <a href="{% url 'frontend:logout' %}">Logout</a>
 </div>
 {% endblock content %}

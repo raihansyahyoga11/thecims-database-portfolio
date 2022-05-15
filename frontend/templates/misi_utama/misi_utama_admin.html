@@ -1,19 +1,16 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'base_with_navbar_admin.html' %}
 
 {% load static %}
 
 {% block meta %}
-<title>Menjalankan Misi Utama Admin</title>
+<title>Misi Utama Admin</title>
 {% endblock meta %}
 
 
 {% block content %}
     <table style="width:100%">
         <tr>
-            <th>Username pengguna</th>
-            <th>Nama Tokoh</th>
-            <th>Nama Misi</th>
-            <th>Status</th>
+            <th>Name</th>
             <th>Action</th>
         </tr>
         {% if content %}
@@ -23,7 +20,8 @@
         <form action="/detail-misi-utama/" method="post" >
             {% csrf_token %} 
             <input type="hidden" value="{{data.0}}" name="misi_detail">
-            <td><button type="submit"   name="submit_misi_detail">[Detail] </a></td>
+            <td><button type="submit"   name="submit_misi_detail">[Detail] </a>
+            <button type="submit"   name="submit_misi_detail">[Delete] </a></td>
         </form>
           </tr>
           {% endfor %}

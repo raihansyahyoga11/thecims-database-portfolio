@@ -1,0 +1,29 @@
+{% extends 'base_with_navbar_admin.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Detail Misi Utama</title>
+{% endblock meta %}
+
+
+{% block content %}
+    <table style="width:100%">
+        <tr>
+            <th>FORM BUAT MAKANAN</th>
+        </tr>
+        <tr>
+        <form action="/makanan/" method="post" >
+            {% csrf_token %} 
+            <td>
+            Nama Makanan : <input type="text" required><br>
+            Harga : <input type="text" required> <br>
+            Tingkat Energi: <input type="text" required> <br>
+            Tingkat Kelaparan: <input type="text" required> 
+            <br>
+            <button type="submit" >SIMPAN</button>
+        </td>
+        </tr>
+        
+</table>
+{% endblock content %}
