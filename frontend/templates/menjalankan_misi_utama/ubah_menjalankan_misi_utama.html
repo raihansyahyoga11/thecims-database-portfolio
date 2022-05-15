@@ -3,14 +3,14 @@
 {% load static %}
 
 {% block meta %}
-<title>Detail Misi Utama</title>
+<title>Ubah menjalankan misi utama</title>
 {% endblock meta %}
 
 
 {% block content %}
     <table style="width:100%">
         <tr>
-            <th>FORM UPDATE MAKANAN</th>
+            <th>FORM UBAH MENJALANKAN MISI UTAMA</th>
         </tr>
         <tr>
         <form action="/makanan/" method="post" >
@@ -18,15 +18,15 @@
             <td>
 
             {% if content %}
-            (% for data in content %)
+            {% for data in content}
           
 
-            Nama Tokoh: {{data.0}} <br>
+            Nama Tokoh : {{data.0}} <br>
+            Nama Misi Utama : {{data.1}}
 
-            Nama Misi Utama :{{data.1}} <br>
-            {% endfor %}
-            {% endif %}
-            Status : <input type="text" placeholder="Belum selesai" required> <br>
+          {% endfor }
+          {% endif %}
+          Status : <input type="text" placeholder="Belum selesai" required>
             <br>
             <button type="submit" >SIMPAN</button>
         </td>
@@ -34,3 +34,15 @@
         
 </table>
 {% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
