@@ -43,5 +43,11 @@ urlpatterns = [
     path('create-level/', views.create_level, name='create_level'),
     path('update-level/', views.update_level, name='update_level'),
     path('menggunakan-apparel/', views.menggunakan_apparel, name='menggunakan_apparel'),
-    path('create-menggunakan-apparel/', views.create_menggunakan_apparel, name='create_menggunakan_apparel')
+    path('create-menggunakan-apparel/', views.create_menggunakan_apparel, name='create_menggunakan_apparel'),
+    path('read-kategori-apparel/', views.read_kategori_apparel, name = 'read-kategori-apparel'),
+    path('create-kategori-apparel/', views.create_kategori_apparel, name ='create-kategori-apparel'),
+    path('read-koleksi-tokoh/', views.read_koleksi_tokoh, name ='read-koleksi-tokoh'),
+    path('create-koleksi-tokoh/', views.create_koleksi_tokoh, name ='create-koleksi-tokoh'),
+    path('read-koleksi/', views.read_koleksi, name ='read-koleksi'),
+    path('create-koleksi/', views.create_koleksi, name ='create-koleksi')
 ]

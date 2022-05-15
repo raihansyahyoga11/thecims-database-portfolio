@@ -518,3 +518,93 @@ def menggunakan_apparel(request) :
         return render(request, 'R_menggunakan_apparel_admin.html', {'content' : result})
     
 
+    return render(request, 'home.html')
+    
+# Create your views here.
+def read_kategori_apparel(request):
+    cursor = connection.cursor()
+    query = f"select nama_kategori from KELUARGA_YOGA.kategori_apparel"
+    cursor.execute(query)
+    result = cursor.fetchall()
+    if request.session['account-type'] == 'pemain':
+        return render(request, 'kategori_apparel.html', {'content': result})
+    elif request.session['account-type'] == 'admin':
+        return render(request, 'kategori_apparel_admin.html', {'content': result})
+
+def create_kategori_apparel(request):
+    if request.session['account-type'] == 'pemain':
+        return render(request, 'home.html')
+    elif request.session['account-type'] == 'admin':
+        return render(request, 'create_kategori_apparel.html')
+
+def read_koleksi_tokoh(request):
+    username = request.session.get('username')
+    cursor = connection.cursor()
+    if request.session['account-type'] == 'pemain':
+        query = f"select * from keluarga_yoga.koleksi_tokoh WHERE username_pengguna = '{username}' order by username_pengguna"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return render (request, 'koleksi_tokoh.html', {'content': result})
+    elif request.session['account-type'] == 'admin':
+        query = f"select * from keluarga_yoga.koleksi_tokoh order by username_pengguna"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return render (request, 'koleksi_tokoh_admin.html', {'content': result})
+
+def create_koleksi_tokoh(request):
+    cursor = connection.cursor() 
+    if request.session['account-type'] == 'admin': 
+        username = request.session.get('username')
+        query_daftar_tokoh = f"select distinct nama_tokoh from keluarga_yoga.koleksi_tokoh WHERE username_pengguna = '{username}'"
+        cursor.execute(query_daftar_tokoh)
+        result_dt = cursor.fetchall()
+
+        query_id_koleksi = f"select id from keluarga_yoga.koleksi"
+        cursor.execute(query_id_koleksi)
+        result_ik = cursor.fetchall()
+        return render(request, 'create_koleksi_tokoh.html', {'content_dt': result_dt, 'content_ik': result_ik})
+    elif request.session['account-type'] == 'pemain': 
+        return render(request, 'home.html')
+
+def read_koleksi(request):
+    cursor = connection.cursor()
+
+    query_rambut = f"select * from keluarga_yoga.rambut as R, keluarga_yoga.koleksi as K where R.id_koleksi = K.id"
+    cursor.execute(query_rambut)   
+    result_rambut = cursor.fetchall()
+
+    query_mata = f"select * from keluarga_yoga.mata as M, keluarga_yoga.koleksi as K where M.id_koleksi = K.id"
+    cursor.execute(query_mata)
+    result_mata = cursor.fetchall()
+
+    query_rumah = f"select * from keluarga_yoga.rumah as R, keluarga_yoga.koleksi_jual_beli as KJB, keluarga_yoga.koleksi as K where R.id_koleksi = KJB.id_koleksi AND KJB.id_koleksi = K.id"
+    cursor.execute(query_rumah)
+    result_rumah = cursor.fetchall()
+
+    query_barang = f"select * from keluarga_yoga.barang as B, keluarga_yoga.koleksi_jual_beli as KJB, keluarga_yoga.koleksi as K where B.id_koleksi = KJB.id_koleksi AND KJB.id_koleksi = K.id"
+    cursor.execute(query_barang)
+    result_barang = cursor.fetchall()
+
+    query_apparel = f"select * from keluarga_yoga.apparel as A, keluarga_yoga.koleksi_jual_beli as KJB, keluarga_yoga.koleksi as K where A.id_koleksi = KJB.id_koleksi AND KJB.id_koleksi = K.id"
+    cursor.execute(query_apparel)
+    result_apparel = cursor.fetchall()
+
+    if request.session['account-type'] == 'admin':
+        return render(request, 'koleksi_admin.html', {'content_rambut': result_rambut, 'content_mata': result_mata, 'content_rumah': result_rumah, 'content_barang': result_barang, 'content_apparel': result_apparel})
+    elif request.session['account-type'] == 'pemain':
+        return render(request, 'koleksi.html', {'content_rambut': result_rambut, 'content_mata': result_mata, 'content_rumah': result_rumah, 'content_barang': result_barang, 'content_apparel': result_apparel})
+
+def create_koleksi(request):
+    cursor = connection.cursor() 
+    if request.session['account-type'] == 'admin': 
+        query_apparel = f"select nama_kategori from keluarga_yoga.kategori_apparel"
+        cursor.execute(query_apparel)
+        result_app = cursor.fetchall()
+
+        query_pekerjaan = f"select nama from keluarga_yoga.pekerjaan"
+        cursor.execute(query_pekerjaan)
+        result_pek = cursor.fetchall()
+
+        return render(request, 'create_koleksi.html', {'content_app': result_app, 'content_pek': result_pek})
+    elif request.session['account-type'] == 'pemain': 
+        return render(request, 'home.html')
