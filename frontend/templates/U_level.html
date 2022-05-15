@@ -1,0 +1,36 @@
+{% extends 'base_with_navbar.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Update Level</title>
+{% endblock meta %}
+
+{% block content %}
+    <center> 
+    <table>
+        <tr>
+            <th>FORM UBAH LEVEL</th>
+        </tr>
+        <tr>
+            <form action = "/level/" method="post">
+                {% csrf_token %}
+                <td> 
+                    Level : <input disabled>
+                    <br>
+                    <br>
+                    XP : <input type="text"><input type="number">
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <button type="submit" >SIMPAN</button>
+
+                </td>
+        </tr>
+
+    </table>
+    </center>
+{% endblock content %}
+
+
+   

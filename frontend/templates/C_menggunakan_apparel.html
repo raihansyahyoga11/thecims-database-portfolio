@@ -1,0 +1,64 @@
+{% extends 'base_with_navbar.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Create Menggunakan Apparel</title>
+{% endblock meta %}
+
+{% block content %}
+{% if content %}
+    <center> 
+    <table>
+        <tr>
+            <th>FORM BUAT MENGGUNAKAN APPAREL</th>
+        </tr>
+        <tr>
+            <form action = "/menggunakan-apparel/" method="post">
+                {% csrf_token %}
+                <td> 
+                    
+                    <label for="nama_tokoh">Nama Tokoh : </label>
+                    <select id="nama_tokoh" name="nama_tokoh">
+                        {% for data in content %}
+                            <option>{{data.0}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <br>
+                    <label for="apparel">Apparel : </label>
+                    <select id="apparel" name="apparel">
+                        {% for data in content %}
+                            <option>{{data.1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <button type="submit" >PAKAI</button>
+
+                </td>
+        </tr>
+
+    </table>
+    </center>
+{% endif %}
+{% endblock content %}
+
+
+
+
+
+
+<!-- <div class="hero-container">
+        <div class="dropdown">
+          <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Tokoh
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </div>
+  </div> -->

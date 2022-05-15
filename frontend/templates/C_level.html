@@ -1,0 +1,36 @@
+{% extends 'base_with_navbar.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Create Level</title>
+{% endblock meta %}
+
+{% block content %}
+    <center> 
+    <table>
+        <tr>
+            <th>FORM BUAT LEVEL</th>
+        </tr>
+        <tr>
+            <form action = "/level/" method="post">
+                {% csrf_token %}
+                <td> 
+                    Level : <input type="text">
+                    <br>
+                    <br>
+                    XP : <input type="text">
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <button type="submit" >SIMPAN</button>
+
+                </td>
+        </tr>
+
+    </table>
+    </center>
+{% endblock content %}
+
+
+   

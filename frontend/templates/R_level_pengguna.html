@@ -1,0 +1,29 @@
+{% extends 'base_with_navbar.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Level pengguna</title>
+{% endblock meta %}
+
+{% block content %}
+    {% if content %}
+    <center>
+    <table>
+        <tr>
+             <th>Level</th>
+             <th>XP</th>
+        </tr>
+        {% for data in content %}
+
+        <tr>
+            <td>{{data.0}}</td> 
+            <td>{{data.1}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </center>
+    {% endif %}
+{% endblock content %}
+
+
+   
