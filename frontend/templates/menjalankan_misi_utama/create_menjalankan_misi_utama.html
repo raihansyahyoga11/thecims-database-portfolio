@@ -16,7 +16,6 @@
         <tr>
         <form action="/menjalankan-misi-utama/" method="post" >
         {% if content %}
-        {% for data in content %}
             {% csrf_token %} 
             <td>
                     <label for="nama-tokoh">Nama Tokoh:</label>
