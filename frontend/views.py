@@ -2,7 +2,6 @@ from cgi import test
 import datetime
 from random import randint
 from sqlite3 import connect
-from tkinter import ON
 from urllib import response
 from django.shortcuts import render, redirect
 from django.db import connection
