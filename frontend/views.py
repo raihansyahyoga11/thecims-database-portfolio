@@ -1,4 +1,6 @@
 from cgi import test
+import email
+from random import randint
 from urllib import response
 from django.shortcuts import render, redirect
 from django.db import connection
@@ -38,12 +40,12 @@ def login(request):
             request.session.modified = True
             request.session['username'] = username_form
             request.session['account-type'] = 'admin'
+            
             return redirect('frontend:admin-dashboard')
         else:
             print("Sial tidak ditemukan >.<")
 
     return render(request, 'login_and_authentication/login.html')
-
 
 def user_dashboard(request):
     username = request.session.get('username')
@@ -63,7 +65,6 @@ def user_dashboard(request):
 
     return render(request, 'home_and_dashboard/user_dashboard.html', response)
 
-
 def admin_dashboard(request):
     username = request.session.get('username')
     response = {
@@ -74,9 +75,29 @@ def admin_dashboard(request):
 def logout(request):
     request.session.clear()
     return render(request, 'home_and_dashboard/home.html')
+
+
 # Create your views here.
 
+def register(request):
+    if (request.method == 'POST'):
+        form_data = request.POST
+        register_username = form_data['user-username']
+        register_email = form_data['user-email']
+        register_user_password = form_data['user-password']
+        register_no_hp = form_data['user-no-hp']
+        koin = randint(1,100)
 
+        akun_query = f"INSERT INTO KELUARGA_YOGA.AKUN VALUES ('{register_username}')"
+        pemain_query = f"INSERT INTO KELUARGA_YOGA.PEMAIN VALUES('{register_username}','{register_email}','{register_user_password}',{register_no_hp},{koin})"
+
+        cursor = connection.cursor()
+        cursor.execute(akun_query)
+        cursor.execute(pemain_query)
+
+        return redirect('frontend:login')
+        
+    return render(request, 'register.html')
 
 
 def read_misi_utama(request) :
@@ -285,6 +306,7 @@ def ubah_menjalankan_misi_utama(request) :
         return render(request, 'makanan/ubah_menjalankan_misi_utama.html', {'content': ubah_menjalankan_misi_utama})
     else :
         return redirect('/')
+
 
 
 

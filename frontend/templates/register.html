@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Register page</title>
+{% endblock meta %}
+
+{% block content %}
+<style>
+    .hero-container {
+        width: 100%;
+        align-items: center;
+        height: 680px;
+        display: flex;
+        justify-content: center;
+        background-color: #CFE4EC;
+    }
+    html {
+        background-color: #CFE4EC;
+;
+    }
+
+    button h1 {
+        color: white;
+    }
+
+    form {
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<div class="hero-container">
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            <h3>Username</h3>
+            <input type="text" class="form-control" id="input-username" aria-describedby="help-input-username" name="user-username">
+            <h3>Email</h3>  
+            <input type="text" class="form-control" id="input-username" aria-describedby="help-input-username" name="user-email">
+            <h3>Password</h3>
+            <input type="text" class="form-control" id="input-username" aria-describedby="help-input-username" name="user-password">
+            <h3>No HP</h3>
+            <input type="text" class="form-control" id="input-username" aria-describedby="help-input-username" name="user-no-hp">
+            <div class="button-div">
+                <button type="submit" class="btn btn-primary">Register</button>
+                <p>Already have an Account?<a href="/login">Login Here</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
