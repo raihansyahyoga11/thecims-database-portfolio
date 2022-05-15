@@ -132,6 +132,9 @@ def create_misi_utama(request) :
     return render(request, 'create_misi_utama.html')
 
 
+# def menjalankan
+
+
 
 
 
