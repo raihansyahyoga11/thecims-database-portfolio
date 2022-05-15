@@ -1,0 +1,34 @@
+{% extends 'base_with_navbar.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>The Cims</title>
+{% endblock meta %}
+
+{% block content %}
+{% if content_dt %}
+{% if content_ik %}
+
+<p>Form untuk create koleksi tokoh</p>
+<form>
+    <label>Nama Tokoh: </label>
+    <select>
+        {% for data in content_dt %}
+            <option>{{data.0}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label>ID Koleksi: </label>
+    <select>
+        {% for data in content_ik %}
+            <option>{{data.0}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <button>Simpan</button>
+</form>
+
+{% endif %}
+{% endif %}
+{% endblock content %}

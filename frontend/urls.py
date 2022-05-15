@@ -13,4 +13,5 @@ urlpatterns = [
     path('read-kategori-apparel/', views.read_kategori_apparel, name = 'read-kategori-apparel'),
     path('create-kategori-apparel/', views.create_kategori_apparel, name ='create-kategori-apparel'),
     path('read-koleksi-tokoh/', views.read_koleksi_tokoh, name ='read-koleksi-tokoh'),
+    path('create-koleksi-tokoh/', views.create_koleksi_tokoh, name ='create-koleksi-tokoh'),
 ]

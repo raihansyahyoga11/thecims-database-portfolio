@@ -105,3 +105,18 @@ def read_koleksi_tokoh(request):
         cursor.execute(query)
         result = cursor.fetchall()
         return render (request, 'koleksi_tokoh_admin.html', {'content': result})
+
+def create_koleksi_tokoh(request):
+    cursor = connection.cursor() 
+    if request.session['account-type'] == 'admin': 
+        username = request.session.get('username')
+        query_daftar_tokoh = f"select distinct nama_tokoh from keluarga_yoga.koleksi_tokoh WHERE username_pengguna = '{username}'"
+        cursor.execute(query_daftar_tokoh)
+        result_dt = cursor.fetchall()
+
+        query_id_koleksi = f"select id from keluarga_yoga.koleksi"
+        cursor.execute(query_id_koleksi)
+        result_ik = cursor.fetchall()
+        return render(request, 'create_koleksi_tokoh.html', {'content_dt': result_dt, 'content_ik': result_ik})
+    elif request.session['account-type'] == 'pemain': 
+        return render(request, 'home.html')
