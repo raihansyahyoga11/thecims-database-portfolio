@@ -30,14 +30,18 @@ urlpatterns = [
     path('menjalankan-misi-utama/',views.read_menjalankan_misi_utama, name='read_menjalankan_misi_utama'),
     path('create-menjalankan-misi-utama/',views.create_menjalankan_misi_utama, name='create_menjalankan_misi_utama'),
     path('update-menjalankan-misi-utama/', views.ubah_menjalankan_misi_utama, name='ubah_menjalankan_misi_utama'),
-
     # makanan
     path('makanan/',views.read_makanan, name='read_makanan'),
     path('create-makanan/',views.create_makanan, name='create_makanan'),
     path('update-makanan/',views.ubah_makanan, name='create_makanan'),
-
-
     # makan 
     path('makan/',views.create_makanan, name='read_amakan'),
-    path('create-makan/', views.create_makan, name='create_makan')
+    path('create-makan/', views.create_makan, name='create_makan'),
+    path('warna-kulit/', views.warna_kulit, name='warna_kulit'),
+    path('create-warna-kulit/', views.create_warna_kulit, name='create_warna_kulit'),
+    path('level/', views.level, name='level'),
+    path('create-level/', views.create_level, name='create_level'),
+    path('update-level/', views.update_level, name='update_level'),
+    path('menggunakan-apparel/', views.menggunakan_apparel, name='menggunakan_apparel'),
+    path('create-menggunakan-apparel/', views.create_menggunakan_apparel, name='create_menggunakan_apparel')
 ]

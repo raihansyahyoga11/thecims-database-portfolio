@@ -1,0 +1,30 @@
+{% extends 'base_with_navbar.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Warna kulit admin</title>
+{% endblock meta %}
+
+{% block content %}
+    {% if content %}
+    <center>
+    <table>
+        <tr>
+             <th>Kode</th>
+             <th>Action</th>
+        </tr>
+        {% for data in content %}
+
+        <tr>
+            <td>{{data.0}}</td>
+            <td>[Delete]</td> 
+
+        </tr>
+        {% endfor %}
+    </table>
+    </center>
+    {% endif %}
+{% endblock content %}
+
+
+   

@@ -2,6 +2,7 @@ from cgi import test
 import datetime
 from random import randint
 from sqlite3 import connect
+from tkinter import ON
 from urllib import response
 from django.shortcuts import render, redirect
 from django.db import connection
@@ -427,4 +428,93 @@ def read_detail_tokoh(request, nama_tokoh):
 #     if (role == 'admin'):
         
 #     return()
+def warna_kulit(request):
+    cursor = connection.cursor()
+    query = f"select kode from KELUARGA_YOGA.WARNA_KULIT"
+    cursor.execute(query)
+
+    if request.session['account-type'] == 'pemain' :
+        result = cursor.fetchall()
+        return render(request, 'R_warna_kulit_pengguna.html', {'content' : result})
+
+    elif request.session['account-type'] == 'admin' :
+        result = cursor.fetchall()
+        return render(request, 'R_warna_kulit_admin.html', {'content' : result})
+          
+    
+def create_warna_kulit(request) :
+    if request.session['account-type'] == 'admin' :
+        return render(request, 'C_warna_kulit.html')
+    else :
+         return redirect('/')
+
+def level(request):
+    cursor = connection.cursor()
+    query = f"select * from KELUARGA_YOGA.LEVEL"
+    cursor.execute(query)
+
+    if request.session['account-type'] == 'pemain' :
+        result = cursor.fetchall()
+        return render(request, 'R_level_pengguna.html', {'content' : result})
+
+    elif request.session['account-type'] == 'admin' :
+        result = cursor.fetchall()
+        return render(request, 'R_level_admin.html', {'content' : result})
+
+def create_level(request) :
+    if request.session['account-type'] == 'admin' :
+        return render(request, 'C_level.html')
+    else :
+         return redirect('/')
+
+def update_level(request) :
+    if request.session['account-type'] == 'admin' :
+        return render(request, 'U_level.html')
+    else :
+         return redirect('/')
+
+def create_menggunakan_apparel(request) :
+    cursor = connection.cursor()
+    query = f"select * from KELUARGA_YOGA.KOLEKSI_TOKOH"
+    cursor.execute(query)
+
+    if request.session['account-type'] == 'pemain' :
+        username = request.session.get('username')
+        cursor.execute(f"""SELECT KT.nama_tokoh, KT.id_koleksi
+                           FROM KELUARGA_YOGA.KOLEKSI_TOKOH KT 
+                           WHERE KT.id_koleksi LIKE 'A%' AND KT.username_pengguna = '{username}';""")
+
+        result = cursor.fetchall()
+        return render(request, 'C_menggunakan_apparel.html', {'content' : result})
+    else :
+         return redirect('/')
+
+
+def menggunakan_apparel(request) :
+    cursor = connection.cursor()
+    query = f"select * from KELUARGA_YOGA.MENGGUNAKAN_APPAREL"
+    cursor.execute(query)
+
+    if request.session['account-type'] == 'pemain' :
+        username = request.session.get('username')
+        cursor.execute(f"""SELECT MA.nama_tokoh, KJB.nama, A.warna_apparel, A.nama_pekerjaan, A.kategori_apparel
+                            FROM KELUARGA_YOGA.APPAREL A 
+                            FULL OUTER JOIN KELUARGA_YOGA.MENGGUNAKAN_APPAREL MA ON
+                            A.id_koleksi = MA.id_koleksi
+                            JOIN KELUARGA_YOGA.KOLEKSI_JUAL_BELI KJB ON
+                            A.id_koleksi = KJB.id_koleksi
+                            WHERE MA.username_pengguna = '{username}';""")
+        result = cursor.fetchall()
+        return render(request, 'R_menggunakan_apparel_pengguna.html', {'content' : result})
+
+    if request.session['account-type'] == 'admin' :
+        cursor.execute(f"""SELECT MA.username_pengguna, MA.nama_tokoh, KJB.nama, A.warna_apparel, A.nama_pekerjaan, A.kategori_apparel
+                            FROM KELUARGA_YOGA.APPAREL A 
+                            FULL OUTER JOIN KELUARGA_YOGA.MENGGUNAKAN_APPAREL MA ON
+                            A.id_koleksi = MA.id_koleksi
+                            JOIN KELUARGA_YOGA.KOLEKSI_JUAL_BELI KJB ON
+                            A.id_koleksi = KJB.id_koleksi;""")
+        result = cursor.fetchall()
+        return render(request, 'R_menggunakan_apparel_admin.html', {'content' : result})
+    
 

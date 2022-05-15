@@ -1,0 +1,32 @@
+{% extends 'base_with_navbar.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Create Warna Kulit</title>
+{% endblock meta %}
+
+{% block content %}
+    <center> 
+    <table>
+        <tr>
+            <th>FORM BUAT WARNA</th>
+        </tr>
+        <tr>
+            <form action = "/warna-kulit/" method="post">
+                {% csrf_token %}
+                <td> 
+                    Kode : <input type="text">
+                    <br>
+                    <br>
+                    <br>
+                    <button type="submit" >SIMPAN</button>
+
+                </td>
+        </tr>
+
+    </table>
+    </center>
+{% endblock content %}
+
+
+   
