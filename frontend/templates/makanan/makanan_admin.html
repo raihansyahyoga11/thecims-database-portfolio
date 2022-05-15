@@ -1,0 +1,38 @@
+{% extends 'base_with_navbar_admin.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Makanan Admin</title>
+{% endblock meta %}
+
+
+{% block content %}
+    <table style="width:100%">
+        <tr>
+            <th>Nama</th>
+            <th>Harga</th>
+            <th>Tingkat Energi</th>
+            <th>Tingkat Kelaparan</th>
+            <th>Action</th>
+        </tr>
+        {% if content %}
+        {% for data in content %}
+          <tr>
+            <td>{{data.0}}</td>
+            <td>{{data.1}}</td>
+            <td>{{data.2}}</td>
+            <td>{{data.3}}</td>
+        <form action="/update-makanan/" method="post" >
+            {% csrf_token %} 
+            <input type="hidden" value="{{data.0}}" name="mengubah_makanan">
+            <td><button type="submit"   name="menuju_ubah_makanan">[Update] </a>
+            <button type="submit"   name="submit_misi_detail">[Delete] </a></td>
+        </form>
+          </tr>
+          {% endfor %}
+          {% endif %}
+      </table>
+  
+
+{% endblock content %}

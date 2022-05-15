@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  {% block meta %}
+  {% endblock meta %}
+</head>
+
+<body>
+    <style>
+        body {
+            margin: 0;
+        }
+        .hero-container {
+            background-color: #CFE4EC;
+        }
+        .nav-bar {
+            background-color: #3CAAD6;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 160px;
+        }
+        .nav-bar a {
+            text-decoration: none;
+            color: white;
+            font-size: 30px;
+            font-family: Poppins;
+        }
+      </style>
+      <div class="hero-container">
+        <div class="nav-bar">
+            <a href="/" id="nav-1">Home</a>
+
+            <div class="dropdown">
+              <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                Tokoh
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </div>
+
+            <div class="dropdown">
+                <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  Pekerjaan
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </div>
+
+
+              <div class="dropdown">
+                <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  Misi
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="/create-misi-utama/">Buat Misi Utama</a></li>
+                  <li><a class="dropdown-item" href="/misi-utama/">List Misi Utama</a></li>
+                  <li><a class="dropdown-item" href="/menjalankan-misi-utama/">List Menjalankan Misi Utama</a></li>
+                </ul>
+              </div>
+
+              <div class="dropdown">
+                <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  Makanan
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="/create-makanan/">Buat Makanan</a></li>
+                  <li><a class="dropdown-item" href="/makanan/">List Makanan</a></li>
+                  <li><a class="dropdown-item" href="/update-makanan/">Ubah Makanan</a></li>
+
+                </ul>
+              </div>
+
+
+              <div class="dropdown">
+                <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  Koleksi
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </div>
+
+              <div class="dropdown">
+                <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  Penggunaan
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </div>
+
+              <a href="/logout" id="nav-8">Logout</a>
+
+
+            <!-- <a href="" id="nav-3">Pekerjaan</a>
+            <a href="" id="nav-4">Misi</a>
+            <a href="" id="nav-5">Makan</a>
+            <a href="" id="nav-6">Koleksi</a>
+            <a href="" id="nav-7">Penggunaan</a>
+            <a href="/login" id="nav-8">Login</a> -->
+        </div>
+      </div>
+  {% block content %}
+  {% endblock content %}
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+{% extends 'base_with_navbar_admin.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Makanan Admin</title>
+{% endblock meta %}
+
+
+{% block content %}
+    <table style="width:100%">
+        <tr>
+            <th>Tokoh</th>
+            <th>Nama Makanan</th>
+            <th>Waktu</th>
+        </tr>
+        {% if content %}
+        {% for data in content %}
+          <tr>
+            <td>{{data.1}}</td>
+            <td>{{data.2}}</td>
+            <td>{{data.3}}</td>
+          </tr>
+          {% endfor %}
+          {% endif %}
+      </table>
+  
+
+{% endblock content %}

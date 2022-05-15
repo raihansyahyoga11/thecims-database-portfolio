@@ -1,0 +1,48 @@
+{% extends 'base_with_navbar_user.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Form Buat Menjalankan Misi Utama</title>
+{% endblock meta %}
+
+
+{% block content %}
+    <table style="width:100%">
+        <tr>
+            <th>FORM BUAT MENJALANKAN MISI UTAMA</th>
+        </tr>
+        
+        <tr>
+        <form action="/menjalankan-misi-utama/" method="post" >
+        {% if content %}
+            {% csrf_token %} 
+            <td>
+                    <label for="nama-tokoh">Nama Tokoh:</label>
+                    <select name="cars" id="nama-tokoh" required>
+                        {% for data in content %}
+                      <option value="{{data.0}}">{{data.0}}</option>
+                      {% endfor %}
+                    </select>
+
+                    <br><br>
+
+                    <label for="nama-tokoh">Nama Misi Utama:</label>
+                    <select name="nama-tokoh" id="nama-tokoh" required>
+                        {% for data in content %}
+                        <option value="{{data.1}}">{{data.1}}</option>
+                        {% endfor %}
+                      </select>
+                    <br><br>
+
+
+                    <button type="submit" value="submit">SIMPAN</button>
+                  </form>
+        
+        </td>
+        
+        </tr>
+        
+        {% endif %}
+</table>
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends 'base_with_navbar_admin.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Detail Misi Utama</title>
+{% endblock meta %}
+
+
+{% block content %}
+    <table style="width:100%">
+        <tr>
+            <th>FORM BUAT MISI UTAMA</th>
+        </tr>
+        <tr>
+        <form action="/misi-utama/" method="post" >
+            {% csrf_token %} 
+            <td>
+            Nama Misi Utama : <input type="text" required><br>
+            Efek Energi : <input type="text" required> <input type="number" required><br>
+            Efek Hubungan Sosial: <input type="text" required> <input type="number" required> <br>
+            Efek Kelaparan: <input type="text" required> <input type="number" required> <br>
+            Syarat Energi: <input type="text" required> <input type="number" required> <br>
+            Syarat Hubungan Sosial: <input type="text" required> <input type="number" required><br>
+            Syarat Kelapatan: <input type="text" required> <input type="number" required> <br>
+            Completition Time: <input type="text" required> <br>
+            Reward Koin: <input type="text" required> <input type="number" required> <br>
+            Reward XP: <input type="text" required> <input type="number" required><br>
+            Deskripsi : <input type="text" required> 
+            <br>
+            <br>
+            <button type="submit" >SIMPAN</button>
+        
+        </td>
+        
+        </tr>
+        
+</table>
+{% endblock content %}

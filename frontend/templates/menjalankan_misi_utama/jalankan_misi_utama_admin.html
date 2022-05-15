@@ -1,0 +1,31 @@
+{% extends 'base_with_navbar_admin.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Menjalankan Misi Utama Admin</title>
+{% endblock meta %}
+
+
+{% block content %}
+    <table style="width:100%">
+        <tr>
+            <th>Username pengguna</th>
+            <th>Nama Tokoh</th>
+            <th>Nama Misi</th>
+            <th>Status</th>
+        </tr>
+        {% if content %}
+        {% for data in content %}
+          <tr>
+            <td>{{data.0}}</td>
+            <td>{{data.1}}</td>
+            <td>{{data.2}}</td>
+            <td>{{data.3}}</td>
+          </tr>
+          {% endfor %}
+          {% endif %}
+      </table>
+  
+
+{% endblock content %}
