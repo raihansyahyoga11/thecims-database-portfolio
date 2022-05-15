@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block meta %}
-<title>Login page</title>
+<title>Detail Misi Utama</title>
 {% endblock meta %}
 
 
@@ -15,16 +15,17 @@
         {% if content %}
         {% for data in content %}
           <tr>
-            Nama :
-            Efek Energi :
-            Efek Hubungan Sosial:
-            Efek Kelaparan:
-            Syarat Energi:
-            Syarat Hubungan Sosial:
-            Syarat Kelapatan:
-            Completition Time:
-            Reward Koin:
-            Reward XP:
+              <td>
+            Nama : {{data.0}} <br>
+            Efek Energi : {{data.1}} <br>
+            Efek Hubungan Sosial: {{data.2}} <br>
+            Efek Kelaparan: {{data.3}} <br>
+            Syarat Energi: {{data.4}} <br>
+            Syarat Hubungan Sosial: {{data.5}} <br>
+            Syarat Kelapatan: {{data.6}} <br>
+            Completition Time: {{data.7}} <br>
+            Reward Koin: {{data.8}} <br>
+            Reward XP: {{data.9}} </td>
           </tr>
           {% endfor %}
           {% endif %}

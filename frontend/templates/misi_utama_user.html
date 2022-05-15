@@ -20,8 +20,7 @@
         <form action="/detail-misi-utama/" method="post" >
             {% csrf_token %} 
             <input type="hidden" value="{{data.0}}" name="misi_detail">
-            <td><button type="submit"   name="submit_misi_detail">[Detail] </a>
-            <button type="submit"   name="submit_misi_detail">[Delete] </a></td>
+            <td><button type="submit"   name="submit_misi_detail">[Detail] </a></td>
         </form>
           </tr>
           {% endfor %}

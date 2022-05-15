@@ -98,7 +98,7 @@ def read_misi_utama(request) :
                             JOIN Tokoh T ON MMU.nama_tokoh = T.nama 
                             WHERE T.username_pengguna = '{username}';""")
         result = cursor.fetchall()
-        return render(request, 'misi_utama.html', {'content': result})
+        return render(request, 'misi_utama_user.html', {'content': result})
 
     elif request.session['account-type'] == 'admin' :
         username = request.session.get('username')
@@ -121,11 +121,12 @@ def detail_misi_utama(request) :
     cursor.execute("set search_path to keluarga_yoga")
     cursor.execute("select * from misi_utama ")
     username = request.session.get('username')
-    cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completition_time, reward_koin, reward_xp
+    misi_detail = request.POST.get('misi_detail')
+    cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp
                         FROM MISI 
-                        WHERE """)
+                        WHERE nama = '{misi_detail}' ;""")
     result = cursor.fetchall()
-    return render(request, 'misi_utama.html', {'content': result})
+    return render(request, 'detail_misi_utama.html', {'content': result})
 
 
 
