@@ -1,6 +1,7 @@
 from cgi import test
-import email
+import datetime
 from random import randint
+from sqlite3 import connect
 from urllib import response
 from django.shortcuts import render, redirect
 from django.db import connection
@@ -75,8 +76,6 @@ def admin_dashboard(request):
 def logout(request):
     request.session.clear()
     return render(request, 'home.html')
-<<<<<<< frontend/views.py
-# Create your views here.
 
 def register(request):
     if (request.method == 'POST'):
@@ -97,7 +96,6 @@ def register(request):
         return redirect('frontend:login')
         
     return render(request, 'register.html')
-
 
 def read_misi_utama(request) :
     cursor = connection.cursor()
@@ -129,8 +127,6 @@ def read_misi_utama(request) :
         result = cursor.fetchall()
         return render(request, 'misi_utama_admin.html', {'content': result})
 
-
-
 def detail_misi_utama(request) :
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
@@ -150,4 +146,121 @@ def detail_misi_utama(request) :
 
 def create_misi_utama(request) :
     return render(request, 'create_misi_utama.html')
+
+def read_menggunakan_barang(request):
+    role = request.session.get('account-type')
+    if (role == 'pemain'):
+        nama_pemain = request.session.get('username')
+        query_pemain = f"select * from KELUARGA_YOGA.menggunakan_barang where username_pengguna='{nama_pemain}'"
+        cursor = connection.cursor()
+        cursor.execute(query_pemain)
+        hasil = cursor.fetchall()
+    elif (role == 'admin'):
+        query_admin = f"select * from KELUARGA_YOGA.menggunakan_barang"
+        cursor = connection.cursor()
+        cursor.execute(query_admin)
+        hasil = cursor.fetchall()
+
+    return render(request, 'read_menggunakan_barang.html', {'response': hasil})
+
+def create_menggunakan_barang(request):
+    role = request.session.get('account-type')
+    if (role == 'pemain'):
+        if (request.method == 'POST'):
+            form_data = request.POST
+            nama_pemain = request.session.get('username')
+            nama_tokoh = form_data['nama-tokoh']
+            waktu = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            id_barang = form_data['id-barang']
+            query_pemain = f"INSERT INTO KELUARGA_YOGA.menggunakan_barang VALUES ('{nama_pemain}','{nama_tokoh}','{waktu}','{id_barang}')"
+            print(query_pemain)
+            cursor = connection.cursor()
+            cursor.execute(query_pemain)
+    return render(request, 'create_menggunakan_barang.html')
+
+def read_pekerjaan(request):
+    query_read_pekerjaan = f"select * from KELUARGA_YOGA.pekerjaan"
+    cursor = connection.cursor()
+    cursor.execute(query_read_pekerjaan)
+    hasil = cursor.fetchall()
+
+    return render(request, 'read_pekerjaan.html', {'response': hasil})
+
+def read_bekerja(request):
+    query_read_bekerja = f"select * from KELUARGA_YOGA.bekerja"
+    cursor = connection.cursor()
+    cursor.execute(query_read_bekerja)
+    hasil = cursor.fetchall()
+
+    return render(request, 'read_bekerja.html', {'response': hasil})
+
+def create_tokoh(request):
+    role = request.session.get('account-type')
+    username = request.session.get('username')
+    if (role == 'pemain'):
+        if (request.method == 'POST'):
+            form_data2 = request.POST
+            print(form_data2['input_id_rumah'])
+            create_nama_tokoh = form_data2['create_nama_tokoh']
+            jenis_kelamin = form_data2['jenis_kelamin'] #dropdown
+            poin_xp = randint(0,1000)
+            poin_energi = randint(0,100)
+            poin_kelaparan = randint(0,100)
+            poin_hubungan_sosial = randint(0,100) 
+            warna_kulit = form_data2['warna_kulit'] #dropdown
+            sifat = form_data2['sifat'] #dropdown
+            id_rambut = form_data2['id_rambut'] #dropdown
+            id_mata = form_data2['id_mata'] #dropdown
+            id_rumah = form_data2['input_id_rumah'] #dropdown
+
+            query_create_tokoh = f"INSERT INTO KELUARGA_YOGA.tokoh VALUES ('{username}','{create_nama_tokoh}','{jenis_kelamin}','Aktif',{poin_xp},{poin_energi},{poin_kelaparan},{poin_hubungan_sosial},'{warna_kulit}',1,'{sifat}',null,'{id_rambut}','{id_mata}','{id_rumah}')"
+            
+            cursor = connection.cursor()
+            cursor.execute(query_create_tokoh)
+    return render(request, 'create_tokoh.html')
+
+def read_tokoh(request):
+    role = request.session.get('account-type')
+    if (role == 'admin'):
+        cursor = connection.cursor()
+        query_tokoh_admin = f"select * from KELUARGA_YOGA.tokoh"
+        cursor.execute(query_tokoh_admin)
+        hasil = cursor.fetchall()
+    elif (role == 'pemain'):
+        username = request.session.get('username')
+        cursor = connection.cursor()
+        query_tokoh_pemain = f"select * from KELUARGA_YOGA.tokoh where username_pengguna='{username}'"
+        cursor.execute(query_tokoh_pemain)
+        hasil = cursor.fetchall()
+    return render(request, 'read_tokoh.html', {'response': hasil})
+
+def read_detail_tokoh(request, nama_tokoh):
+    cursor = connection.cursor()
+    query_detail_tokoh = f"select nama, id_mata, id_rambut, id_rumah, warna_kulit, pekerjaan from KELUARGA_YOGA.tokoh where nama='{nama_tokoh}'"
+    cursor.execute(query_detail_tokoh)
+    hasil = cursor.fetchall()
+    response = {
+        'nama_tokoh': hasil[0][0],
+        'id_rambut': hasil[0][1],
+        'id_mata': hasil[0][2],
+        'id_rumah': hasil[0][3],
+        'warna_kulit': hasil[0][4],
+        'pekerjaan': hasil[0][5]
+    }
+    return render(request, 'read_detail_tokoh.html', response)
+# def create_pekerjaan(request):
+#     role = request.session.get('account-type')
+#     if (role == 'admin'):
+        
+#     return()
+
+# def delete_pekerjaan(request):
+#     if (role == 'admin'):
+
+#     return()
+
+# def update_pekerjaan(request):
+#     if (role == 'admin'):
+        
+#     return()
 

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Read Tokoh</title>
+{% endblock meta %}
+
+{% block content %}
+<table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Username</th>
+        <th scope="col">Nama</th>
+        <th scope="col">Jenis Kelamin</th>
+        <th scope="col">Status</th>
+        <th scope="col">XP</th>
+        <th scope="col">Energi</th>
+        <th scope="col">Kelaparan</th>
+        <th scope="col">Hubungan Sosial</th>
+        <th scope="col">Level</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    {% for i in response %}
+    <tbody>
+      <tr>
+        <td>{{ i.0 }}</td>
+        <td>{{ i.1 }}</td>
+        <td>{{ i.2 }}</td>
+        <td>{{ i.3 }}</td>
+        <td>{{ i.4 }}</td>
+        <td>{{ i.5 }}</td>
+        <td>{{ i.6 }}</td>
+        <td>{{ i.7 }}</td>
+        <td>{{ i.9 }}</td>
+        <td>
+            <a href="{{ i.1 }}">detail</a>
+            <a href="">update</a>
+        </td>
+      </tr>
+    </tbody>
+    {% endfor %}   
+</table>
+{% endblock content %}

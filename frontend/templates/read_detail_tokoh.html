@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Read detail tokoh</title>
+{% endblock meta %}
+
+{% block content %}
+<h1>Detail Tokoh</h1>
+<h2>Nama tokoh: {{ nama_tokoh }}</h2>
+<p>ID Rambut: {{ id_rambut }}</p>
+<p>ID Mata: {{ id_mata }}</p>
+<p>ID Rumah: {{ id_rumah }}</p>
+<p>Warna Kulit: {{ warna_kulit }}</p>
+<p>Pekerjaan: {{ pekerjaan }}</p>
+
+{% endblock content %}
