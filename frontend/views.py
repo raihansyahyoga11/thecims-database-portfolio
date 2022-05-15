@@ -128,6 +128,10 @@ def detail_misi_utama(request) :
     result = cursor.fetchall()
     return render(request, 'detail_misi_utama.html', {'content': result})
 
+def create_misi_utama(request) :
+    return render(request, 'create_misi_utama.html')
+
+
 
 
 
