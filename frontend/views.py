@@ -74,4 +74,34 @@ def admin_dashboard(request):
 def logout(request):
     request.session.clear()
     return render(request, 'home.html')
+    
 # Create your views here.
+def read_kategori_apparel(request):
+    cursor = connection.cursor()
+    query = f"select nama_kategori from KELUARGA_YOGA.kategori_apparel"
+    cursor.execute(query)
+    result = cursor.fetchall()
+    if request.session['account-type'] == 'pemain':
+        return render(request, 'kategori_apparel.html', {'content': result})
+    elif request.session['account-type'] == 'admin':
+        return render(request, 'kategori_apparel_admin.html', {'content': result})
+
+def create_kategori_apparel(request):
+    if request.session['account-type'] == 'pemain':
+        return render(request, 'home.html')
+    elif request.session['account-type'] == 'admin':
+        return render(request, 'create_kategori_apparel.html')
+
+def read_koleksi_tokoh(request):
+    username = request.session.get('username')
+    cursor = connection.cursor()
+    if request.session['account-type'] == 'pemain':
+        query = f"select * from keluarga_yoga.koleksi_tokoh WHERE username_pengguna = '{username}' order by username_pengguna"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return render (request, 'koleksi_tokoh.html', {'content': result})
+    elif request.session['account-type'] == 'admin':
+        query = f"select * from keluarga_yoga.koleksi_tokoh order by username_pengguna"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return render (request, 'koleksi_tokoh_admin.html', {'content': result})

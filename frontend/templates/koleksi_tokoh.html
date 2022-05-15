@@ -1,0 +1,28 @@
+{% extends 'base_with_navbar.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>The Cims</title>
+{% endblock meta %}
+
+{% block content %}
+{% if content %}
+
+<table></table>
+    <td>id_koleksi</td>
+    <td>username_pengguna</td>
+    <td>nama_tokoh</td>
+    {% for data in content %}
+    <tr>
+        <br>
+        <td>{{data.0}}</td> 
+        <td>{{data.1}}</td>
+        <td>{{data.2}}</td>
+    </tr>
+    {% endfor %}
+    <td></td>
+    </table>
+
+{% endif %}
+{% endblock content %}
