@@ -18,13 +18,14 @@
         {% if content %}
         {% for data in content %}
           <tr>
+            <td>{{data.0}}</td>
             <td>{{data.1}}</td>
             <td>{{data.2}}</td>
-            <td>{{data.3}}</td>
-        <form action="/detail-misi-utama/" method="post" >
+        <form action="/menjalankan-misi-utama/" method="post" >
             {% csrf_token %} 
-            <input type="hidden" value="{{data.0}}" name="misi_detail">
-            <td><button type="submit"   name="submit_misi_detail"></a></td>
+            <input type="hidden" value="{{data.1}}" name="ubah_menjalankan_misi_utama">
+            <input type="hidden" value="{{data.2}}" name="ubah_menjalankan_misi_utama">
+            <td><button type="submit"   name="submit_menjalankan"></a></td>
         </form>
           </tr>
           {% endfor %}
