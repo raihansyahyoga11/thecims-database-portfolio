@@ -2,10 +2,11 @@ from cgi import test
 import datetime
 from random import randint
 from sqlite3 import connect
+from time import strftime
 from urllib import response
 from django.shortcuts import render, redirect
 from django.db import connection
-
+from datetime import datetime
 
 def home(request):
     return render(request, 'home_and_dashboard/home.html')
@@ -132,10 +133,7 @@ def read_misi_utama(request) :
 
     elif request.session['account-type'] == 'admin' :
         username = request.session.get('username')
-        cursor.execute(f"""SELECT MU.nama_misi 
-                            FROM misi_utama MU 
-                            JOIN menjalankan_misi_utama MMU ON MU.nama_misi = MMU.nama_misi 
-                            JOIN Tokoh T ON MMU.nama_tokoh = T.nama;""")
+        cursor.execute(f"""SELECT nama_misi FROM misi_utama;""")
         result = cursor.fetchall()
 
         response = {
@@ -166,14 +164,42 @@ def detail_misi_utama(request) :
     return render(request, 'misi_utama/detail_misi_utama.html', response)
 
 def create_misi_utama(request) :
+    cursor = connection.cursor()
     try :
         role = request.session.get('account-type')
     except:
         return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
     response = {
-        'account_type' : role
+        'account_type' : role,
     }
     if request.session['account-type'] == 'admin' :
+        print('anjay')
+        if (request.method == 'POST'):
+            print('uhuy')
+            nama = request.POST.get('nama')
+            efek_energi = request.POST.get('efek_energi')
+            efek_hubungan_sosial = request.POST.get('efek_hubungan_sosial')
+            efek_kelaparan = request.POST.get('efek_kelaparan')
+            syarat_energi = request.POST.get('syarat_energi')
+            syarat_hubungan_sosial = request.POST.get('syarat_hubungan_sosial')
+            syarat_kelaparan = request.POST.get('syarat_kelaparan')
+            completion_time = datetime.strptime(request.POST.get('completion_time'), '%H:%M')
+            time = "{:d}:{:02d}:{:02d}".format(completion_time.hour, completion_time.minute, completion_time.second)
+
+            print(time)
+            reward_koin = request.POST.get('reward_koin')
+            reward_xp = request.POST.get('reward_xp')
+            deskripsi = request.POST.get('deskripsi')
+            # s = strftime("%H:%M:%S")
+            cursor.execute(f""" INSERT INTO misi (nama, efek_energi, efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp, deskripsi) 
+                                VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
+                            """ %(nama,efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, time, reward_koin, reward_xp, deskripsi))
+
+
+            cursor.execute(f""" insert into misi_utama (nama_misi) 
+                                values('%s')""" %(nama))
+            return redirect("/misi-utama")
         return render(request, 'misi_utama/create_misi_utama.html', response)
     elif request.session['account-type'] == 'pemain' :
         return redirect('/')

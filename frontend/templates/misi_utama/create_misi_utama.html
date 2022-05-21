@@ -13,23 +13,23 @@
             <th>FORM BUAT MISI UTAMA</th>
         </tr>
         <tr>
-        <form action="/misi-utama/" method="post" >
+        <form action="/create-misi-utama/" method="POST" >
             {% csrf_token %} 
             <td>
-            Nama Misi Utama : <input type="text" required><br>
-            Efek Energi : <input type="text" required> <input type="number" required><br>
-            Efek Hubungan Sosial: <input type="text" required> <input type="number" required> <br>
-            Efek Kelaparan: <input type="text" required> <input type="number" required> <br>
-            Syarat Energi: <input type="text" required> <input type="number" required> <br>
-            Syarat Hubungan Sosial: <input type="text" required> <input type="number" required><br>
-            Syarat Kelapatan: <input type="text" required> <input type="number" required> <br>
-            Completition Time: <input type="text" required> <br>
-            Reward Koin: <input type="text" required> <input type="number" required> <br>
-            Reward XP: <input type="text" required> <input type="number" required><br>
-            Deskripsi : <input type="text" required> 
+            Nama Misi Utama : <input type="text" name="nama" required><br>
+            Efek Energi : <input type="number" name="efek_energi" required><br>
+            Efek Hubungan Sosial: <input type="number" name="efek_hubungan_sosial" required> <br>
+            Efek Kelaparan: <input type="number" name="efek_kelaparan" required> <br>
+            Syarat Energi: <input type="number" name="syarat_energi" required> <br>
+            Syarat Hubungan Sosial: <input type="number" name="syarat_hubungan_sosial" required><br>
+            Syarat Kelaparan: <input type="number" name="syarat_kelaparan" required> <br>
+            Completion Time: <input type="time" name="completion_time" required> <br>
+            Reward Koin: <input type="number" name="reward_koin" required> <br>
+            Reward XP: <input type="number" name="reward_xp" required><br>
+            Deskripsi : <input type="text" name="deskripsi" required> 
             <br>
             <br>
-            <button type="submit" >SIMPAN</button>
+            <button type="submit" name="submit_misi" href="/misi-utama">SIMPAN</button>
         
         </td>
         
