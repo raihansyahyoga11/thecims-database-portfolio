@@ -43,10 +43,19 @@
                 Tokoh
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="/create-tokoh/">Buat Tokoh</a></li>
+                {% if 'pemain' in account_type %}
+                <li><a class="dropdown-item" href="/create-tokoh/"> Buat Tokoh </a></li>
                 <li><a class="dropdown-item" href="/read-tokoh/">List Tokoh</a></li>
                 <li><a class="dropdown-item" href="/warna-kulit/">List Warna Kulit</a></li>
                 <li><a class="dropdown-item" href="/level/">List Level</a></li>
+               {% else %}
+                <li><a class="dropdown-item" href="/create-warna-kulit/">Buat Warna Kulit</a></li>
+                <li><a class="dropdown-item" href="/create-level/">Buat Level</a></li>
+                <li><a class="dropdown-item" href="/update-level/">Update Level</a></li>
+                <li><a class="dropdown-item" href="/read-tokoh/">List Tokoh</a></li>
+                <li><a class="dropdown-item" href="/warna-kulit/">List Warna Kulit</a></li>
+                <li><a class="dropdown-item" href="/level/">List Level</a></li>
+                {% endif %}
               </ul>
             </div>
 
@@ -55,9 +64,16 @@
                   Pekerjaan
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {% if 'pemain' == account_type %}
                   <li><a class="dropdown-item" href="/read-pekerjaan/">List Pekerjaan</a></li>
                   <li><a class="dropdown-item" href="#">Buat bekerja</a></li>
                   <li><a class="dropdown-item" href="/read-bekerja/">List Bekerja</a></li>
+                  {% else %}
+                  <li><a class="dropdown-item" href="#">Buat Pekerjaan</a></li>
+                  <li><a class="dropdown-item" href="/read-pekerjaan/">List Pekerjaan</a></li>
+                  <li><a class="dropdown-item" href="#">Ubah Pekerjaan</a></li>
+                  <li><a class="dropdown-item" href="/read-bekerja/">List Bekerja</a></li>
+                  {% endif %}
                 </ul>
               </div>
 
@@ -67,9 +83,15 @@
                   Misi
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {% if 'pemain' == account_type %}
                   <li><a class="dropdown-item" href="/create-menjalankan-misi-utama/">Buat Menjalankan Misi Utama</a></li>
                   <li><a class="dropdown-item" href="/menjalankan-misi-utama/">menjalankan misi utama</a></li>
                   
+                  {% else %}
+                  <li><a class="dropdown-item" href="/create-misi-utama/">Buat Misi Utama</a></li>
+                  <li><a class="dropdown-item" href="/misi-utama/">List Misi Utama</a></li>
+                  <li><a class="dropdown-item" href="/menjalankan-misi-utama/">List Menjalankan Misi Utama</a></li>
+                  {% endif %}
                 </ul>
               </div>
 
@@ -78,9 +100,15 @@
                   Makan
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {% if 'pemain' == account_type %}
                   <li><a class="dropdown-item" href="/makanan/">List Makanan</a></li>
                   <li><a class="dropdown-item" href="/create-makan/">Buat Makan</a></li>
                   <li><a class="dropdown-item" href="/makan/">List Makan</a></li>
+                  {% else %}
+                  <li><a class="dropdown-item" href="/create-makanan/">Buat Makanan</a></li>
+                  <li><a class="dropdown-item" href="/makanan/">List Makanan</a></li>
+                  <li><a class="dropdown-item" href="/update-makanan/">Ubah Makanan</a></li>
+                  {% endif %}
                 </ul>
               </div>
 
@@ -90,10 +118,19 @@
                   Koleksi
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {% if 'pemain' == account_type %}
                   <li><a class="dropdown-item" href="/read-kategori-apparel/">List Kategori Apparel</a></li>
                   <li><a class="dropdown-item" href="/read-koleksi/">List koleksi</a></li>
                   <li><a class="dropdown-item" href="#">Buat koleksi tokoh</a></li>
                   <li><a class="dropdown-item" href="/read-koleksi-tokoh/">List koleksi tokoh</a></li>
+                  {% else %}
+                  <li><a class="dropdown-item" href="/create-kategori-apparel/">Buat Kategori Apparel</a></li>
+                  <li><a class="dropdown-item" href="/read-kategori-apprel/">List Kategori Apparel</a></li>
+                  <li><a class="dropdown-item" href="/create-koleksi/">Buat Koleksi</a></li>
+                  <li><a class="dropdown-item" href="/create-koleksi-tokoh/">Buat Koleksi Tokoh</a></li>
+                  <li><a class="dropdown-item" href="/read-koleksi/">List Koleksi</a></li>
+                  <li><a class="dropdown-item" href="/read-koleksi-tokoh/">List Koleksi Tokoh</a></li>
+                  {% endif %}
                 </ul>
               </div>
 
@@ -102,10 +139,15 @@
                   Penggunaan
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {% if 'pemain' == account_type %}
                   <li><a class="dropdown-item" href="/create-menggunakan-barang/">Buat Menggunakan Barang</a></li>
                   <li><a class="dropdown-item" href="/read-menggunakan-barang/">List menggunakan barang</a></li>
                   <li><a class="dropdown-item" href="/create-menggunakan-apparel/">Buat menggunakan apparel</a></li>
                   <li><a class="dropdown-item" href="/menggunakan-apparel/">List menggunakan apparel</a></li>
+                  {% else %}
+                  <li><a class="dropdown-item" href="/read-menggunakan-barang/">List Menggunakan Barang</a></li>
+                  <li><a class="dropdown-item" href="/menggunakan-apparel/">List Menggunakan Apparel</a></li>
+                  {% endif %}
                 </ul>
               </div>
 
