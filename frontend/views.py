@@ -280,6 +280,7 @@ def read_makanan(request) :
 
 
 def create_makanan(request) :
+    cursor = connection.cursor()
     try :
         role = request.session.get('account-type')
     except:
@@ -287,7 +288,18 @@ def create_makanan(request) :
     response = {
         'account_type' : role
     }
+    cursor.execute("set search_path to keluarga_yoga")
     if request.session['account-type'] == 'admin' :
+        if (request.method == 'POST'):
+            print("anjaayyyyyyyyyyyy")
+            nama_makanan = request.POST.get('nama_makanan')
+            harga = request.POST.get('harga')
+            tingkat_energi = request.POST.get('tingkat_energi')
+            tingkat_kelaparan = request.POST.get('tingkat_kelaparan')
+            cursor.execute(f""" INSERT INTO makanan (nama, harga, tingkat_energi, tingkat_kelaparan) 
+                                VALUES('%s', '%s', '%s', '%s')
+                            """ %(nama_makanan, harga, tingkat_energi, tingkat_kelaparan))
+            return redirect("/makanan")
         return render(request, 'makanan/create_makanan.html', response)
     else :
         return redirect('/')
@@ -351,6 +363,7 @@ def read_makan(request) :
 
 
 def create_makan(request) :
+    
     username = request.session.get('username')
     try :
         role = request.session.get('account-type')
