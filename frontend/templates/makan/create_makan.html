@@ -15,7 +15,7 @@
         
         <tr>
             {% if content %}
-            <form action="/makan/" method="post" >
+            <form action="/create-makan/" method="post" >
                 {% csrf_token %} 
             <td>
                     <label for="nama-tokoh">Nama Tokoh:</label>
@@ -29,8 +29,8 @@
 
                     <label for="nama-makanan">Nama Makanan:</label>
                     <select name="nama-makanan" id="nama-makanan" required>
-                        {% for data in content %}
-                        <option value="{{data.1}}">{{data.1}}</option>
+                        {% for data in daftar_makanan %}
+                        <option value="{{data.0}}">{{data.0}}</option>
                         {% endfor %}
                       </select>
                     <br><br>

@@ -370,17 +370,38 @@ def create_makan(request) :
     except:
         return redirect('/')
     cursor = connection.cursor()
-    
+    response = {
+            'account_type': role,
+    }
+    cursor.execute("set search_path to keluarga_yoga")
     if request.session['account-type'] == 'pemain' :
-        cursor.execute("set search_path to keluarga_yoga")
         cursor.execute(f"""SELECT M.nama_tokoh, M.nama_makanan
                             FROM makan M
                             WHERE M.username_pengguna = '{username}' ;""")
-        result = cursor.fetchall()
+        tokoh_makan = cursor.fetchall()
+        cursor.execute(f"""SELECT nama
+                            FROM Makanan;""")
+        daftar_makanan = cursor.fetchall()
         response = {
-            'content' : result,
-            'account_type': role
-        }
+            'content' : tokoh_makan,
+            'account_type': role,
+            'daftar_makanan' : daftar_makanan
+            }
+
+        if (request.method == 'POST'):
+            print('samoe')
+            tokoh_baru = request.POST.get('nama-tokoh')
+            cursor.execute(f"""SELECT tokoh.username_pengguna
+                                FROM tokoh JOIN makan on tokoh.nama = makan.nama_tokoh
+                                WHERE makan.nama_tokoh= '%s';""" %(tokoh_baru))
+            username_pengguna = cursor.fetchone()[0]
+            makanan_baru = request.POST.get('nama-makanan')
+            waktu_sekarang = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            cursor.execute(f""" INSERT INTO makan (username_pengguna, nama_tokoh, waktu, nama_makanan) 
+                    VALUES('%s', '%s', '%s', '%s')
+                """ %(username_pengguna, tokoh_baru, waktu_sekarang, makanan_baru))
+            return redirect("/makan")
+
         return render(request, 'makan/create_makan.html', response)
     else :
         return redirect('/')
