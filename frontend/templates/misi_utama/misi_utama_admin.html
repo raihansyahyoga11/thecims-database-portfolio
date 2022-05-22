@@ -8,7 +8,9 @@
 
 
 {% block content %}
-    <table style="width:100%">
+
+
+    <table id="table_daftar_misi_utama" style="width:100%">
         <tr>
             <th>Name</th>
             <th>Action</th>
@@ -19,11 +21,10 @@
         {% for data in misi_tidak_dirujuk %}
           <tr>
             <td>{{data.0}}</td>
-        <form action="/detail-misi-utama/" method="post" >
+        <form action="/misi-utama/" method="POST" >
             {% csrf_token %} 
-            <input type="hidden" value="{{data.0}}" name="misi_detail">
-            <td><button type="submit"   name="submit_misi_detail">[Detail] </a>
-                <button type="submit"   name="submit_misi_detail">[Delete] </a></td>
+            <td><button type="submit" value="{{data.0}}" name="detail">[Detail] </a>
+                <button type="submit" value="{{data.0}}" name="delete">[Delete] </a></td>
                     {% endfor %}
                     {% endif %}
         </form>
@@ -33,10 +34,9 @@
           {% for data in misi_dirujuk %}
             <tr>
               <td>{{data.0}}</td>
-          <form action="/detail-misi-utama/" method="post" >
+          <form action="/misi-utama/" method="POST" >
               {% csrf_token %} 
-              <input type="hidden" value="{{data.0}}" name="misi_detail">
-              <td><button type="submit"   name="submit_misi_detail">[Detail] </a></td>
+              <td><button type="submit" value="{{data.0}}" name="detail">[Detail] </a></td>
                       {% endfor %}
                       {% endif %}
           </form>

@@ -4,6 +4,7 @@ from http.client import HTTPResponse
 from random import randint
 from sqlite3 import connect
 from time import strftime
+from types import NoneType
 from urllib import response
 from django.shortcuts import render, redirect
 from django.db import connection
@@ -156,6 +157,28 @@ def read_misi_utama(request) :
             'misi_dirujuk' :misi_dirujuk,
             'misi_tidak_dirujuk' :misi_tidak_dirujuk
         }
+        if (request.method == 'POST') :
+            
+            row_diambil_detail = request.POST.get('detail')
+            row_diambil_delete = request.POST.get('delete')
+
+            if row_diambil_detail != None :
+                print("masuk 1")
+                cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp
+                    FROM MISI 
+                    WHERE nama = '{row_diambil_detail}' ;""")
+                result = cursor.fetchall()
+                response = {
+                    'content' : result,
+                    'account_type': role
+                }
+                return render(request, "misi_utama/detail_misi_utama.html",response)
+
+            elif row_diambil_delete != None :
+                cursor.execute(f"""DELETE FROM misi_utama
+                                    WHERE nama_misi = '{row_diambil_delete}' """)
+                return redirect("/misi-utama/")
+
         return render(request, 'misi_utama/misi_utama_admin.html', response)
 
 def detail_misi_utama(request) :
@@ -167,7 +190,7 @@ def detail_misi_utama(request) :
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
     cursor.execute("select * from misi_utama ")
-    username = request.session.get('username')
+    # username = request.session.get('username')
     misi_detail = request.POST.get('misi_detail')
     cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp
                         FROM MISI 
@@ -243,15 +266,6 @@ def read_menjalankan_misi_utama(request) :
         if (request.method == 'POST') :
             ubah_nama_tokoh = request.POST.get("ubah_menjalankan_misi_utama_tokoh")
             ubah_nama_misi_utama = request.POST.get("ubah_menjalankan_misi_utama_misi")
-            # global passing1
-            # def passing1():
-            #     return HTTPResponse(ubah_nama_tokoh)
-
-            # global passing2
-            # def passing2():
-            #     return HTTPResponse(ubah_nama_misi_utama)
-            # request.session['nama_tokoh_menjalankan_misi_utama'] = ubah_nama_tokoh
-            # request.session['misi_utama_status_diubah'] = ubah_nama_misi_utama
             response = {
                 'account_type': role,
                 'ubah_nama_tokoh' :ubah_nama_tokoh,
@@ -271,6 +285,7 @@ def read_menjalankan_misi_utama(request) :
             'account_type': role
         }
         return render(request, 'menjalankan_misi_utama/jalankan_misi_utama_admin.html', response)
+
 
 def create_menjalankan_misi_utama(request) :
     username = request.session.get('username')
@@ -356,12 +371,22 @@ def read_makanan(request) :
         }
 
         if request.method == 'POST' :
-            makanan_diubah = request.POST.get('mengubah_makanan')
-            response = {
-                'makanan_diubah' : makanan_diubah,
-                'account_type': role
-            }
-            return render(request, 'makanan/ubah_makanan.html', response)
+            row_diambil_ubah = request.POST.get('mengubah_makanan')
+            row_diambil_delete = request.POST.get('delete_makanan')
+
+            if  row_diambil_ubah != None :
+                response = {
+                    'makanan_diubah' : row_diambil_ubah,
+                    'account_type': role
+                }
+                return render(request, 'makanan/ubah_makanan.html', response)
+            
+            
+            elif row_diambil_delete != None :
+                cursor.execute(f"""DELETE FROM makanan
+                                    WHERE nama = '{row_diambil_delete}' """)
+                return redirect("/makanan/")
+
 
         
         return render(request, 'makanan/makanan_admin.html', response)
