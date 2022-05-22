@@ -21,12 +21,15 @@
             <td>{{data.0}}</td>
             <td>{{data.1}}</td>
             <td>{{data.2}}</td>
+        {% if 'Belum selesai' == data.2 %}
         <form action="/menjalankan-misi-utama/" method="post" >
             {% csrf_token %} 
-            <input type="hidden" value="{{data.1}}" name="ubah_menjalankan_misi_utama">
-            <input type="hidden" value="{{data.2}}" name="ubah_menjalankan_misi_utama">
-            <td><button type="submit"   name="submit_menjalankan"></a></td>
+            <input type="hidden" value="{{data.0}}" name="ubah_menjalankan_misi_utama_tokoh">
+            <input type="hidden" value="{{data.1}}" name="ubah_menjalankan_misi_utama_misi">
+
+            <td><button type="submit"  name="submit_menjalankan">Ubah</a></td>
         </form>
+        {% endif %}
           </tr>
           {% endfor %}
           {% endif %}

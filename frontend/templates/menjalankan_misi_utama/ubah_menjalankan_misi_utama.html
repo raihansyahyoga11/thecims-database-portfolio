@@ -12,25 +12,25 @@
         <tr>
             <th>FORM UBAH MENJALANKAN MISI UTAMA</th>
         </tr>
-        {% if content %}
-        {% for data in content %}
-            {% csrf_token %} 
-            <td>
+        <tr>
+        <form action="/update-menjalankan-misi-utama/" method="post" >
+        {% csrf_token %} 
+        <td>
+  
 
-            {% if content %}
-            {% for data in content}
+        Nama Tokoh : {{ ubah_nama_tokoh }} <br>
+        <input type="hidden" value="{{ ubah_nama_tokoh }}" name="nama_tokoh_menjalankan_misi_utama">
+
           
+        Nama Misi Utama : {{ ubah_nama_misi_utama }} <br>
+        <input type="hidden" value= "{{ubah_nama_misi_utama}}" name="misi_utama_status_diubah">
 
-            Nama Tokoh : {{data.0}} <br>
-            Nama Misi Utama : {{data.1}}
-
-          {% endfor }
-          {% endif %}
-          Status : <input type="text" placeholder="Belum selesai" required>
-            <br>
-            <button type="submit" >SIMPAN</button>
-        </td>
-        </tr>
+        Status : <input type="text" name="status_misi_baru"  required> 
+        <br>
+        <button type="submit" nama="submit_ubah_menjalankan_misi_utama" >SIMPANss</a>
+    </td>
+</form>
+    </tr>
         
 </table>
 {% endblock content %}

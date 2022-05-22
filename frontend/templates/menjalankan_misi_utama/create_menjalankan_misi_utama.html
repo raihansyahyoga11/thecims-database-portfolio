@@ -14,25 +14,28 @@
         </tr>
         
         <tr>
-        <form action="/menjalankan-misi-utama/" method="post" >
-        {% if content %}
+        <form action="/create-menjalankan-misi-utama/" method="post" >
+      
             {% csrf_token %} 
             <td>
-                    <label for="nama-tokoh">Nama Tokoh:</label>
-                    <select name="cars" id="nama-tokoh" required>
-                        {% for data in content %}
+                    <label for="tokoh-misi-misi">Nama Tokoh:</label>
+                    {% if content1 %}
+                    <select name="nama-tokoh-misi" id="nama-tokoh-misi" required>
+                        {% for data in content1 %}
                       <option value="{{data.0}}">{{data.0}}</option>
                       {% endfor %}
                     </select>
-
+                    {% endif %}
                     <br><br>
 
-                    <label for="nama-tokoh">Nama Misi Utama:</label>
-                    <select name="nama-tokoh" id="nama-tokoh" required>
-                        {% for data in content %}
-                        <option value="{{data.1}}">{{data.1}}</option>
+                    <label for="nama-misi-dipilih">Nama Misi Utama:</label>
+                    {% if content2 %}
+                    <select name="nama-misi-dipilih" id="nama-misi-dipilih" required>
+                        {% for data in content2 %}
+                        <option value="{{data.0}}">{{data.0}}</option>
                         {% endfor %}
                       </select>
+                      {% endif %}
                     <br><br>
 
 
@@ -43,6 +46,6 @@
         
         </tr>
         
-        {% endif %}
+       
 </table>
 {% endblock content %}

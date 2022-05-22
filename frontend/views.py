@@ -1,5 +1,6 @@
 from cgi import test
 import datetime
+from http.client import HTTPResponse
 from random import randint
 from sqlite3 import connect
 from time import strftime
@@ -215,7 +216,6 @@ def read_menjalankan_misi_utama(request) :
     cursor.execute("set search_path to keluarga_yoga")
     cursor.execute("select * from menjalankan_misi_utama")
     if request.session['account-type'] == 'pemain' :
-        print("UHUYY")
         username = request.session.get('username')
         cursor.execute(f"""SELECT MMU.nama_tokoh, MMU.nama_misi, MMU.status
                             FROM menjalankan_misi_utama MMU  
@@ -225,6 +225,25 @@ def read_menjalankan_misi_utama(request) :
             'content' : result,
             'account_type': role
         }
+        if (request.method == 'POST') :
+            ubah_nama_tokoh = request.POST.get("ubah_menjalankan_misi_utama_tokoh")
+            ubah_nama_misi_utama = request.POST.get("ubah_menjalankan_misi_utama_misi")
+            # global passing1
+            # def passing1():
+            #     return HTTPResponse(ubah_nama_tokoh)
+
+            # global passing2
+            # def passing2():
+            #     return HTTPResponse(ubah_nama_misi_utama)
+            # request.session['nama_tokoh_menjalankan_misi_utama'] = ubah_nama_tokoh
+            # request.session['misi_utama_status_diubah'] = ubah_nama_misi_utama
+            response = {
+                'account_type': role,
+                'ubah_nama_tokoh' :ubah_nama_tokoh,
+                'ubah_nama_misi_utama' :ubah_nama_misi_utama
+            }
+            return render(request,'menjalankan_misi_utama/ubah_menjalankan_misi_utama.html', response)
+
         return render(request, 'menjalankan_misi_utama/jalankan_misi_utama_user.html', response)
 
     elif request.session['account-type'] == 'admin' :
@@ -245,16 +264,35 @@ def create_menjalankan_misi_utama(request) :
         role = request.session['account-type']
     except:
         return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
     if request.session['account-type'] == 'pemain' :
-        cursor.execute("set search_path to keluarga_yoga")
-        cursor.execute(f"""SELECT MMU.nama_tokoh, MMU.nama_misi
-                            FROM Menjalankan_misi_utama MMU  
-                            WHERE MMU.username_pengguna = '{username}';""")
-        result = cursor.fetchall()
+        cursor.execute(f"""SELECT nama
+                            FROM tokoh
+                            WHERE username_pengguna = '{username}' ;""")
+        tokoh_misi = cursor.fetchall()
+        cursor.execute(f"""SELECT nama_misi
+                            FROM misi_utama;""")
+        pilihan_misi = cursor.fetchall()
         response = {
-            'content' : result,
-            'account_type': role
+            'content1' : tokoh_misi,
+            'account_type': role,
+            'content2' : pilihan_misi
         }
+        # print(tokoh_misi)
+        # print(pilihan_misi)
+        if (request.method == 'POST'):
+            tokoh_menjalankan_misi_baru = request.POST.get('nama-tokoh-misi')
+            print(tokoh_menjalankan_misi_baru)
+            cursor.execute(f"""SELECT DISTINCT tokoh.username_pengguna
+                            FROM tokoh, menjalankan_misi_utama
+                            WHERE tokoh.nama= '%s';""" %(tokoh_menjalankan_misi_baru))
+            username_pengguna = cursor.fetchone()[0]   
+            print(username_pengguna)               
+            misi_baru_dipilih = request.POST.get('nama-misi-dipilih')
+            cursor.execute(f""" INSERT INTO menjalankan_misi_utama (username_pengguna, nama_tokoh, nama_misi, status) 
+                    VALUES('%s', '%s', '%s', '%s')
+                """ %(username_pengguna, tokoh_menjalankan_misi_baru, misi_baru_dipilih, "Belum selesai"))
+            return redirect("/menjalankan-misi-utama")
         return render(request, 'menjalankan_misi_utama/create_menjalankan_misi_utama.html', response)
 
 
@@ -375,9 +413,9 @@ def create_makan(request) :
     }
     cursor.execute("set search_path to keluarga_yoga")
     if request.session['account-type'] == 'pemain' :
-        cursor.execute(f"""SELECT M.nama_tokoh, M.nama_makanan
-                            FROM makan M
-                            WHERE M.username_pengguna = '{username}' ;""")
+        cursor.execute(f"""SELECT nama
+                            FROM tokoh
+                            WHERE username_pengguna = '{username}' ;""")
         tokoh_makan = cursor.fetchall()
         cursor.execute(f"""SELECT nama
                             FROM Makanan;""")
@@ -427,20 +465,29 @@ def ubah_makanan(request) :
         return redirect('/')
 
 def ubah_menjalankan_misi_utama(request) :
+    username = request.session.get('username')
     cursor = connection.cursor()
-    cursor.execute("set search_path to public")
     try :
         role = request.session.get('account-type')
     except:
         return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
+    response = {
+        'account-type' : role
+    }
     if request.session['account-type'] == 'pemain' :
-        cursor.execute("set search_path to keluarga_yoga")
-        cursor.execute("select * from menjalankan_misi_utama ")
-        ubah_menjalankan_misi_utama = request.POST.get('ubah_menjalankan_misi_utama')
-        response = {
-            'content' : ubah_menjalankan_misi_utama,
-            'account_type': role
-        }
+        if (request.method == 'POST') :
+            ubah_nama_tokoh = request.POST.get("nama_tokoh_menjalankan_misi_utama")
+            ubah_nama_misi_utama = request.POST.get("misi_utama_status_diubah")
+            status_misi_baru = request.POST.get("status_misi_baru")
+            cursor.execute(f""" UPDATE menjalankan_misi_utama 
+                                SET status = '{status_misi_baru}'
+                                WHERE username_pengguna = '{username}' 
+                                    AND nama_tokoh = '{ubah_nama_tokoh}' 
+                                    AND nama_misi = '{ubah_nama_misi_utama}';
+                            """ )
+            return redirect("/menjalankan-misi-utama/")
+        
         return render(request, 'menjalankan_misi_utama/ubah_menjalankan_misi_utama.html', response)
     else :
         return redirect('/')
