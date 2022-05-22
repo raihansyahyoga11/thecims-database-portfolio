@@ -13,20 +13,18 @@
             <th>FORM UPDATE MAKANAN</th>
         </tr>
         <tr>
-        <form action="/makanan/" method="post" >
+        <form action="/update-makanan/" method="post" >
             {% csrf_token %} 
             <td>
 
-            {% if content %}
           
+            Nama Makanan : {{ makanan_diubah }} <br>
+            <input type="hidden" value="{{ makanan_diubah }}" name="makanan_terubah">
 
-            Nama Makanan : {{content}} <br>
 
-          
-          {% endif %}
-            Harga : <input type="text" required> <br>
-            Tingkat Energi: <input type="text" required> <br>
-            Tingkat Kelaparan: <input type="text" required> 
+            Harga : <input type="text" name="harga_makanan_baru" required> <br>
+            Tingkat Energi: <input type="text" name="tingkat_energi_batu" required> <br>
+            Tingkat Kelaparan: <input type="text" name="tingkat_kelaparan_baru" required> 
             <br>
             <button type="submit" >SIMPAN</button>
         </td>

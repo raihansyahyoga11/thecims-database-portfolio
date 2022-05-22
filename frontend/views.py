@@ -313,7 +313,14 @@ def read_makanan(request) :
     }
     if request.session['account-type'] == 'pemain' :
         return render(request, 'makanan/makanan_user.html', response)
-    elif request.session['account-type'] == 'admin' :
+    if request.session['account-type'] == 'admin' :
+        if request.method == 'POST' :
+            makanan_diubah = request.POST.get('mengubah_makanan')
+            response = {
+                'makanan_diubah' : makanan_diubah,
+                'account_type': role
+            }
+            return render(request, 'makanan/ubah_makanan.html', response)
         return render(request, 'makanan/makanan_admin.html', response)
 
 
@@ -341,29 +348,6 @@ def create_makanan(request) :
         return render(request, 'makanan/create_makanan.html', response)
     else :
         return redirect('/')
-
-def update_makanan(request) :
-    cursor = connection.cursor()
-    cursor.execute("set search_path to public")
-    try :
-        role = request.session.get('account-type')
-    except:
-        return redirect('/')
-    cursor.execute("set search_path to keluarga_yoga")
-    cursor.execute("select * from makanan ")
-    username = request.session.get('username')
-    misi_detail = request.POST.get('misi_detail')
-    cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp
-                        FROM MISI 
-                        WHERE nama = '{misi_detail}' ;""")
-    result = cursor.fetchall()
-    response = {
-        'content' : result,
-        'account_type': role
-    }
-    return render(request, 'misi_utama/detail_misi_utama.html', response)
-
-
 
 def read_makan(request) :
     cursor = connection.cursor()
@@ -455,11 +439,24 @@ def ubah_makanan(request) :
     if request.session['account-type'] == 'admin' :
         cursor.execute("set search_path to keluarga_yoga")
         cursor.execute("select * from makanan ")
-        mengubah_makanan = request.POST.get('mengubah_makanan')
-        response = {
-            'content' : mengubah_makanan,
-            'account_type': role
-        }
+        
+        # response = {
+        #     'content' : mengubah_makanan,
+        #     'account_type': role
+        # }
+        if (request.method =="POST") :
+            makanan_terubah = request.POST.get('makanan_terubah')
+            harga_makanan_baru = request.POST.get("harga_makanan_baru")
+            tingkat_energi_baru = request.POST.get("tingkat_energi_batu")
+            tingkat_kelaparan_baru = request.POST.get("tingkat_kelaparan_baru")
+            print(makanan_terubah)
+            print(harga_makanan_baru)
+            print(tingkat_energi_baru)
+            print(tingkat_kelaparan_baru)
+            cursor.execute(f"""UPDATE makanan 
+                                SET harga = '{harga_makanan_baru}', tingkat_energi = '{tingkat_energi_baru}', tingkat_kelaparan = '{ tingkat_kelaparan_baru }'
+                                WHERE nama = '{ makanan_terubah }' ;""")
+            return redirect('/makanan/')
         return render(request, 'makanan/ubah_makanan.html', response)
     else :
         return redirect('/')
