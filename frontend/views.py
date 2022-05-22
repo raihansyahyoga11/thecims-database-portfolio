@@ -137,13 +137,13 @@ def read_misi_utama(request) :
         cursor.execute(f"""SELECT nama_misi FROM misi_utama;""")
         result = cursor.fetchall()
         
-        cursor.execute(f""" SELECT misi_utama.nama_misi
+        cursor.execute(f""" SELECT DISTINCT misi_utama.nama_misi
                             FROM misi_utama, menjalankan_misi_utama
                             WHERE misi_utama.nama_misi = menjalankan_misi_utama.nama_misi; """)    
         misi_dirujuk = cursor.fetchall()
 
         cursor.execute(f"""
-                    SELECT nama_misi
+                    SELECT DISTINCT nama_misi
                     FROM misi_utama
                     EXCEPT
                     SELECT misi_utama.nama_misi
@@ -331,18 +331,16 @@ def read_makanan(request) :
     role = request.session.get('account-type')
   
     cursor.execute("set search_path to keluarga_yoga")
-    cursor.execute("select * from makanan")
-
-    cursor.execute(f"""SELECT M.nama, M.harga, M.tingkat_energi, M.tingkat_kelaparan
-                            FROM Makanan M;""")
-    result = cursor.fetchall()
-    response = {
-            'content' : result,
-            'account_type': role
-    }
 
     # if pemain
     if request.session['account-type'] == 'pemain' :
+        cursor.execute(f"""SELECT M.nama, M.harga, M.tingkat_energi, M.tingkat_kelaparan
+                                FROM Makanan M;""")
+        result = cursor.fetchall()
+        response = {
+                'content' : result,
+                'account_type': role
+        }
         return render(request, 'makanan/makanan_user.html', response)
 
     # if admin
@@ -350,11 +348,11 @@ def read_makanan(request) :
         # cursor.execute(f""" SELECT DISTINCT nama
         #                     FROM makanan, makan
         #                     WHERE nama_makanan = nama """)
-        cursor.execute(f""" SELECT makanan.nama, makanan.harga, makanan.tingkat_energi, makanan.tingkat_kelaparan
+        cursor.execute(f""" SELECT DISTINCT makanan.nama, makanan.harga, makanan.tingkat_energi, makanan.tingkat_kelaparan
                             FROM makanan, makan
                             WHERE nama_makanan = nama; """)                    
         makanan_dirujuk = cursor.fetchall()
-        cursor.execute(f""" SELECT nama, harga, tingkat_energi, tingkat_kelaparan
+        cursor.execute(f""" SELECT DISTINCT nama, harga, tingkat_energi, tingkat_kelaparan
                     FROM makanan
                     EXCEPT
                     SELECT 
@@ -363,7 +361,6 @@ def read_makanan(request) :
                     WHERE nama_makanan = nama ;""")     
         makanan_tidak_dirujuk = cursor.fetchall()
         response = {
-            'content' : result,
             'makanan_dirujuk' : makanan_dirujuk,
             'makanan_tidak_dirujuk' : makanan_tidak_dirujuk,
             'account_type' : role
