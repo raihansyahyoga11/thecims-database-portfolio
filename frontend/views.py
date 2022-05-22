@@ -4,7 +4,6 @@ from http.client import HTTPResponse
 from random import randint
 from sqlite3 import connect
 from time import strftime
-from types import NoneType
 from urllib import response
 from django.shortcuts import render, redirect
 from django.db import connection
