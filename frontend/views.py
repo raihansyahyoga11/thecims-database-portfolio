@@ -73,10 +73,12 @@ def user_dashboard(request):
 def admin_dashboard(request):
     username = request.session.get('username')
     role = request.session.get('account-type')
+    
     response = {
         'username': username,
-        'account_type':role
+        'account_type': role
     }
+
     return render(request, 'home_and_dashboard/admin_dashboard.html', response)
 
 def logout(request):
@@ -225,7 +227,6 @@ def create_misi_utama(request) :
             completion_time = datetime.strptime(request.POST.get('completion_time'), '%H:%M')
             time = "{:d}:{:02d}:{:02d}".format(completion_time.hour, completion_time.minute, completion_time.second)
 
-            print(time)
             reward_koin = request.POST.get('reward_koin')
             reward_xp = request.POST.get('reward_xp')
             deskripsi = request.POST.get('deskripsi')
@@ -307,8 +308,7 @@ def create_menjalankan_misi_utama(request) :
             'account_type': role,
             'content2' : pilihan_misi
         }
-        # print(tokoh_misi)
-        # print(pilihan_misi)
+
         if (request.method == 'POST'):
             tokoh_menjalankan_misi_baru = request.POST.get('nama-tokoh-misi')
             print(tokoh_menjalankan_misi_baru)
