@@ -13,19 +13,40 @@
             <th>Name</th>
             <th>Action</th>
         </tr>
-        {% if content %}
-        {% for data in content %}
+
+
+        {% if misi_tidak_dirujuk %}
+        {% for data in misi_tidak_dirujuk %}
           <tr>
             <td>{{data.0}}</td>
         <form action="/detail-misi-utama/" method="post" >
             {% csrf_token %} 
             <input type="hidden" value="{{data.0}}" name="misi_detail">
             <td><button type="submit"   name="submit_misi_detail">[Detail] </a>
-            <button type="submit"   name="submit_misi_detail">[Delete] </a></td>
+                <button type="submit"   name="submit_misi_detail">[Delete] </a></td>
+                    {% endfor %}
+                    {% endif %}
         </form>
           </tr>
-          {% endfor %}
-          {% endif %}
+
+          {% if misi_dirujuk %}
+          {% for data in misi_dirujuk %}
+            <tr>
+              <td>{{data.0}}</td>
+          <form action="/detail-misi-utama/" method="post" >
+              {% csrf_token %} 
+              <input type="hidden" value="{{data.0}}" name="misi_detail">
+              <td><button type="submit"   name="submit_misi_detail">[Detail] </a></td>
+                      {% endfor %}
+                      {% endif %}
+          </form>
+            </tr>
+
+
+
+
+
+
       </table>
   
 
