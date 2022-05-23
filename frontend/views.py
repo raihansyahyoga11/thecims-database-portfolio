@@ -12,7 +12,6 @@ from datetime import datetime
 def home(request):
     return render(request, 'home_and_dashboard/home.html')
 
-
 def login(request):
     if (request.method == 'POST'):
         # To get data from login.html
@@ -85,9 +84,6 @@ def logout(request):
     request.session.clear()
     return render(request, 'home_and_dashboard/home.html')
 
-
-# Create your views here.
-
 def register(request):
     if (request.method == 'POST'):
         form_data = request.POST
@@ -95,7 +91,7 @@ def register(request):
         register_email = form_data['user-email']
         register_user_password = form_data['user-password']
         register_no_hp = form_data['user-no-hp']
-        koin = randint(1,100)
+        koin = randint(1,100) #Memberikan koin random dengan range 1-100
 
         akun_query = f"INSERT INTO KELUARGA_YOGA.AKUN VALUES ('{register_username}')"
         pemain_query = f"INSERT INTO KELUARGA_YOGA.PEMAIN VALUES('{register_username}','{register_email}','{register_user_password}',{register_no_hp},{koin})"
@@ -243,7 +239,6 @@ def create_misi_utama(request) :
     elif request.session['account-type'] == 'pemain' :
         return redirect('/')
 
-
 def read_menjalankan_misi_utama(request) :
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
@@ -286,7 +281,6 @@ def read_menjalankan_misi_utama(request) :
         }
         return render(request, 'menjalankan_misi_utama/jalankan_misi_utama_admin.html', response)
 
-
 def create_menjalankan_misi_utama(request) :
     username = request.session.get('username')
     cursor = connection.cursor()
@@ -323,7 +317,6 @@ def create_menjalankan_misi_utama(request) :
                 """ %(username_pengguna, tokoh_menjalankan_misi_baru, misi_baru_dipilih, "Belum selesai"))
             return redirect("/menjalankan-misi-utama")
         return render(request, 'menjalankan_misi_utama/create_menjalankan_misi_utama.html', response)
-
 
 def read_makanan(request) :
     cursor = connection.cursor()
@@ -387,7 +380,6 @@ def read_makanan(request) :
         
         return render(request, 'makanan/makanan_admin.html', response)
 
-
 def create_makanan(request) :
     cursor = connection.cursor()
     try :
@@ -446,8 +438,6 @@ def read_makan(request) :
         }
         return render(request, 'makan/makan_admin.html', response)
 
-
-
 def create_makan(request) :
     
     username = request.session.get('username')
@@ -491,7 +481,6 @@ def create_makan(request) :
         return render(request, 'makan/create_makan.html', response)
     else :
         return redirect('/')
-
 
 def ubah_makanan(request) :
     cursor = connection.cursor()
@@ -552,12 +541,6 @@ def ubah_menjalankan_misi_utama(request) :
         return render(request, 'menjalankan_misi_utama/ubah_menjalankan_misi_utama.html', response)
     else :
         return redirect('/')
-
-
-
-
-
-
 
 def read_menggunakan_barang(request):
     role = request.session.get('account-type')
@@ -687,8 +670,7 @@ def warna_kulit(request):
     elif request.session['account-type'] == 'admin' :
         result = cursor.fetchall()
         return render(request, 'R_warna_kulit_admin.html', {'content' : result})
-          
-    
+             
 def create_warna_kulit(request) :
     if request.session['account-type'] == 'admin' :
         return render(request, 'C_warna_kulit.html')
@@ -736,7 +718,6 @@ def create_menggunakan_apparel(request) :
     else :
          return redirect('/')
 
-
 def menggunakan_apparel(request) :
     cursor = connection.cursor()
     query = f"select * from KELUARGA_YOGA.MENGGUNAKAN_APPAREL"
@@ -767,7 +748,6 @@ def menggunakan_apparel(request) :
 
     return render(request, 'home.html')
     
-# Create your views here.
 def read_kategori_apparel(request):
     cursor = connection.cursor()
     query = f"select nama_kategori from KELUARGA_YOGA.kategori_apparel"
