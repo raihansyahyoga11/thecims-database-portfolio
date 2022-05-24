@@ -1,16 +1,21 @@
 from cgi import test
-import datetime
 from http.client import HTTPResponse
 from random import randint
 from sqlite3 import connect
-from time import strftime
 from urllib import response
 from django.shortcuts import render, redirect
 from django.db import connection
 from datetime import datetime
 
 def home(request):
-    return render(request, 'home_and_dashboard/home.html')
+    try:
+        role = request.session['account-type']
+        if (role == 'admin'):
+            return admin_dashboard(request)
+        elif (role == 'pemain'):
+            return user_dashboard(request)
+    except:
+        return render(request, 'home_and_dashboard/home.html')     
 
 def login(request):
     if (request.method == 'POST'):
@@ -556,38 +561,199 @@ def read_menggunakan_barang(request):
         cursor.execute(query_admin)
         hasil = cursor.fetchall()
 
-    return render(request, 'read_menggunakan_barang.html', {'response': hasil})
+    return render(request, 'read_menggunakan_barang.html', {'response': hasil, 'account_type': role})
 
 def create_menggunakan_barang(request):
     role = request.session.get('account-type')
     if (role == 'pemain'):
+        nama_pemain = request.session.get('username')
+        cursor = connection.cursor()
+        query_list_tokoh = f"SELECT nama FROM KELUARGA_YOGA.TOKOH WHERE username_pengguna='{nama_pemain}';"
+        cursor.execute(query_list_tokoh)
+        list_tokoh = cursor.fetchall()
+
+        query_list_barang = f"SELECT id_koleksi FROM KELUARGA_YOGA.BARANG;"
+        cursor.execute(query_list_barang)
+        list_barang = cursor.fetchall()
         if (request.method == 'POST'):
             form_data = request.POST
-            nama_pemain = request.session.get('username')
             nama_tokoh = form_data['nama-tokoh']
-            waktu = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            waktu = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             id_barang = form_data['id-barang']
-            query_pemain = f"INSERT INTO KELUARGA_YOGA.menggunakan_barang VALUES ('{nama_pemain}','{nama_tokoh}','{waktu}','{id_barang}')"
-            print(query_pemain)
+            query_pemain = f"INSERT INTO KELUARGA_YOGA.menggunakan_barang VALUES ('{nama_pemain}','{nama_tokoh}','{waktu}','{id_barang}');"
             cursor = connection.cursor()
             cursor.execute(query_pemain)
-    return render(request, 'create_menggunakan_barang.html')
+        
+        return render(request,'create_menggunakan_barang.html', {'account_type': role, 'list_tokoh': list_tokoh, 'list_barang': list_barang})
+    return render(request, 'create_menggunakan_barang.html', {'account_type': role})
 
 def read_pekerjaan(request):
     query_read_pekerjaan = f"select * from KELUARGA_YOGA.pekerjaan"
     cursor = connection.cursor()
     cursor.execute(query_read_pekerjaan)
     hasil = cursor.fetchall()
+    response = {
+        'response': hasil,
+        'account_type': request.session.get('account-type')
+    }
 
-    return render(request, 'read_pekerjaan.html', {'response': hasil})
+    return render(request, 'pekerjaan/read_pekerjaan.html', response)
+
+def create_pekerjaan(request): #DONE
+    role = request.session.get('account-type')
+    if (role == 'admin'):
+        if (request.method == 'POST'):
+            form_pekerjaan = request.POST
+            nama_pekerjaan = form_pekerjaan['nama-pekerjaan']
+            base_honor = form_pekerjaan['base-honor']
+            query_create_pekerjaan = f"INSERT INTO KELUARGA_YOGA.pekerjaan VALUES ('{nama_pekerjaan}', {base_honor});"
+            cursor = connection.cursor()
+            cursor.execute(query_create_pekerjaan)
+    return render(request, 'pekerjaan/create_pekerjaan.html')
+
+def update_pekerjaan(request): #DONE
+    role = request.session.get('account-type')
+    if (role == 'admin'):
+        cursor = connection.cursor()
+        query_view_pekerjaan = f"SELECT * FROM KELUARGA_YOGA.pekerjaan;"
+        cursor.execute(query_view_pekerjaan)
+        hasil = cursor.fetchall()
+        if (request.method == 'POST'):
+            form_pekerjaan = request.POST
+            selected_pekerjaan = form_pekerjaan['pekerjaan-terpilih']
+            base_honor = form_pekerjaan['base-honor']
+            query_create_pekerjaan = f"UPDATE KELUARGA_YOGA.PEKERJAAN SET base_honor={base_honor} WHERE nama='{selected_pekerjaan}';"
+            cursor = connection.cursor()
+            cursor.execute(query_create_pekerjaan)
+        return render(request, 'pekerjaan/update_pekerjaan.html', {'response': hasil})
+    return render(request, 'pekerjaan/update_pekerjaan.html')
+
+def delete_pekerjaan(request):
+    role = request.session.get('account-type')
+    if (role == 'admin'):
+        cursor_view = connection.cursor()
+        query_view = f"select * from KELUARGA_YOGA.pekerjaan;"
+        cursor_view.execute(query_view)
+        hasil = cursor_view.fetchall()
+        if (request.method == 'POST'):
+            # mengecek apakah dia punya relasi
+            form_delete_pekerjaan = request.POST
+            pekerjaan_terpilih = form_delete_pekerjaan['delete-nama-pekerjaan']
+
+            #Mengecek apakah dia ada relasi ke tokoh
+            cursor_tokoh = connection.cursor()
+            query_check_tokoh = f"SELECT PEKERJAAN from KELUARGA_YOGA.TOKOH WHERE PEKERJAAN='{pekerjaan_terpilih}';"
+            cursor_tokoh.execute(query_check_tokoh)
+            hasil_tokoh = cursor_tokoh.fetchall()
+
+            #Mengecek apakah dia ada relasi ke bekerja
+            cursor_bekerja = connection.cursor()
+            query_check_bekerja = f"SELECT NAMA_PEKERJAAN FROM KELUARGA_YOGA.BEKERJA WHERE NAMA_PEKERJAAN='{pekerjaan_terpilih}';"
+            cursor_bekerja.execute(query_check_bekerja)
+            hasil_bekerja = cursor_bekerja.fetchall()
+
+            #Mengecek apakah dia ada relasi ke apparel
+            cursor_apparel = connection.cursor()
+            query_check_apparel = f"SELECT NAMA_PEKERJAAN FROM KELUARGA_YOGA.APPAREL WHERE NAMA_PEKERJAAN='{pekerjaan_terpilih}';"
+            cursor_apparel.execute(query_check_apparel)
+            hasil_apparel = cursor_apparel.fetchall()
+
+            if ((len(hasil_tokoh) + len(hasil_bekerja) + len(hasil_apparel)) != 0):
+                return render(request,'pekerjaan/operation_denied.html')
+            else:
+                cursor = connection.cursor()
+                query_hapus = f"DELETE FROM KELUARGA_YOGA.pekerjaan WHERE nama='{pekerjaan_terpilih}'"
+                cursor.execute(query_hapus)
+        return render(request,'pekerjaan/delete_pekerjaan.html', {'response': hasil})
+    return render(request, 'pekerjaan/delete_pekerjaan.html')      
 
 def read_bekerja(request):
-    query_read_bekerja = f"select * from KELUARGA_YOGA.bekerja"
-    cursor = connection.cursor()
-    cursor.execute(query_read_bekerja)
-    hasil = cursor.fetchall()
+    if (request.session['account-type'] == 'pemain'):
+        query_read_bekerja = f"select nama_tokoh, nama_pekerjaan, timestamp, keberangkatan_ke, honor from KELUARGA_YOGA.bekerja where username_pengguna = '{request.session['username']}'"
+        cursor = connection.cursor()
+        cursor.execute(query_read_bekerja)
+        hasil = cursor.fetchall()
 
-    return render(request, 'read_bekerja.html', {'response': hasil})
+        return render(request, 'bekerja/read_bekerja.html', {'response': hasil, 'account_type': request.session['account-type']})
+    elif (request.session['account-type'] == 'admin'):
+        query_read_bekerja = f"select * from KELUARGA_YOGA.bekerja"
+        cursor = connection.cursor()
+        cursor.execute(query_read_bekerja)
+        hasil = cursor.fetchall()
+
+        return render(request, 'bekerja/read_bekerja.html', {'response': hasil, 'account_type': request.session['account-type']})
+    else:
+        return render(request, 'home_and_dashboard/home.html')
+
+def refresh_bekerja():
+    cursor = connection.cursor()
+    query_get_pekerjaan = f"select * from KELUARGA_YOGA.pekerjaan;"
+    cursor.execute(query_get_pekerjaan)
+    hasil_pekerjaan = cursor.fetchall()
+    dict_pekerjaan = {}
+    for i in hasil_pekerjaan:
+        dict_pekerjaan[i[0]] = i[1]
+    
+    query_get_tokoh = f"select b.nama_tokoh, b.nama_pekerjaan, t.level from KELUARGA_YOGA.bekerja b, KELUARGA_YOGA.tokoh t where b.nama_tokoh = t.nama;"
+    dict_tokoh = {}
+    cursor.execute(query_get_tokoh)
+    hasil_tokoh = cursor.fetchall()
+    for i in hasil_tokoh:
+        base_honor = dict_pekerjaan.get(i[1])
+        final_honor = base_honor * i[2]
+        dict_tokoh[i[0]] = final_honor
+
+    for i in dict_tokoh:
+        honor_tokoh = dict_tokoh.get(i)
+        query_update_honor_tonoh = f"update KELUARGA_YOGA.bekerja set honor={honor_tokoh} where nama_tokoh='{i}'"
+        cursor.execute(query_update_honor_tonoh)
+    print("Refresh bekerja success!")
+
+def create_bekerja(request):
+    if (request.session['account-type'] != 'pemain'):
+        return render(request, 'home_and_dashboard/home.html')
+    else:
+        refresh_bekerja()
+        username = request.session['username']
+        query_read_bekerja = f"select t.nama, p.nama, p.base_honor from KELUARGA_YOGA.tokoh t left join KELUARGA_YOGA.pekerjaan p on p.nama = t.pekerjaan where t.username_pengguna ='{username}';"
+        cursor = connection.cursor()
+        cursor.execute(query_read_bekerja)
+        hasil = cursor.fetchall()
+        print(hasil)
+
+        # Mendapatkan apa saja pekerjaan yang tersedia untuk ditampilkan pada dropdown
+        query_read_pekerjaan = f"select * from KELUARGA_YOGA.pekerjaan"
+        cursor.execute(query_read_pekerjaan)
+        list_pekerjaan = cursor.fetchall()
+
+        if (request.method == 'POST'):
+            form_data = request.POST
+            nama_tokoh_terpilih = form_data['nama-tokoh']
+            nama_pekerjaan = form_data['bekerja-sebagai']
+
+            # mendapatkan username_pengguna
+            username_pengguna = request.session['username']
+
+            # merekam timestamp
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            # Mencari keberangkatan terakhir
+            cursor_keberangkatan = connection.cursor()
+            query_max_keberangkatan = f"select MAX(keberangkatan_ke) from KELUARGA_YOGA.bekerja where nama_pekerjaan='{nama_pekerjaan}';"
+            print(query_max_keberangkatan)
+            cursor_keberangkatan.execute(query_max_keberangkatan);
+            hasil_keberangkatan = cursor_keberangkatan.fetchall()
+            print(hasil_keberangkatan)
+            keberangkatan = int(hasil_keberangkatan[0][0]) + 1
+
+            honor = form_data['honor-bekerja']
+            query_create_bekerja = f"INSERT INTO KELUARGA_YOGA.bekerja VALUES ('{username_pengguna}', '{nama_tokoh_terpilih}', '{timestamp}', '{nama_pekerjaan}', {keberangkatan}, {honor});"
+            cursor.execute(query_create_bekerja)
+
+            query_update_pekerjaan = f"UPDATE KELUARGA_YOGA.tokoh SET PEKERJAAN='{nama_pekerjaan}' where nama='{nama_tokoh_terpilih}'"
+            cursor.execute(query_update_pekerjaan)
+            return render(request, 'bekerja/read_bekerja.html', {'account_type': request.session['account-type']})
+        return render(request, 'bekerja/create_bekerja.html', {'response': hasil, 'responsepekerjaan': list_pekerjaan, 'account_type': request.session['account-type']})
 
 def create_tokoh(request):
     role = request.session.get('account-type')
@@ -627,7 +793,7 @@ def read_tokoh(request):
         query_tokoh_pemain = f"select * from KELUARGA_YOGA.tokoh where username_pengguna='{username}'"
         cursor.execute(query_tokoh_pemain)
         hasil = cursor.fetchall()
-    return render(request, 'read_tokoh.html', {'response': hasil})
+    return render(request, 'read_tokoh.html', {'response': hasil, 'account_type': request.session['account-type']})
 
 def read_detail_tokoh(request, nama_tokoh):
     cursor = connection.cursor()

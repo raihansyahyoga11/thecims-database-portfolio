@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
@@ -9,12 +9,49 @@
 
 {% block content %}
    <h1>CREATE BARANG</h1>
+   <div class="select" style="display: flex;">
+       <select class="form-select" aria-label="Default select example" id="id-select-tokoh">
+           <option selected>Select one of your tokoh</option>
+           {% for i in list_tokoh %}
+               <option value="{{ i }}">{{ i }}</option>
+           {% endfor %}
+       </select>
+   
+       <select class="form-select" aria-label="Default select example" id="id-select-barang">
+           <option selected>Select barang you want to use</option>
+           {% for j in list_barang %}
+               <option value="{{ j }}">{{ j }}</option>
+           {% endfor %}
+       </select>
+
+       <button class="btn-primary" onclick="generate()"> SELECT </button>
+   </div>
+
+
     <form method="post">
         {% csrf_token %}
         <label for="input-username" class="form-label">Nama Tokoh</label>
-        <input type="text" class="form-control" name="nama-tokoh">
+        <input type="text" class="form-control" name="nama-tokoh" id="input-tokoh">
         <label for="input-username" class="form-label">ID Barang</label>
-        <input type="text" class="form-control" name="id-barang">
+        <input type="text" class="form-control" name="id-barang" id="input-barang">
         <button type="submit" class="btn btn-primary">Create</button>
     </form>
+
+    <script>
+        function generate() {
+            var selectTokoh = document.getElementById('id-select-tokoh')
+            let value = selectTokoh.options[selectTokoh.selectedIndex].value
+
+            var selectBarang = document.getElementById('id-select-barang')
+            let valueBarang = selectBarang.options[selectBarang.selectedIndex].value
+            
+            value = value.replace("('", "").replace("',)", "")
+            valueBarang = valueBarang.replace("('", "").replace("',)", "")
+
+            document.getElementById('input-tokoh').value = value
+            document.getElementById('input-barang').value = valueBarang
+            console.log(value)
+            console.log(valueBarang)
+        }
+    </script>
 {% endblock content %}
