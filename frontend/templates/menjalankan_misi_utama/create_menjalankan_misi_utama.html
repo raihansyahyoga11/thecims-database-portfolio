@@ -43,9 +43,15 @@
                   </form>
         
         </td>
-        
-        </tr>
-        
-       
-</table>
+      </tr>
+      
+      
+    </table>
+    {% if messages %}
+<ul class="messages" style="color:red;">
+{% for message in messages %}
+{% if message.tags %} {% endif %} {{ message }}
+{% endfor %}
+</ul>
+{% endif %}
 {% endblock content %}

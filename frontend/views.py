@@ -8,6 +8,7 @@ from urllib import response
 from django.shortcuts import render, redirect
 from django.db import connection
 from datetime import datetime
+from django.contrib import messages
 
 def home(request):
     return render(request, 'home_and_dashboard/home.html')
@@ -174,6 +175,8 @@ def read_misi_utama(request) :
             elif row_diambil_delete != None :
                 cursor.execute(f"""DELETE FROM misi_utama
                                     WHERE nama_misi = '{row_diambil_delete}' """)
+                cursor.execute(f"""DELETE FROM misi
+                                    WHERE nama = '{row_diambil_delete}' """)
                 return redirect("/misi-utama/")
 
         return render(request, 'misi_utama/misi_utama_admin.html', response)
@@ -305,17 +308,29 @@ def create_menjalankan_misi_utama(request) :
 
         if (request.method == 'POST'):
             tokoh_menjalankan_misi_baru = request.POST.get('nama-tokoh-misi')
-            print(tokoh_menjalankan_misi_baru)
-            cursor.execute(f"""SELECT DISTINCT tokoh.username_pengguna
-                            FROM tokoh, menjalankan_misi_utama
-                            WHERE tokoh.nama= '%s';""" %(tokoh_menjalankan_misi_baru))
-            username_pengguna = cursor.fetchone()[0]   
-            print(username_pengguna)               
+            cursor.execute(f"""SELECT energi, hubungan_sosial, kelaparan
+                                FROM tokoh
+                                WHERE tokoh.username_pengguna = '{username}' AND tokoh.nama = '{tokoh_menjalankan_misi_baru}'; """)
+            info_tokoh = cursor.fetchall()
+            energi_tokoh = info_tokoh[0][0]
+            hubungan_sosial_tokoh = info_tokoh[0][1]
+            kelaparan_tokoh = info_tokoh[0][2]
             misi_baru_dipilih = request.POST.get('nama-misi-dipilih')
-            cursor.execute(f""" INSERT INTO menjalankan_misi_utama (username_pengguna, nama_tokoh, nama_misi, status) 
-                    VALUES('%s', '%s', '%s', '%s')
-                """ %(username_pengguna, tokoh_menjalankan_misi_baru, misi_baru_dipilih, "Belum selesai"))
-            return redirect("/menjalankan-misi-utama")
+            cursor.execute(f"""SELECT syarat_energi, syarat_hubungan_sosial, syarat_kelaparan
+                                FROM misi
+                                WHERE nama = '{misi_baru_dipilih}'; """)
+            info_misi = cursor.fetchall()
+            syarat_energi_misi = info_misi[0][0]
+            syarat_hubungan_sosial_misi = info_misi[0][1]
+            syarat_kelaparan_misi = info_misi[0][2]
+
+            if (energi_tokoh >= syarat_energi_misi) and (hubungan_sosial_tokoh >= syarat_hubungan_sosial_misi) and (kelaparan_tokoh <= syarat_kelaparan_misi) :
+                cursor.execute(f""" INSERT INTO menjalankan_misi_utama (username_pengguna, nama_tokoh, nama_misi, status) 
+                        VALUES('%s', '%s', '%s', '%s')
+                    """ %(username, tokoh_menjalankan_misi_baru, misi_baru_dipilih, "Belum selesai"))
+                return redirect("/menjalankan-misi-utama")
+            else :
+                messages.error(request, 'Syarat misi utama tidak mencukupi sehingga misi utama tidak dapat dijalankan')
         return render(request, 'menjalankan_misi_utama/create_menjalankan_misi_utama.html', response)
 
 def read_makanan(request) :
