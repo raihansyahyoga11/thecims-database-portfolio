@@ -1,37 +1,223 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login TheCims</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-{% load static %}
-
-{% block meta %}
-<title>Login page</title>
-{% endblock meta %}
-
-{% block content %}
+</head>
+<body>
+    <div class="login-box">
+        <h2>Login</h2>
+        <form method="post" id="myForm">
+            {% csrf_token %}
+          <div class="user-box">
+            <input id="input-username" type="text" name="username" required>
+            <label>Username</label>
+          </div>
+          <div class="user-box">
+            <input type="password" id="exampleInputPassword1" name="user-password" required>
+            <label>Password</label>
+          </div>
+          <a class="submit" id="id-submit-button">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Submit
+        </a>
+        <div class="div" style="justify-content: space-around; display: flex;">
+            <a href="/register">Register</a></a>
+            <a href="/">Home</a>
+        </div>
+        </form>
+      </div>
+</body>
+</html>
 <style>
     html {
-        background-color: #CFE4EC;
-    }
+  height: 100%;
+}
+body {
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(180deg, #00255E -18.07%, #000000 135.5%);
+
+}
+
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+}
+
+#id-submit-button {
+    width: 80%;
+    text-align: center;
+}
+
+.login-box h2 {
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.login-box .user-box {
+  position: relative;
+}
+
+.login-box .user-box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+.login-box .user-box label {
+  position: absolute;
+  top:0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #E8CF77;
+  font-size: 12px;
+}
+
+.login-box form a {
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  color: #E8CF77;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: .5s;
+  margin-top: 40px;
+  letter-spacing: 4px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-box a:hover {
+  background: #E8CF77;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #E8CF77,
+              0 0 25px #E8CF77,
+              0 0 50px #E8CF77,
+              0 0 100px #E8CF77;
+}
+
+.login-box a span {
+  position: absolute;
+  display: block;
+}
+
+.login-box a span:nth-child(1) {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #E8CF77);
+  animation: btn-anim1 1s linear infinite;
+}
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%;
+  }
+  50%,100% {
+    left: 100%;
+  }
+}
+
+.login-box a span:nth-child(2) {
+  top: -100%;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #E8CF77);
+  animation: btn-anim2 1s linear infinite;
+  animation-delay: .25s
+}
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%;
+  }
+  50%,100% {
+    top: 100%;
+  }
+}
+
+.login-box a span:nth-child(3) {
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(270deg, transparent, #E8CF77);
+  animation: btn-anim3 1s linear infinite;
+  animation-delay: .5s
+}
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%;
+  }
+  50%,100% {
+    right: 100%;
+  }
+}
+
+.login-box a span:nth-child(4) {
+  bottom: -100%;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(360deg, transparent, #E8CF77);
+  animation: btn-anim4 1s linear infinite;
+  animation-delay: .75s
+}
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%;
+  }
+  50%,100% {
+    bottom: 100%;
+  }
+}
 </style>
 
-
-<div class="hero-container">
-    <div class="form-container">
-        <form method="post">
-            {% csrf_token %}
-              <div class="mb-3">
-                <label for="input-username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="input-username" aria-describedby="help-input-username" name="username">
-              </div>
-              <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" name="user-password">
-              </div>
-              <div class="button-div" style="display: flex;">
-                  <button type="submit" class="btn btn-primary">Login</button>
-                  <p>Don't have account yet?<a href="/register">Register Here</a></p>
-              </div>
-
-        </form>
-    </div>
-</div>
-{% endblock content %}
+<script>
+    $(document).ready(function(){
+    $("a.submit").click(function(){
+        document.getElementById("myForm").submit();
+        }); 
+    });
+</script>

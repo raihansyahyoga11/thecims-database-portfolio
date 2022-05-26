@@ -20,7 +20,6 @@ def home(request):
     except:
         return render(request, 'home_and_dashboard/home.html')
 
-
 def login(request):
     if (request.method == 'POST'):
         # To get data from login.html
@@ -100,7 +99,7 @@ def register(request):
         register_email = form_data['user-email']
         register_user_password = form_data['user-password']
         register_no_hp = form_data['user-no-hp']
-        koin = randint(1, 100)  # Memberikan koin random dengan range 1-100
+        koin = 0  # Memberikan koin random dengan range 1-100
 
         akun_query = f"INSERT INTO KELUARGA_YOGA.AKUN VALUES ('{register_username}')"
         pemain_query = f"INSERT INTO KELUARGA_YOGA.PEMAIN VALUES('{register_username}','{register_email}','{register_user_password}',{register_no_hp},{koin})"
@@ -247,7 +246,6 @@ def create_misi_utama(request):
         return render(request, 'misi_utama/create_misi_utama.html', response)
     elif request.session['account-type'] == 'pemain':
         return redirect('/')
-
 
 def read_menjalankan_misi_utama(request):
     cursor = connection.cursor()
@@ -426,7 +424,6 @@ def create_makanan(request):
     else:
         return redirect('/')
 
-
 def read_makan(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
@@ -517,7 +514,6 @@ def create_makan(request):
     else:
         return redirect('/')
 
-
 def ubah_makanan(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
@@ -550,7 +546,6 @@ def ubah_makanan(request):
     else:
         return redirect('/')
 
-
 def ubah_menjalankan_misi_utama(request):
     username = request.session.get('username')
     cursor = connection.cursor()
@@ -579,7 +574,6 @@ def ubah_menjalankan_misi_utama(request):
         return render(request, 'menjalankan_misi_utama/ubah_menjalankan_misi_utama.html', response)
     else:
         return redirect('/')
-
 
 def read_menggunakan_barang(request):
     role = request.session.get('account-type')
@@ -662,7 +656,6 @@ def update_pekerjaan(request):  # DONE
         return render(request, 'pekerjaan/update_pekerjaan.html', {'response': hasil})
     return render(request, 'pekerjaan/update_pekerjaan.html')
 
-
 def delete_pekerjaan(request):
     role = request.session.get('account-type')
     if (role == 'admin'):
@@ -701,7 +694,6 @@ def delete_pekerjaan(request):
                 cursor.execute(query_hapus)
         return render(request, 'pekerjaan/delete_pekerjaan.html', {'response': hasil})
     return render(request, 'pekerjaan/delete_pekerjaan.html')
-
 
 def read_bekerja(request):
     if (request.session['account-type'] == 'pemain'):
@@ -747,7 +739,7 @@ def refresh_bekerja():
 
 def create_bekerja(request):
     if (request.session['account-type'] != 'pemain'):
-        return render(request, 'home_and_dashboard/home.html')
+        return home(request)
     else:
         refresh_bekerja()
         username = request.session['username']
@@ -776,10 +768,8 @@ def create_bekerja(request):
             # Mencari keberangkatan terakhir
             cursor_keberangkatan = connection.cursor()
             query_max_keberangkatan = f"select MAX(keberangkatan_ke) from KELUARGA_YOGA.bekerja where nama_pekerjaan='{nama_pekerjaan}';"
-            print(query_max_keberangkatan)
             cursor_keberangkatan.execute(query_max_keberangkatan)
             hasil_keberangkatan = cursor_keberangkatan.fetchall()
-            print(hasil_keberangkatan)
             keberangkatan = int(hasil_keberangkatan[0][0]) + 1
 
             honor = form_data['honor-bekerja']
@@ -788,35 +778,35 @@ def create_bekerja(request):
 
             query_update_pekerjaan = f"UPDATE KELUARGA_YOGA.tokoh SET PEKERJAAN='{nama_pekerjaan}' where nama='{nama_tokoh_terpilih}'"
             cursor.execute(query_update_pekerjaan)
-            return render(request, 'bekerja/read_bekerja.html', {'account_type': request.session['account-type']})
+            return read_bekerja(request)
         return render(request, 'bekerja/create_bekerja.html', {'response': hasil, 'responsepekerjaan': list_pekerjaan, 'account_type': request.session['account-type']})
 
 def create_tokoh(request):
     role = request.session.get('account-type')
     username = request.session.get('username')
+    cursor = connection.cursor()
+    query_list_kerjaan = f"select nama from KELUARGA_YOGA.pekerjaan;"
+    cursor.execute(query_list_kerjaan)
+    list_pekerjaan = cursor.fetchall()
+    print(list_pekerjaan)
     if (role == 'pemain'):
         if (request.method == 'POST'):
             form_data2 = request.POST
-            print(form_data2['input_id_rumah'])
             create_nama_tokoh = form_data2['create_nama_tokoh']
             jenis_kelamin = form_data2['jenis_kelamin']  # dropdown
-            print("ini jenis kelamin: " + jenis_kelamin)
-            poin_xp = randint(0, 1000)
-            poin_energi = randint(0, 100)
-            poin_kelaparan = randint(0, 100)
-            poin_hubungan_sosial = randint(0, 100)
+            poin_xp = 0
+            poin_energi = 100
+            poin_kelaparan = 0
+            poin_hubungan_sosial = 0
             warna_kulit = form_data2['warna_kulit']  # dropdown
             sifat = form_data2['sifat']  # dropdown
-            id_rambut = form_data2['id_rambut']  # dropdown
-            id_mata = form_data2['id_mata']  # dropdown
-            id_rumah = form_data2['input_id_rumah']  # dropdown
+            input_pekerjaan = form_data2['input-nama-pekerjaan']
 
-            query_create_tokoh = f"INSERT INTO KELUARGA_YOGA.tokoh VALUES ('{username}','{create_nama_tokoh}','{jenis_kelamin}','Aktif',{poin_xp},{poin_energi},{poin_kelaparan},{poin_hubungan_sosial},'{warna_kulit}',1,'{sifat}',null,'{id_rambut}','{id_mata}','{id_rumah}')"
+            query_create_tokoh = f"INSERT INTO KELUARGA_YOGA.tokoh VALUES ('{username}','{create_nama_tokoh}','{jenis_kelamin}','Aktif',{poin_xp},{poin_energi},{poin_kelaparan},{poin_hubungan_sosial},'{warna_kulit}',1,'{sifat}', '{input_pekerjaan}', 'RB001', 'MT001', 'RM001')"
 
             cursor = connection.cursor()
             cursor.execute(query_create_tokoh)
-    return render(request, 'create_tokoh.html', {'account_type': role})
-
+    return render(request, 'create_tokoh.html', {'account_type': role, 'list_pekerjaan': list_pekerjaan})
 
 def read_tokoh(request):
     role = request.session.get('account-type')
@@ -833,6 +823,22 @@ def read_tokoh(request):
         hasil = cursor.fetchall()
     return render(request, 'read_tokoh.html', {'response': hasil, 'account_type': request.session['account-type']})
 
+def update_tokoh(request, nama_tokoh):
+    role = request.session['account-type']
+    if (request.method == 'POST'):
+        data_form = request.POST
+        rambut = data_form['id_rambut']
+        mata = data_form['id_mata']
+        rumah = data_form['input_id_rumah']
+
+        cursor = connection.cursor()
+        query_update_tokoh = f"UPDATE KELUARGA_YOGA.tokoh SET id_rambut='{rambut}', id_mata='{mata}', id_rumah='{rumah}' where nama='{nama_tokoh}'"
+        cursor.execute(query_update_tokoh)
+        return read_tokoh(request)
+
+
+    return render(request, 'update_tokoh.html', {'account_type': role, 'nama_tokoh': nama_tokoh})
+
 def read_detail_tokoh(request, nama_tokoh):
     cursor = connection.cursor()
     query_detail_tokoh = f"select nama, id_mata, id_rambut, id_rumah, warna_kulit, pekerjaan from KELUARGA_YOGA.tokoh where nama='{nama_tokoh}'"
@@ -846,22 +852,7 @@ def read_detail_tokoh(request, nama_tokoh):
         'warna_kulit': hasil[0][4],
         'pekerjaan': hasil[0][5]
     }
-    return render(request, 'read_detail_tokoh.html', response)
-# def create_pekerjaan(request):
-#     role = request.session.get('account-type')
-#     if (role == 'admin'):
-
-#     return()
-
-# def delete_pekerjaan(request):
-#     if (role == 'admin'):
-
-#     return()
-
-# def update_pekerjaan(request):
-#     if (role == 'admin'):
-
-#     return()
+    return render(request, 'read_detail_tokoh.html', {'response': response, 'account_type': request.session['account-type']})
 
 def warna_kulit(request):
     cursor = connection.cursor()
@@ -882,7 +873,6 @@ def create_warna_kulit(request):
     else:
         return redirect('/')
 
-
 def level(request):
     cursor = connection.cursor()
     query = f"select * from KELUARGA_YOGA.LEVEL"
@@ -896,13 +886,11 @@ def level(request):
         result = cursor.fetchall()
         return render(request, 'R_level_admin.html', {'content': result})
 
-
 def create_level(request):
     if request.session['account-type'] == 'admin':
         return render(request, 'C_level.html')
     else:
         return redirect('/')
-
 
 def update_level(request):
     if request.session['account-type'] == 'admin':
@@ -984,7 +972,6 @@ def read_koleksi_tokoh(request):
         cursor.execute(query)
         result = cursor.fetchall()
         return render(request, 'koleksi_tokoh_admin.html', {'content': result})
-
 
 def create_koleksi_tokoh(request):
     cursor = connection.cursor()
