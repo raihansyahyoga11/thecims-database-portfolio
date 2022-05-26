@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
@@ -10,12 +10,8 @@
 <table class="table table-dark">
     <thead>
       <tr>
-        <th scope="col">Username</th>
-        <th scope="col">Nama Tokoh</th>
-        <th scope="col">Waktu</th>
-        <th scope="col">Pekerjaan</th>
-        <th scope="col">Urutan Keberangkatan</th>
-        <th scope="col">Honor</th>
+        <th scope="col">Nama</th>
+        <th scope="col">Base Honor</th>
       </tr>
     </thead>
     {% for i in response %}
@@ -23,10 +19,6 @@
       <tr>
         <td>{{ i.0 }}</td>
         <td>{{ i.1 }}</td>
-        <td>@{{ i.2 }}</td>
-        <td>@{{ i.3 }}</td>
-        <td>@{{ i.4 }}</td>
-        <td>@{{ i.5 }}</td>
       </tr>
     </tbody>
     {% endfor %}   

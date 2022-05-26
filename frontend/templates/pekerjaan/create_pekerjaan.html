@@ -1,0 +1,21 @@
+{% extends 'navbar.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Create Pekerjaan</title>
+{% endblock meta %}
+
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <h3>Nama Pekerjaan</h3>
+    <input type="text" class="form-control" id="pekerjaan-terpilih" name="nama-pekerjaan">
+    <h3>Base Honor</h3>  
+    <input type="text" class="form-control" id="id-base-honor" aria-describedby="help-input-username" name="base-honor">
+    <div class="button-div">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
+</form>
+{% endblock content %}

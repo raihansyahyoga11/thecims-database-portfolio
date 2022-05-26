@@ -1,0 +1,61 @@
+{% extends 'navbar.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Update Pekerjaan</title>
+{% endblock meta %}
+
+
+{% block content %}
+<table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Nama</th>
+        <th scope="col">Base Honor</th>
+        <th scope="col">Update</th>
+      </tr>
+    </thead>
+    {% for i in response %}
+    <tbody>
+      <tr>
+        <td>{{ i.0 }}</td>
+        <td>{{ i.1 }}</td>
+        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="jsUpdateHonor('{{ i.0 }}', '{{ i.1 }}')">Update</button></td>
+      </tr>
+    </tbody>
+    {% endfor %}   
+</table>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form method="post">
+                {% csrf_token %}
+                <input type="text" class="form-control" id="pekerjaan-terpilih" style="display: none" name="pekerjaan-terpilih">
+                <h3>Set Base Honor</h3>  
+                <input type="text" class="form-control" id="id-base-honor" aria-describedby="help-input-username" name="base-honor">
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+function jsUpdateHonor(x1, x2) {
+    var nama_pekerjaan = x1
+    var base_honor = x2
+    document.getElementById('exampleModalLabel').innerHTML = 'Mengupdate ' + nama_pekerjaan
+    document.getElementById('pekerjaan-terpilih').value = nama_pekerjaan
+}
+</script>
+{% endblock content %}

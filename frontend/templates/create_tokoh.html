@@ -1,14 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
 {% block meta %}
-<title>Create</title>
+<title>Create Tokoh</title>
 {% endblock meta %}
 
 
 {% block content %}
-   <h1>CREATE BARANG</h1>
+   <h1>CREATE TOKOH</h1>
     <form method="post">
         {% csrf_token %}
         <label for="input-nama-tokoh" class="form-label">Nama Tokoh</label>
@@ -17,8 +17,8 @@
         <label for="input-jenis-kelamin" class="form-label">Jenis kelamin</label>
         <select class="form-select" aria-label="Default select example" name="jenis_kelamin">
             <option selected>Pilih jenis kelamin</option>
-            <option value="1">Laki-laki</option>
-            <option value="2">Perempuan</option>
+            <option value="Laki-Laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
         </select>
 
         <label for="input-warna-kulit" class="form-label">Warna kulit</label>
