@@ -1,0 +1,44 @@
+{% extends 'navbar.html' %}
+
+{% load static %}
+
+{% block meta %}
+<title>Updating {{ nama_tokoh }}</title>
+{% endblock meta %}
+
+{% block content %}
+<h1>Updating {{ nama_tokoh }}</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="input-id-rambut" class="form-label">ID rambut</label>
+    <select class="form-select" aria-label="Default select example" name="id_rambut">
+        <option selected>Pilih id rambut</option>
+        <option value="RB001">RB001</option>
+        <option value="RB002">RB002</option>
+        <option value="RB003">RB003</option>
+        <option value="RB004">RB004</option>
+    </select>
+
+    <label for="input-id-mata" class="form-label">ID Mata</label>
+    <select class="form-select" aria-label="Default select example" name="id_mata">
+        <option selected>Pilih id mata</option>
+        <option value="MT001">MT001</option>
+        <option value="MT002">MT002</option>
+        <option value="MT003">MT003</option>
+        <option value="MT004">MT004</option>
+        <option value="MT009">MT009</option>
+    </select>
+
+    <label for="input-id-rumah" class="form-label">ID Rumah</label>
+    <select class="form-select" aria-label="Default select example" name="input_id_rumah">
+        <option selected>Pilih ID Rumah</option>
+        <option value="RM017">RM017</option>
+        <option value="RM024">RM024</option>
+        <option value="RM026">RM026</option>
+        <option value="RM035">RM035</option>
+        <option value="RM040">RM040</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary">Update Tokoh</button>
+</form>
+{% endblock content %}

@@ -32,18 +32,23 @@ urlpatterns = [
     # Bekerja
     path('read-bekerja/', views.read_bekerja, name='read-bekerja'),
     path('create-bekerja/', views.create_bekerja, name='create-bekerja'),
-
+    
+    #tokoh
     path('create-tokoh/', views.create_tokoh, name='create-tokoh'),
     path('read-tokoh/', views.read_tokoh, name='read-tokoh'),
     path('read-tokoh/<nama_tokoh>', views.read_detail_tokoh, name='read-tokoh'),
+    path('update-tokoh/<nama_tokoh>', views.update_tokoh, name='update-tokoh'),
+    
     # menjalankan misi utama
     path('menjalankan-misi-utama/',views.read_menjalankan_misi_utama, name='read_menjalankan_misi_utama'),
     path('create-menjalankan-misi-utama/',views.create_menjalankan_misi_utama, name='create_menjalankan_misi_utama'),
     path('update-menjalankan-misi-utama/', views.ubah_menjalankan_misi_utama, name='ubah_menjalankan_misi_utama'),
+    
     # makanan
     path('makanan/',views.read_makanan, name='read_makanan'),
     path('create-makanan/',views.create_makanan, name='create_makanan'),
     path('update-makanan/',views.ubah_makanan, name='create_makanan'),
+    
     # makan 
     path('makan/',views.read_makan, name='read_amakan'),
     path('create-makan/', views.create_makan, name='create_makan'),

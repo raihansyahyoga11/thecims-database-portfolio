@@ -12,18 +12,16 @@
     <form method="post">
         {% csrf_token %}
         <label for="input-nama-tokoh" class="form-label">Nama Tokoh</label>
-        <input type="text" class="form-control" name="create_nama_tokoh">
+        <input type="text" class="form-control" name="create_nama_tokoh" required>
 
         <label for="input-jenis-kelamin" class="form-label">Jenis kelamin</label>
-        <select class="form-select" aria-label="Default select example" name="jenis_kelamin">
-            <option selected>Pilih jenis kelamin</option>
+        <select class="form-select" aria-label="Default select example" name="jenis_kelamin" required>
             <option value="Laki-Laki">Laki-laki</option>
             <option value="Perempuan">Perempuan</option>
         </select>
 
         <label for="input-warna-kulit" class="form-label">Warna kulit</label>
-        <select class="form-select" aria-label="Default select example" name="warna_kulit">
-            <option selected>Pilih warna kulit</option>
+        <select class="form-select" aria-label="Default select example" name="warna_kulit" required>
             <option value="#EEBA93">#EEBA93</option>
             <option value="#F9E1BD">#F9E1BD</option>
             <option value="#F0CBA5">#F0CBA5</option>
@@ -31,42 +29,19 @@
         </select>
 
         <label for="input-sifat" class="form-label">Sifat</label>
-        <select class="form-select" aria-label="Default select example" name="sifat">
-            <option selected>Pilih sifat</option>
+        <select class="form-select" aria-label="Default select example" name="sifat" required>
             <option value="Jenius">Jenius</option>
             <option value="Kreatif">Kreatif</option>
             <option value="Aktif">Aktif</option>
             <option value="Periang">Periang</option>
-            <option value="Pelawak">Pelawak</option>
+            <option value="Lawak">Lawak</option>
         </select>
 
-        <label for="input-id-rambut" class="form-label">ID rambut</label>
-        <select class="form-select" aria-label="Default select example" name="id_rambut">
-            <option selected>Pilih id rambut</option>
-            <option value="RB001">RB001</option>
-            <option value="RB002">RB002</option>
-            <option value="RB003">RB003</option>
-            <option value="RB004">RB004</option>
-        </select>
-
-        <label for="input-id-mata" class="form-label">ID Mata</label>
-        <select class="form-select" aria-label="Default select example" name="id_mata">
-            <option selected>Pilih id mata</option>
-            <option value="MT001">MT001</option>
-            <option value="MT002">MT002</option>
-            <option value="MT003">MT003</option>
-            <option value="MT004">MT004</option>
-            <option value="MT009">MT009</option>
-        </select>
-
-        <label for="input-id-rumah" class="form-label">ID Rumah</label>
-        <select class="form-select" aria-label="Default select example" name="input_id_rumah">
-            <option selected>Pilih ID Rumah</option>
-            <option value="RM017">RM017</option>
-            <option value="RM024">RM024</option>
-            <option value="RM026">RM026</option>
-            <option value="RM035">RM035</option>
-            <option value="RM040">RM040</option>
+        <label for="input-id-rumah" class="form-label">Pekerjaan</label>
+        <select class="form-select" aria-label="Default select example" name="input-nama-pekerjaan" required>
+            {% for j in list_pekerjaan %}
+                <option value="{{ j.0 }}">{{ j.0 }}</option>
+            {% endfor %} 
         </select>
 
         <button type="submit" class="btn btn-primary">Create Tokoh</button>
