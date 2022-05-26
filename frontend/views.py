@@ -117,7 +117,7 @@ def read_misi_utama(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
     try:
-        role = request.session.get('account-type')
+        role = request.session['account-type']
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
@@ -125,7 +125,7 @@ def read_misi_utama(request):
 
     if request.session['account-type'] == 'pemain':
         print("UHUYY")
-        username = request.session.get('username')
+        username = request.session['username']
         cursor.execute(f"""SELECT DISTINCT MU.nama_misi 
                             FROM misi_utama MU;""")
         result = cursor.fetchall()
@@ -137,7 +137,7 @@ def read_misi_utama(request):
         return render(request, 'misi_utama/misi_utama_user.html', response)
 
     elif request.session['account-type'] == 'admin':
-        username = request.session.get('username')
+        username = request.session['username']
         cursor.execute(f"""SELECT nama_misi FROM misi_utama;""")
         result = cursor.fetchall()
 
@@ -190,12 +190,11 @@ def detail_misi_utama(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
     try:
-        role = request.session.get('account-type')
+        role = request.session('account-type')
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
     cursor.execute("select * from misi_utama ")
-    # username = request.session.get('username')
     misi_detail = request.POST.get('misi_detail')
     cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp
                         FROM MISI 
@@ -210,7 +209,7 @@ def detail_misi_utama(request):
 def create_misi_utama(request):
     cursor = connection.cursor()
     try:
-        role = request.session.get('account-type')
+        role = request.session['account-type']
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
@@ -253,13 +252,13 @@ def read_menjalankan_misi_utama(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
     try:
-        role = request.session.get('account-type')
+        role = request.session['account-type']
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
     cursor.execute("select * from menjalankan_misi_utama")
     if request.session['account-type'] == 'pemain':
-        username = request.session.get('username')
+        username = request.session['username']
         cursor.execute(f"""SELECT MMU.nama_tokoh, MMU.nama_misi, MMU.status
                             FROM menjalankan_misi_utama MMU  
                             WHERE MMU.username_pengguna = '{username}';""")
@@ -283,7 +282,7 @@ def read_menjalankan_misi_utama(request):
         return render(request, 'menjalankan_misi_utama/jalankan_misi_utama_user.html', response)
 
     elif request.session['account-type'] == 'admin':
-        username = request.session.get('username')
+        username = request.session['username']
         cursor.execute(f"""SELECT MMU.Username_pengguna, MMU.nama_tokoh, MMU.nama_misi, MMU.status
                             FROM Menjalankan_misi_utama MMU;""")
         result = cursor.fetchall()
@@ -294,7 +293,7 @@ def read_menjalankan_misi_utama(request):
         return render(request, 'menjalankan_misi_utama/jalankan_misi_utama_admin.html', response)
 
 def create_menjalankan_misi_utama(request):
-    username = request.session.get('username')
+    username = request.session['username']
     cursor = connection.cursor()
     try:
         role = request.session['account-type']
@@ -345,7 +344,7 @@ def create_menjalankan_misi_utama(request):
 def read_makanan(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
-    role = request.session.get('account-type')
+    role = request.session['account-type']
 
     cursor.execute("set search_path to keluarga_yoga")
 
@@ -404,7 +403,7 @@ def read_makanan(request):
 def create_makanan(request):
     cursor = connection.cursor()
     try:
-        role = request.session.get('account-type')
+        role = request.session['account-type']
     except:
         return redirect('/')
     response = {
@@ -431,14 +430,14 @@ def read_makan(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
     try:
-        role = request.session.get('account-type')
+        role = request.session['account-type']
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
     cursor.execute("select * from makan")
 
     if request.session['account-type'] == 'pemain':
-        username = request.session.get('username')
+        username = request.session['username']
         cursor.execute(f"""SELECT M.nama_tokoh, M.nama_makanan, M.Waktu
                             FROM makan M  
                             WHERE M.username_pengguna = '{username}';""")
@@ -450,7 +449,7 @@ def read_makan(request):
         return render(request, 'makan/makan_user.html', response)
 
     elif request.session['account-type'] == 'admin':
-        username = request.session.get('username')
+        username = request.session['username']
         cursor.execute(f"""SELECT M.username_pengguna, M.nama_tokoh, M.nama_makanan, M.Waktu
                             FROM makan M;""")
         result = cursor.fetchall()
@@ -462,9 +461,9 @@ def read_makan(request):
 
 def create_makan(request):
 
-    username = request.session.get('username')
+    username = request.session['username']
     try:
-        role = request.session.get('account-type')
+        role = request.session['account-type']
     except:
         return redirect('/')
     cursor = connection.cursor()
@@ -522,7 +521,7 @@ def ubah_makanan(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
     try:
-        role = request.session.get('account-type')
+        role = request.session['account-type']
     except:
         return redirect('/')
     if request.session['account-type'] == 'admin':
@@ -552,10 +551,10 @@ def ubah_makanan(request):
 
 
 def ubah_menjalankan_misi_utama(request):
-    username = request.session.get('username')
+    username = request.session['username']
     cursor = connection.cursor()
     try:
-        role = request.session.get('account-type')
+        role = request.session['account-type']
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
