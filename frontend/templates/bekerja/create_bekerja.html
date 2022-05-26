@@ -19,22 +19,15 @@
     {% for i in response %}
         <tbody>
             <tr>
-                {% if i.1 == None %}
-                    <td>{{ i.0 }}</td>
-                    <td><select class="form-select" aria-label="Default select example" id="select-pekerjaan">
-                        <option selected>Select pekerjaan</option>
-                        {% for j in responsepekerjaan %}
-                            <option value="{{ j }}">{{ j.0 }}</option>
-                        {% endfor %}
-                    </select></td>
-                    <td>Empty</td>
-                    <td><button class="btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="mulaiBekerja('{{ i.0 }}')">MULAI BEKERJA</button></td>
-                {% else %}
-                    <td>{{ i.0 }}</td>
-                    <td>{{ i.1 }}</td>
-                    <td>{{ i.2 }}</td>
-                    <td><button class="btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal2" onclick="mulaiBekerja2('{{ i.0 }}', '{{ i.1 }}', '{{ i.2 }}')">Mulai Bekerja</button></td>
-                {% endif %}
+              <td>{{ i.0 }}</td>
+              <td><select class="form-select" aria-label="Default select example" id="select-pekerjaan{{ i.0 }}">
+                  <option selected>Select pekerjaan</option>
+                  {% for j in responsepekerjaan %}
+                      <option value="{{ j }}">{{ j.0 }}</option>
+                  {% endfor %}
+              </select></td>
+              <td>Empty</td>
+              <td><button class="btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="mulaiBekerja('{{ i.0 }}')">MULAI BEKERJA</button></td>
             </tr>
         </tbody>
     {% endfor %}   
@@ -65,34 +58,11 @@
     </div>
 </div>
 
-<!-- modal 2  -->
-<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel2"></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form method="post">
-                {% csrf_token %}
-                <input type="text" class="form-control" id="id-nama-tokoh2" name="nama-tokoh" style="display: none;">
-                <input type="text" class="form-control" id="id-bekerja2" name="bekerja-sebagai" style="display: none;">
-                <input type="text" class="form-control" id="id-bekerja-honor2" name="honor-bekerja" style="display: none;">
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-primary">Yes, Im sure!</button>
-                </div>
-            </form>
-        </div>
-      </div>
-    </div>
-</div>
-
   <script>
       function mulaiBekerja(x1) {
           var namaTokoh = x1;
-          var select = document.getElementById('select-pekerjaan')
+          var id_select = 'select-pekerjaan' + x1;
+          var select = document.getElementById(id_select)
           let value = select.options[select.selectedIndex].value
           
           const myArray = value.split(" ");
@@ -105,18 +75,6 @@
 
           document.getElementById("exampleModalLabel").innerHTML = "Are you sure want to work as " + pekerjaan + ", " + namaTokoh +  "?";
           document.getElementById("honor-p").innerHTML = "Honor: " + honor;
-      }
-
-      function mulaiBekerja2(x2, x3, x4) {
-          var namaTokoh = x2;
-          var pekerjaan = x3;
-          var honor = x4;
-          
-          document.getElementById("id-bekerja2").value = pekerjaan;
-          document.getElementById("id-nama-tokoh2").value = namaTokoh;
-          document.getElementById("id-bekerja-honor2").value = honor;
-
-          document.getElementById("exampleModalLabel2").innerHTML = "Ready to start your work as " + pekerjaan + ", " + namaTokoh +  "?";
       }
   </script>
 {% endblock content %}

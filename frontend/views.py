@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.db import connection
 from datetime import datetime
 
+
 def home(request):
     try:
         role = request.session['account-type']
@@ -15,7 +16,8 @@ def home(request):
         elif (role == 'pemain'):
             return user_dashboard(request)
     except:
-        return render(request, 'home_and_dashboard/home.html')     
+        return render(request, 'home_and_dashboard/home.html')
+
 
 def login(request):
     if (request.method == 'POST'):
@@ -47,7 +49,7 @@ def login(request):
             request.session.modified = True
             request.session['username'] = username_form
             request.session['account-type'] = 'admin'
-            
+
             return redirect('frontend:admin-dashboard')
         else:
             print("Sial tidak ditemukan >.<")
@@ -63,13 +65,13 @@ def user_dashboard(request):
     cursor.execute(query)
     user_terpilih = cursor.fetchall()
     print(user_terpilih)
-    
+
     response = {
         'username': user_terpilih[0][0],
         'email': user_terpilih[0][1],
-        'no_hp':"0" + user_terpilih[0][2],
+        'no_hp': "0" + user_terpilih[0][2],
         'koin': user_terpilih[0][3],
-        'account_type':role
+        'account_type': role
     }
 
     return render(request, 'home_and_dashboard/user_dashboard.html', response)
@@ -77,7 +79,7 @@ def user_dashboard(request):
 def admin_dashboard(request):
     username = request.session.get('username')
     role = request.session.get('account-type')
-    
+
     response = {
         'username': username,
         'account_type': role
@@ -96,7 +98,7 @@ def register(request):
         register_email = form_data['user-email']
         register_user_password = form_data['user-password']
         register_no_hp = form_data['user-no-hp']
-        koin = randint(1,100) #Memberikan koin random dengan range 1-100
+        koin = randint(1, 100)  # Memberikan koin random dengan range 1-100
 
         akun_query = f"INSERT INTO KELUARGA_YOGA.AKUN VALUES ('{register_username}')"
         pemain_query = f"INSERT INTO KELUARGA_YOGA.PEMAIN VALUES('{register_username}','{register_email}','{register_user_password}',{register_no_hp},{koin})"
@@ -106,20 +108,20 @@ def register(request):
         cursor.execute(pemain_query)
 
         return redirect('frontend:login')
-        
+
     return render(request, 'register.html')
 
-def read_misi_utama(request) :
+def read_misi_utama(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
-    try :
+    try:
         role = request.session.get('account-type')
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
     cursor.execute("select * from misi_utama ")
 
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         print("UHUYY")
         username = request.session.get('username')
         cursor.execute(f"""SELECT MU.nama_misi 
@@ -130,19 +132,19 @@ def read_misi_utama(request) :
         result = cursor.fetchall()
 
         response = {
-            'content' : result,
+            'content': result,
             'account_type': role
         }
         return render(request, 'misi_utama/misi_utama_user.html', response)
 
-    elif request.session['account-type'] == 'admin' :
+    elif request.session['account-type'] == 'admin':
         username = request.session.get('username')
         cursor.execute(f"""SELECT nama_misi FROM misi_utama;""")
         result = cursor.fetchall()
-        
+
         cursor.execute(f""" SELECT DISTINCT misi_utama.nama_misi
                             FROM misi_utama, menjalankan_misi_utama
-                            WHERE misi_utama.nama_misi = menjalankan_misi_utama.nama_misi; """)    
+                            WHERE misi_utama.nama_misi = menjalankan_misi_utama.nama_misi; """)
         misi_dirujuk = cursor.fetchall()
 
         cursor.execute(f"""
@@ -151,42 +153,42 @@ def read_misi_utama(request) :
                     EXCEPT
                     SELECT misi_utama.nama_misi
                     FROM misi_utama, menjalankan_misi_utama
-                    WHERE misi_utama.nama_misi = menjalankan_misi_utama.nama_misi; """)    
+                    WHERE misi_utama.nama_misi = menjalankan_misi_utama.nama_misi; """)
         misi_tidak_dirujuk = cursor.fetchall()
         response = {
-            'content' : result,
+            'content': result,
             'account_type': role,
-            'misi_dirujuk' :misi_dirujuk,
-            'misi_tidak_dirujuk' :misi_tidak_dirujuk
+            'misi_dirujuk': misi_dirujuk,
+            'misi_tidak_dirujuk': misi_tidak_dirujuk
         }
-        if (request.method == 'POST') :
-            
+        if (request.method == 'POST'):
+
             row_diambil_detail = request.POST.get('detail')
             row_diambil_delete = request.POST.get('delete')
 
-            if row_diambil_detail != None :
+            if row_diambil_detail != None:
                 print("masuk 1")
                 cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp
                     FROM MISI 
                     WHERE nama = '{row_diambil_detail}' ;""")
                 result = cursor.fetchall()
                 response = {
-                    'content' : result,
+                    'content': result,
                     'account_type': role
                 }
-                return render(request, "misi_utama/detail_misi_utama.html",response)
+                return render(request, "misi_utama/detail_misi_utama.html", response)
 
-            elif row_diambil_delete != None :
+            elif row_diambil_delete != None:
                 cursor.execute(f"""DELETE FROM misi_utama
                                     WHERE nama_misi = '{row_diambil_delete}' """)
                 return redirect("/misi-utama/")
 
         return render(request, 'misi_utama/misi_utama_admin.html', response)
 
-def detail_misi_utama(request) :
+def detail_misi_utama(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
-    try :
+    try:
         role = request.session.get('account-type')
     except:
         return redirect('/')
@@ -199,22 +201,22 @@ def detail_misi_utama(request) :
                         WHERE nama = '{misi_detail}' ;""")
     result = cursor.fetchall()
     response = {
-            'content' : result,
-            'account_type': role
-        }
+        'content': result,
+        'account_type': role
+    }
     return render(request, 'misi_utama/detail_misi_utama.html', response)
 
-def create_misi_utama(request) :
+def create_misi_utama(request):
     cursor = connection.cursor()
-    try :
+    try:
         role = request.session.get('account-type')
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
     response = {
-        'account_type' : role,
+        'account_type': role,
     }
-    if request.session['account-type'] == 'admin' :
+    if request.session['account-type'] == 'admin':
         print('anjay')
         if (request.method == 'POST'):
             print('uhuy')
@@ -225,8 +227,10 @@ def create_misi_utama(request) :
             syarat_energi = request.POST.get('syarat_energi')
             syarat_hubungan_sosial = request.POST.get('syarat_hubungan_sosial')
             syarat_kelaparan = request.POST.get('syarat_kelaparan')
-            completion_time = datetime.strptime(request.POST.get('completion_time'), '%H:%M')
-            time = "{:d}:{:02d}:{:02d}".format(completion_time.hour, completion_time.minute, completion_time.second)
+            completion_time = datetime.strptime(
+                request.POST.get('completion_time'), '%H:%M')
+            time = "{:d}:{:02d}:{:02d}".format(
+                completion_time.hour, completion_time.minute, completion_time.second)
 
             reward_koin = request.POST.get('reward_koin')
             reward_xp = request.POST.get('reward_xp')
@@ -234,67 +238,69 @@ def create_misi_utama(request) :
             # s = strftime("%H:%M:%S")
             cursor.execute(f""" INSERT INTO misi (nama, efek_energi, efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp, deskripsi) 
                                 VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
-                            """ %(nama,efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, time, reward_koin, reward_xp, deskripsi))
-
+                            """ % (nama, efek_energi, efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, time, reward_koin, reward_xp, deskripsi))
 
             cursor.execute(f""" insert into misi_utama (nama_misi) 
-                                values('%s')""" %(nama))
+                                values('%s')""" % (nama))
             return redirect("/misi-utama")
         return render(request, 'misi_utama/create_misi_utama.html', response)
-    elif request.session['account-type'] == 'pemain' :
+    elif request.session['account-type'] == 'pemain':
         return redirect('/')
 
-def read_menjalankan_misi_utama(request) :
+
+def read_menjalankan_misi_utama(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
-    try :
+    try:
         role = request.session.get('account-type')
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
     cursor.execute("select * from menjalankan_misi_utama")
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         username = request.session.get('username')
         cursor.execute(f"""SELECT MMU.nama_tokoh, MMU.nama_misi, MMU.status
                             FROM menjalankan_misi_utama MMU  
                             WHERE MMU.username_pengguna = '{username}';""")
         result = cursor.fetchall()
         response = {
-            'content' : result,
+            'content': result,
             'account_type': role
         }
-        if (request.method == 'POST') :
-            ubah_nama_tokoh = request.POST.get("ubah_menjalankan_misi_utama_tokoh")
-            ubah_nama_misi_utama = request.POST.get("ubah_menjalankan_misi_utama_misi")
+        if (request.method == 'POST'):
+            ubah_nama_tokoh = request.POST.get(
+                "ubah_menjalankan_misi_utama_tokoh")
+            ubah_nama_misi_utama = request.POST.get(
+                "ubah_menjalankan_misi_utama_misi")
             response = {
                 'account_type': role,
-                'ubah_nama_tokoh' :ubah_nama_tokoh,
-                'ubah_nama_misi_utama' :ubah_nama_misi_utama
+                'ubah_nama_tokoh': ubah_nama_tokoh,
+                'ubah_nama_misi_utama': ubah_nama_misi_utama
             }
-            return render(request,'menjalankan_misi_utama/ubah_menjalankan_misi_utama.html', response)
+            return render(request, 'menjalankan_misi_utama/ubah_menjalankan_misi_utama.html', response)
 
         return render(request, 'menjalankan_misi_utama/jalankan_misi_utama_user.html', response)
 
-    elif request.session['account-type'] == 'admin' :
+    elif request.session['account-type'] == 'admin':
         username = request.session.get('username')
         cursor.execute(f"""SELECT MMU.Username_pengguna, MMU.nama_tokoh, MMU.nama_misi, MMU.status
                             FROM Menjalankan_misi_utama MMU;""")
         result = cursor.fetchall()
         response = {
-            'content' : result,
+            'content': result,
             'account_type': role
         }
         return render(request, 'menjalankan_misi_utama/jalankan_misi_utama_admin.html', response)
 
-def create_menjalankan_misi_utama(request) :
+def create_menjalankan_misi_utama(request):
     username = request.session.get('username')
     cursor = connection.cursor()
-    try :
+    try:
         role = request.session['account-type']
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         cursor.execute(f"""SELECT nama
                             FROM tokoh
                             WHERE username_pengguna = '{username}' ;""")
@@ -303,9 +309,9 @@ def create_menjalankan_misi_utama(request) :
                             FROM misi_utama;""")
         pilihan_misi = cursor.fetchall()
         response = {
-            'content1' : tokoh_misi,
+            'content1': tokoh_misi,
             'account_type': role,
-            'content2' : pilihan_misi
+            'content2': pilihan_misi
         }
 
         if (request.method == 'POST'):
@@ -313,42 +319,42 @@ def create_menjalankan_misi_utama(request) :
             print(tokoh_menjalankan_misi_baru)
             cursor.execute(f"""SELECT DISTINCT tokoh.username_pengguna
                             FROM tokoh, menjalankan_misi_utama
-                            WHERE tokoh.nama= '%s';""" %(tokoh_menjalankan_misi_baru))
-            username_pengguna = cursor.fetchone()[0]   
-            print(username_pengguna)               
+                            WHERE tokoh.nama= '%s';""" % (tokoh_menjalankan_misi_baru))
+            username_pengguna = cursor.fetchone()[0]
+            print(username_pengguna)
             misi_baru_dipilih = request.POST.get('nama-misi-dipilih')
             cursor.execute(f""" INSERT INTO menjalankan_misi_utama (username_pengguna, nama_tokoh, nama_misi, status) 
                     VALUES('%s', '%s', '%s', '%s')
-                """ %(username_pengguna, tokoh_menjalankan_misi_baru, misi_baru_dipilih, "Belum selesai"))
+                """ % (username_pengguna, tokoh_menjalankan_misi_baru, misi_baru_dipilih, "Belum selesai"))
             return redirect("/menjalankan-misi-utama")
         return render(request, 'menjalankan_misi_utama/create_menjalankan_misi_utama.html', response)
 
-def read_makanan(request) :
+def read_makanan(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
     role = request.session.get('account-type')
-  
+
     cursor.execute("set search_path to keluarga_yoga")
 
     # if pemain
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         cursor.execute(f"""SELECT M.nama, M.harga, M.tingkat_energi, M.tingkat_kelaparan
                                 FROM Makanan M;""")
         result = cursor.fetchall()
         response = {
-                'content' : result,
-                'account_type': role
+            'content': result,
+            'account_type': role
         }
         return render(request, 'makanan/makanan_user.html', response)
 
     # if admin
-    if request.session['account-type'] == 'admin' :
+    if request.session['account-type'] == 'admin':
         # cursor.execute(f""" SELECT DISTINCT nama
         #                     FROM makanan, makan
         #                     WHERE nama_makanan = nama """)
         cursor.execute(f""" SELECT DISTINCT makanan.nama, makanan.harga, makanan.tingkat_energi, makanan.tingkat_kelaparan
                             FROM makanan, makan
-                            WHERE nama_makanan = nama; """)                    
+                            WHERE nama_makanan = nama; """)
         makanan_dirujuk = cursor.fetchall()
         cursor.execute(f""" SELECT DISTINCT nama, harga, tingkat_energi, tingkat_kelaparan
                     FROM makanan
@@ -356,46 +362,43 @@ def read_makanan(request) :
                     SELECT 
                     makanan.nama, makanan.harga, makanan.tingkat_energi, makanan.tingkat_kelaparan
                     FROM makanan, makan
-                    WHERE nama_makanan = nama ;""")     
+                    WHERE nama_makanan = nama ;""")
         makanan_tidak_dirujuk = cursor.fetchall()
         response = {
-            'makanan_dirujuk' : makanan_dirujuk,
-            'makanan_tidak_dirujuk' : makanan_tidak_dirujuk,
-            'account_type' : role
+            'makanan_dirujuk': makanan_dirujuk,
+            'makanan_tidak_dirujuk': makanan_tidak_dirujuk,
+            'account_type': role
         }
 
-        if request.method == 'POST' :
+        if request.method == 'POST':
             row_diambil_ubah = request.POST.get('mengubah_makanan')
             row_diambil_delete = request.POST.get('delete_makanan')
 
-            if  row_diambil_ubah != None :
+            if row_diambil_ubah != None:
                 response = {
-                    'makanan_diubah' : row_diambil_ubah,
+                    'makanan_diubah': row_diambil_ubah,
                     'account_type': role
                 }
                 return render(request, 'makanan/ubah_makanan.html', response)
-            
-            
-            elif row_diambil_delete != None :
+
+            elif row_diambil_delete != None:
                 cursor.execute(f"""DELETE FROM makanan
                                     WHERE nama = '{row_diambil_delete}' """)
                 return redirect("/makanan/")
 
-
-        
         return render(request, 'makanan/makanan_admin.html', response)
 
-def create_makanan(request) :
+def create_makanan(request):
     cursor = connection.cursor()
-    try :
+    try:
         role = request.session.get('account-type')
     except:
         return redirect('/')
     response = {
-        'account_type' : role
+        'account_type': role
     }
     cursor.execute("set search_path to keluarga_yoga")
-    if request.session['account-type'] == 'admin' :
+    if request.session['account-type'] == 'admin':
         if (request.method == 'POST'):
             print("anjaayyyyyyyyyyyy")
             nama_makanan = request.POST.get('nama_makanan')
@@ -404,58 +407,59 @@ def create_makanan(request) :
             tingkat_kelaparan = request.POST.get('tingkat_kelaparan')
             cursor.execute(f""" INSERT INTO makanan (nama, harga, tingkat_energi, tingkat_kelaparan) 
                                 VALUES('%s', '%s', '%s', '%s')
-                            """ %(nama_makanan, harga, tingkat_energi, tingkat_kelaparan))
+                            """ % (nama_makanan, harga, tingkat_energi, tingkat_kelaparan))
             return redirect("/makanan")
         return render(request, 'makanan/create_makanan.html', response)
-    else :
+    else:
         return redirect('/')
 
-def read_makan(request) :
+
+def read_makan(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
-    try :
+    try:
         role = request.session.get('account-type')
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
     cursor.execute("select * from makan")
 
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         username = request.session.get('username')
         cursor.execute(f"""SELECT M.nama_tokoh, M.nama_makanan, M.Waktu
                             FROM makan M  
                             WHERE M.username_pengguna = '{username}';""")
         result = cursor.fetchall()
         response = {
-            'content' : result,
+            'content': result,
             'account_type': role
         }
         return render(request, 'makan/makan_user.html', response)
 
-    elif request.session['account-type'] == 'admin' :
+    elif request.session['account-type'] == 'admin':
         username = request.session.get('username')
         cursor.execute(f"""SELECT M.username_pengguna, M.nama_tokoh, M.nama_makanan, M.Waktu
                             FROM makan M;""")
         result = cursor.fetchall()
         response = {
-            'content' : result,
+            'content': result,
             'account_type': role
         }
         return render(request, 'makan/makan_admin.html', response)
 
-def create_makan(request) :
-    
+def create_makan(request):
+
     username = request.session.get('username')
-    try :
+    try:
         role = request.session.get('account-type')
     except:
         return redirect('/')
     cursor = connection.cursor()
     response = {
-            'account_type': role,
+        'account_type': role,
     }
     cursor.execute("set search_path to keluarga_yoga")
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         cursor.execute(f"""SELECT nama
                             FROM tokoh
                             WHERE username_pengguna = '{username}' ;""")
@@ -464,45 +468,46 @@ def create_makan(request) :
                             FROM Makanan;""")
         daftar_makanan = cursor.fetchall()
         response = {
-            'content' : tokoh_makan,
+            'content': tokoh_makan,
             'account_type': role,
-            'daftar_makanan' : daftar_makanan
-            }
+            'daftar_makanan': daftar_makanan
+        }
 
         if (request.method == 'POST'):
             print('samoe')
             tokoh_baru = request.POST.get('nama-tokoh')
             cursor.execute(f"""SELECT tokoh.username_pengguna
                                 FROM tokoh JOIN makan on tokoh.nama = makan.nama_tokoh
-                                WHERE makan.nama_tokoh= '%s';""" %(tokoh_baru))
+                                WHERE makan.nama_tokoh= '%s';""" % (tokoh_baru))
             username_pengguna = cursor.fetchone()[0]
             makanan_baru = request.POST.get('nama-makanan')
             waktu_sekarang = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             cursor.execute(f""" INSERT INTO makan (username_pengguna, nama_tokoh, waktu, nama_makanan) 
                     VALUES('%s', '%s', '%s', '%s')
-                """ %(username_pengguna, tokoh_baru, waktu_sekarang, makanan_baru))
+                """ % (username_pengguna, tokoh_baru, waktu_sekarang, makanan_baru))
             return redirect("/makan")
 
         return render(request, 'makan/create_makan.html', response)
-    else :
+    else:
         return redirect('/')
 
-def ubah_makanan(request) :
+
+def ubah_makanan(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")
-    try :
+    try:
         role = request.session.get('account-type')
     except:
         return redirect('/')
-    if request.session['account-type'] == 'admin' :
+    if request.session['account-type'] == 'admin':
         cursor.execute("set search_path to keluarga_yoga")
         cursor.execute("select * from makanan ")
-        
+
         # response = {
         #     'content' : mengubah_makanan,
         #     'account_type': role
         # }
-        if (request.method =="POST") :
+        if (request.method == "POST"):
             makanan_terubah = request.POST.get('makanan_terubah')
             harga_makanan_baru = request.POST.get("harga_makanan_baru")
             tingkat_energi_baru = request.POST.get("tingkat_energi_batu")
@@ -516,23 +521,25 @@ def ubah_makanan(request) :
                                 WHERE nama = '{ makanan_terubah }' ;""")
             return redirect('/makanan/')
         return render(request, 'makanan/ubah_makanan.html', response)
-    else :
+    else:
         return redirect('/')
 
-def ubah_menjalankan_misi_utama(request) :
+
+def ubah_menjalankan_misi_utama(request):
     username = request.session.get('username')
     cursor = connection.cursor()
-    try :
+    try:
         role = request.session.get('account-type')
     except:
         return redirect('/')
     cursor.execute("set search_path to keluarga_yoga")
     response = {
-        'account-type' : role
+        'account-type': role
     }
-    if request.session['account-type'] == 'pemain' :
-        if (request.method == 'POST') :
-            ubah_nama_tokoh = request.POST.get("nama_tokoh_menjalankan_misi_utama")
+    if request.session['account-type'] == 'pemain':
+        if (request.method == 'POST'):
+            ubah_nama_tokoh = request.POST.get(
+                "nama_tokoh_menjalankan_misi_utama")
             ubah_nama_misi_utama = request.POST.get("misi_utama_status_diubah")
             status_misi_baru = request.POST.get("status_misi_baru")
             cursor.execute(f""" UPDATE menjalankan_misi_utama 
@@ -540,12 +547,13 @@ def ubah_menjalankan_misi_utama(request) :
                                 WHERE username_pengguna = '{username}' 
                                     AND nama_tokoh = '{ubah_nama_tokoh}' 
                                     AND nama_misi = '{ubah_nama_misi_utama}';
-                            """ )
+                            """)
             return redirect("/menjalankan-misi-utama/")
-        
+
         return render(request, 'menjalankan_misi_utama/ubah_menjalankan_misi_utama.html', response)
-    else :
+    else:
         return redirect('/')
+
 
 def read_menggunakan_barang(request):
     role = request.session.get('account-type')
@@ -583,8 +591,8 @@ def create_menggunakan_barang(request):
             query_pemain = f"INSERT INTO KELUARGA_YOGA.menggunakan_barang VALUES ('{nama_pemain}','{nama_tokoh}','{waktu}','{id_barang}');"
             cursor = connection.cursor()
             cursor.execute(query_pemain)
-        
-        return render(request,'create_menggunakan_barang.html', {'account_type': role, 'list_tokoh': list_tokoh, 'list_barang': list_barang})
+
+        return render(request, 'create_menggunakan_barang.html', {'account_type': role, 'list_tokoh': list_tokoh, 'list_barang': list_barang})
     return render(request, 'create_menggunakan_barang.html', {'account_type': role})
 
 def read_pekerjaan(request):
@@ -599,7 +607,7 @@ def read_pekerjaan(request):
 
     return render(request, 'pekerjaan/read_pekerjaan.html', response)
 
-def create_pekerjaan(request): #DONE
+def create_pekerjaan(request):  # DONE
     role = request.session.get('account-type')
     if (role == 'admin'):
         if (request.method == 'POST'):
@@ -611,7 +619,7 @@ def create_pekerjaan(request): #DONE
             cursor.execute(query_create_pekerjaan)
     return render(request, 'pekerjaan/create_pekerjaan.html')
 
-def update_pekerjaan(request): #DONE
+def update_pekerjaan(request):  # DONE
     role = request.session.get('account-type')
     if (role == 'admin'):
         cursor = connection.cursor()
@@ -628,6 +636,7 @@ def update_pekerjaan(request): #DONE
         return render(request, 'pekerjaan/update_pekerjaan.html', {'response': hasil})
     return render(request, 'pekerjaan/update_pekerjaan.html')
 
+
 def delete_pekerjaan(request):
     role = request.session.get('account-type')
     if (role == 'admin'):
@@ -640,32 +649,33 @@ def delete_pekerjaan(request):
             form_delete_pekerjaan = request.POST
             pekerjaan_terpilih = form_delete_pekerjaan['delete-nama-pekerjaan']
 
-            #Mengecek apakah dia ada relasi ke tokoh
+            # Mengecek apakah dia ada relasi ke tokoh
             cursor_tokoh = connection.cursor()
             query_check_tokoh = f"SELECT PEKERJAAN from KELUARGA_YOGA.TOKOH WHERE PEKERJAAN='{pekerjaan_terpilih}';"
             cursor_tokoh.execute(query_check_tokoh)
             hasil_tokoh = cursor_tokoh.fetchall()
 
-            #Mengecek apakah dia ada relasi ke bekerja
+            # Mengecek apakah dia ada relasi ke bekerja
             cursor_bekerja = connection.cursor()
             query_check_bekerja = f"SELECT NAMA_PEKERJAAN FROM KELUARGA_YOGA.BEKERJA WHERE NAMA_PEKERJAAN='{pekerjaan_terpilih}';"
             cursor_bekerja.execute(query_check_bekerja)
             hasil_bekerja = cursor_bekerja.fetchall()
 
-            #Mengecek apakah dia ada relasi ke apparel
+            # Mengecek apakah dia ada relasi ke apparel
             cursor_apparel = connection.cursor()
             query_check_apparel = f"SELECT NAMA_PEKERJAAN FROM KELUARGA_YOGA.APPAREL WHERE NAMA_PEKERJAAN='{pekerjaan_terpilih}';"
             cursor_apparel.execute(query_check_apparel)
             hasil_apparel = cursor_apparel.fetchall()
 
             if ((len(hasil_tokoh) + len(hasil_bekerja) + len(hasil_apparel)) != 0):
-                return render(request,'pekerjaan/operation_denied.html')
+                return render(request, 'pekerjaan/operation_denied.html')
             else:
                 cursor = connection.cursor()
                 query_hapus = f"DELETE FROM KELUARGA_YOGA.pekerjaan WHERE nama='{pekerjaan_terpilih}'"
                 cursor.execute(query_hapus)
-        return render(request,'pekerjaan/delete_pekerjaan.html', {'response': hasil})
-    return render(request, 'pekerjaan/delete_pekerjaan.html')      
+        return render(request, 'pekerjaan/delete_pekerjaan.html', {'response': hasil})
+    return render(request, 'pekerjaan/delete_pekerjaan.html')
+
 
 def read_bekerja(request):
     if (request.session['account-type'] == 'pemain'):
@@ -693,7 +703,7 @@ def refresh_bekerja():
     dict_pekerjaan = {}
     for i in hasil_pekerjaan:
         dict_pekerjaan[i[0]] = i[1]
-    
+
     query_get_tokoh = f"select b.nama_tokoh, b.nama_pekerjaan, t.level from KELUARGA_YOGA.bekerja b, KELUARGA_YOGA.tokoh t where b.nama_tokoh = t.nama;"
     dict_tokoh = {}
     cursor.execute(query_get_tokoh)
@@ -741,7 +751,7 @@ def create_bekerja(request):
             cursor_keberangkatan = connection.cursor()
             query_max_keberangkatan = f"select MAX(keberangkatan_ke) from KELUARGA_YOGA.bekerja where nama_pekerjaan='{nama_pekerjaan}';"
             print(query_max_keberangkatan)
-            cursor_keberangkatan.execute(query_max_keberangkatan);
+            cursor_keberangkatan.execute(query_max_keberangkatan)
             hasil_keberangkatan = cursor_keberangkatan.fetchall()
             print(hasil_keberangkatan)
             keberangkatan = int(hasil_keberangkatan[0][0]) + 1
@@ -763,22 +773,24 @@ def create_tokoh(request):
             form_data2 = request.POST
             print(form_data2['input_id_rumah'])
             create_nama_tokoh = form_data2['create_nama_tokoh']
-            jenis_kelamin = form_data2['jenis_kelamin'] #dropdown
-            poin_xp = randint(0,1000)
-            poin_energi = randint(0,100)
-            poin_kelaparan = randint(0,100)
-            poin_hubungan_sosial = randint(0,100) 
-            warna_kulit = form_data2['warna_kulit'] #dropdown
-            sifat = form_data2['sifat'] #dropdown
-            id_rambut = form_data2['id_rambut'] #dropdown
-            id_mata = form_data2['id_mata'] #dropdown
-            id_rumah = form_data2['input_id_rumah'] #dropdown
+            jenis_kelamin = form_data2['jenis_kelamin']  # dropdown
+            print("ini jenis kelamin: " + jenis_kelamin)
+            poin_xp = randint(0, 1000)
+            poin_energi = randint(0, 100)
+            poin_kelaparan = randint(0, 100)
+            poin_hubungan_sosial = randint(0, 100)
+            warna_kulit = form_data2['warna_kulit']  # dropdown
+            sifat = form_data2['sifat']  # dropdown
+            id_rambut = form_data2['id_rambut']  # dropdown
+            id_mata = form_data2['id_mata']  # dropdown
+            id_rumah = form_data2['input_id_rumah']  # dropdown
 
             query_create_tokoh = f"INSERT INTO KELUARGA_YOGA.tokoh VALUES ('{username}','{create_nama_tokoh}','{jenis_kelamin}','Aktif',{poin_xp},{poin_energi},{poin_kelaparan},{poin_hubungan_sosial},'{warna_kulit}',1,'{sifat}',null,'{id_rambut}','{id_mata}','{id_rumah}')"
-            
+
             cursor = connection.cursor()
             cursor.execute(query_create_tokoh)
-    return render(request, 'create_tokoh.html')
+    return render(request, 'create_tokoh.html', {'account_type': role})
+
 
 def read_tokoh(request):
     role = request.session.get('account-type')
@@ -812,7 +824,7 @@ def read_detail_tokoh(request, nama_tokoh):
 # def create_pekerjaan(request):
 #     role = request.session.get('account-type')
 #     if (role == 'admin'):
-        
+
 #     return()
 
 # def delete_pekerjaan(request):
@@ -822,74 +834,78 @@ def read_detail_tokoh(request, nama_tokoh):
 
 # def update_pekerjaan(request):
 #     if (role == 'admin'):
-        
+
 #     return()
+
 def warna_kulit(request):
     cursor = connection.cursor()
     query = f"select kode from KELUARGA_YOGA.WARNA_KULIT"
     cursor.execute(query)
 
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         result = cursor.fetchall()
-        return render(request, 'R_warna_kulit_pengguna.html', {'content' : result})
+        return render(request, 'R_warna_kulit_pengguna.html', {'content': result})
 
-    elif request.session['account-type'] == 'admin' :
+    elif request.session['account-type'] == 'admin':
         result = cursor.fetchall()
-        return render(request, 'R_warna_kulit_admin.html', {'content' : result})
-             
-def create_warna_kulit(request) :
-    if request.session['account-type'] == 'admin' :
+        return render(request, 'R_warna_kulit_admin.html', {'content': result})
+
+def create_warna_kulit(request):
+    if request.session['account-type'] == 'admin':
         return render(request, 'C_warna_kulit.html')
-    else :
-         return redirect('/')
+    else:
+        return redirect('/')
+
 
 def level(request):
     cursor = connection.cursor()
     query = f"select * from KELUARGA_YOGA.LEVEL"
     cursor.execute(query)
 
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         result = cursor.fetchall()
-        return render(request, 'R_level_pengguna.html', {'content' : result})
+        return render(request, 'R_level_pengguna.html', {'content': result})
 
-    elif request.session['account-type'] == 'admin' :
+    elif request.session['account-type'] == 'admin':
         result = cursor.fetchall()
-        return render(request, 'R_level_admin.html', {'content' : result})
+        return render(request, 'R_level_admin.html', {'content': result})
 
-def create_level(request) :
-    if request.session['account-type'] == 'admin' :
+
+def create_level(request):
+    if request.session['account-type'] == 'admin':
         return render(request, 'C_level.html')
-    else :
-         return redirect('/')
+    else:
+        return redirect('/')
 
-def update_level(request) :
-    if request.session['account-type'] == 'admin' :
+
+def update_level(request):
+    if request.session['account-type'] == 'admin':
         return render(request, 'U_level.html')
-    else :
-         return redirect('/')
+    else:
+        return redirect('/')
 
-def create_menggunakan_apparel(request) :
+def create_menggunakan_apparel(request):
     cursor = connection.cursor()
     query = f"select * from KELUARGA_YOGA.KOLEKSI_TOKOH"
     cursor.execute(query)
 
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         username = request.session.get('username')
         cursor.execute(f"""SELECT KT.nama_tokoh, KT.id_koleksi
                            FROM KELUARGA_YOGA.KOLEKSI_TOKOH KT 
                            WHERE KT.id_koleksi LIKE 'A%' AND KT.username_pengguna = '{username}';""")
 
         result = cursor.fetchall()
-        return render(request, 'C_menggunakan_apparel.html', {'content' : result})
-    else :
-         return redirect('/')
+        return render(request, 'C_menggunakan_apparel.html', {'content': result})
+    else:
+        return redirect('/')
 
-def menggunakan_apparel(request) :
+def menggunakan_apparel(request):
     cursor = connection.cursor()
     query = f"select * from KELUARGA_YOGA.MENGGUNAKAN_APPAREL"
     cursor.execute(query)
 
-    if request.session['account-type'] == 'pemain' :
+    if request.session['account-type'] == 'pemain':
         username = request.session.get('username')
         cursor.execute(f"""SELECT MA.nama_tokoh, KJB.nama, A.warna_apparel, A.nama_pekerjaan, A.kategori_apparel
                             FROM KELUARGA_YOGA.APPAREL A 
@@ -899,9 +915,9 @@ def menggunakan_apparel(request) :
                             A.id_koleksi = KJB.id_koleksi
                             WHERE MA.username_pengguna = '{username}';""")
         result = cursor.fetchall()
-        return render(request, 'R_menggunakan_apparel_pengguna.html', {'content' : result})
+        return render(request, 'R_menggunakan_apparel_pengguna.html', {'content': result})
 
-    if request.session['account-type'] == 'admin' :
+    if request.session['account-type'] == 'admin':
         cursor.execute(f"""SELECT MA.username_pengguna, MA.nama_tokoh, KJB.nama, A.warna_apparel, A.nama_pekerjaan, A.kategori_apparel
                             FROM KELUARGA_YOGA.APPAREL A 
                             FULL OUTER JOIN KELUARGA_YOGA.MENGGUNAKAN_APPAREL MA ON
@@ -909,11 +925,10 @@ def menggunakan_apparel(request) :
                             JOIN KELUARGA_YOGA.KOLEKSI_JUAL_BELI KJB ON
                             A.id_koleksi = KJB.id_koleksi;""")
         result = cursor.fetchall()
-        return render(request, 'R_menggunakan_apparel_admin.html', {'content' : result})
-    
+        return render(request, 'R_menggunakan_apparel_admin.html', {'content': result})
 
     return render(request, 'home.html')
-    
+
 def read_kategori_apparel(request):
     cursor = connection.cursor()
     query = f"select nama_kategori from KELUARGA_YOGA.kategori_apparel"
@@ -937,16 +952,17 @@ def read_koleksi_tokoh(request):
         query = f"select * from keluarga_yoga.koleksi_tokoh WHERE username_pengguna = '{username}' order by username_pengguna"
         cursor.execute(query)
         result = cursor.fetchall()
-        return render (request, 'koleksi_tokoh.html', {'content': result})
+        return render(request, 'koleksi_tokoh.html', {'content': result})
     elif request.session['account-type'] == 'admin':
         query = f"select * from keluarga_yoga.koleksi_tokoh order by username_pengguna"
         cursor.execute(query)
         result = cursor.fetchall()
-        return render (request, 'koleksi_tokoh_admin.html', {'content': result})
+        return render(request, 'koleksi_tokoh_admin.html', {'content': result})
+
 
 def create_koleksi_tokoh(request):
-    cursor = connection.cursor() 
-    if request.session['account-type'] == 'admin': 
+    cursor = connection.cursor()
+    if request.session['account-type'] == 'admin':
         username = request.session.get('username')
         query_daftar_tokoh = f"select distinct nama_tokoh from keluarga_yoga.koleksi_tokoh WHERE username_pengguna = '{username}'"
         cursor.execute(query_daftar_tokoh)
@@ -956,14 +972,14 @@ def create_koleksi_tokoh(request):
         cursor.execute(query_id_koleksi)
         result_ik = cursor.fetchall()
         return render(request, 'create_koleksi_tokoh.html', {'content_dt': result_dt, 'content_ik': result_ik})
-    elif request.session['account-type'] == 'pemain': 
+    elif request.session['account-type'] == 'pemain':
         return render(request, 'home.html')
 
 def read_koleksi(request):
     cursor = connection.cursor()
 
     query_rambut = f"select * from keluarga_yoga.rambut as R, keluarga_yoga.koleksi as K where R.id_koleksi = K.id"
-    cursor.execute(query_rambut)   
+    cursor.execute(query_rambut)
     result_rambut = cursor.fetchall()
 
     query_mata = f"select * from keluarga_yoga.mata as M, keluarga_yoga.koleksi as K where M.id_koleksi = K.id"
@@ -988,8 +1004,8 @@ def read_koleksi(request):
         return render(request, 'koleksi.html', {'content_rambut': result_rambut, 'content_mata': result_mata, 'content_rumah': result_rumah, 'content_barang': result_barang, 'content_apparel': result_apparel})
 
 def create_koleksi(request):
-    cursor = connection.cursor() 
-    if request.session['account-type'] == 'admin': 
+    cursor = connection.cursor()
+    if request.session['account-type'] == 'admin':
         query_apparel = f"select nama_kategori from keluarga_yoga.kategori_apparel"
         cursor.execute(query_apparel)
         result_app = cursor.fetchall()
@@ -999,5 +1015,5 @@ def create_koleksi(request):
         result_pek = cursor.fetchall()
 
         return render(request, 'create_koleksi.html', {'content_app': result_app, 'content_pek': result_pek})
-    elif request.session['account-type'] == 'pemain': 
+    elif request.session['account-type'] == 'pemain':
         return render(request, 'home.html')
