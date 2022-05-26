@@ -1,6 +1,7 @@
 from cgi import test
 import datetime
 from http.client import HTTPResponse
+from logging import raiseExceptions
 from random import randint
 from sqlite3 import connect
 from time import strftime
@@ -118,11 +119,8 @@ def read_misi_utama(request) :
     if request.session['account-type'] == 'pemain' :
         print("UHUYY")
         username = request.session.get('username')
-        cursor.execute(f"""SELECT MU.nama_misi 
-                            FROM misi_utama MU 
-                            JOIN menjalankan_misi_utama MMU ON MU.nama_misi = MMU.nama_misi 
-                            JOIN Tokoh T ON MMU.nama_tokoh = T.nama 
-                            WHERE T.username_pengguna = '{username}';""")
+        cursor.execute(f"""SELECT DISTINCT MU.nama_misi 
+                            FROM misi_utama MU;""")
         result = cursor.fetchall()
 
         response = {
@@ -480,18 +478,31 @@ def create_makan(request) :
             }
 
         if (request.method == 'POST'):
-            print('samoe')
-            tokoh_baru = request.POST.get('nama-tokoh')
-            cursor.execute(f"""SELECT tokoh.username_pengguna
-                                FROM tokoh JOIN makan on tokoh.nama = makan.nama_tokoh
-                                WHERE makan.nama_tokoh= '%s';""" %(tokoh_baru))
-            username_pengguna = cursor.fetchone()[0]
-            makanan_baru = request.POST.get('nama-makanan')
-            waktu_sekarang = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            cursor.execute(f""" INSERT INTO makan (username_pengguna, nama_tokoh, waktu, nama_makanan) 
-                    VALUES('%s', '%s', '%s', '%s')
-                """ %(username_pengguna, tokoh_baru, waktu_sekarang, makanan_baru))
-            return redirect("/makan")
+            try :
+                tokoh_baru = request.POST.get('nama-tokoh')
+                makanan_baru = request.POST.get('nama-makanan')
+                waktu_sekarang = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                cursor.execute(f""" INSERT INTO makan (username_pengguna, nama_tokoh, waktu, nama_makanan) 
+                        VALUES('%s', '%s', '%s', '%s')
+                    """ %(username, tokoh_baru, waktu_sekarang, makanan_baru))
+
+
+                cursor.execute(f"""SELECT kelaparan
+                                    FROM Tokoh
+                                    WHERE username_pengguna = '{username}' AND nama = '{tokoh_baru}' """)
+                tingkat_kelaparan_tokoh = cursor.fetchone()[0]
+                print('lambda')
+                if tingkat_kelaparan_tokoh < 0 :
+                    cursor.execute(f"""UPDATE tokoh
+                                        SET kelaparan ='0';
+                                        WHERE username_pengguna = '{username}' AND nama = '{tokoh_baru}' """)
+                return redirect("/makan")
+
+            except Exception as e:
+                messages.error(request, "Maaf koin pemain tidak cukup untuk memakan makanan ini")
+                return render(request, 'makan/create_makan.html', response)
+
+            
 
         return render(request, 'makan/create_makan.html', response)
     else :
