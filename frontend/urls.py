@@ -7,7 +7,7 @@ app_name = 'frontend'
 
 urlpatterns = [
 
-    #authentication
+    #authenticationubah
     path('', views.home, name='home'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
@@ -49,5 +49,6 @@ urlpatterns = [
     path('read-koleksi-tokoh/', views.read_koleksi_tokoh, name ='read-koleksi-tokoh'),
     path('create-koleksi-tokoh/', views.create_koleksi_tokoh, name ='create-koleksi-tokoh'),
     path('read-koleksi/', views.read_koleksi, name ='read-koleksi'),
-    path('create-koleksi/', views.create_koleksi, name ='create-koleksi')
+    path('create-koleksi/', views.create_koleksi, name ='create-koleksi'),
+    path('update-koleksi/', views.ubah_koleksi, name = 'ubah_koleksi')
 ]

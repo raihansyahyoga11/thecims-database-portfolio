@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
@@ -7,11 +7,11 @@
 {% endblock meta %}
 
 {% block content %}
-{% if content_rambut %}
-{% if content_mata %}
-{% if content_rumah %}
-{% if content_barang %}
-{% if content_apparel %}
+{% if result_rambut %}
+{% if result_mata %}
+{% if result_rumah %}
+{% if result_barang %}
+{% if result_apparel %}
 
 <style>
     #rambut{
@@ -33,47 +33,82 @@
 </style>
 
 <p>Menu List Koleksi</p>
-<button onclick="rambutFunct()">Rambut</button>
+<button onclick="rambutFunct()">Rambut</button><br>
     <div id="rambut">
     <td>Id</td>
     <td>Harga Jual</td>
     <td>Tipe Rambut</td>
     <td>Action</td>
-    {% for data in content_rambut %}
+    <br>
+    {% for data in result_not_refer_rambut %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td>
+          <form action = "/read-koleksi/" method = "POST">
+            {% csrf_token %} 
+            <button hidden name = "update" value = "{{data.0}}">Update</button>
+            <button type = "submit" name = "delete" value = "{{data.0}}">Delete</button>
+          </form>
+      </td>
+    </tr>
+    {% endfor %}
+    {% for data in result_rambut %}
     <tr>
         <br>
-        <td>{{data.2}}</td> 
-        <td>{{data.3}}</td>
+        <td>{{data.0}}</td> 
         <td>{{data.1}}</td>
-        <td>
-            <a href="#">Update</a>
-            <td>Delete</td>
+        <td>{{data.2}}</td>
+        <form action = "/read-koleksi/" method = "POST">
+          {% csrf_token %} 
+          <button hidden name = "update" value = "{{data.0}}">Update</button>
+        </form>
+            
         </td>
     </tr>
     {% endfor %}
     </div>
 <br>
-<button onclick="mataFunct()">Mata</button>
+<button onclick="mataFunct()">Mata</button><br>
 <div id="mata">
     <td>Id</td>
     <td>Harga Jual</td>
     <td>Warna Mata</td>
     <td>Action</td>
-    {% for data in content_mata %}
+    <br>
+    {% for data in result_not_refer_mata %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td><form action = "/read-koleksi/" method = "POST">
+          {% csrf_token %} 
+          <button hidden name = "update" value = "{{data.0}}">Update</button>
+          <button type = "submit" name = "delete" value = "{{data.0}}">Delete</button>
+          </form></td>
+    </tr>
+    {% endfor %}
+    {% for data in result_mata %}
     <tr>
         <br>
-        <td>{{data.2}}</td> 
-        <td>{{data.3}}</td>
+        <td>{{data.0}}</td> 
         <td>{{data.1}}</td>
-        <td>
-            <a href="#">Update</a>
-            <td>Delete</td>
+        <td>{{data.2}}</td>
+        <form action = "/read-koleksi/" method = "POST">
+          {% csrf_token %} 
+          <button hidden name = "update" value = "{{data.0}}">Update</button>
+        </form>
+            
+            
         </td>
     </tr>
     {% endfor %}
     </div>
 <br>
-<button onclick="rumahFunct()">Rumah</button>
+<button onclick="rumahFunct()">Rumah</button><br>
 <div id="rumah">
     <td>Id</td>
     <td>Nama</td>
@@ -81,23 +116,43 @@
     <td>Harga Beli</td>
     <td>Kapasitas Barang</td>
     <td>Action</td>
-    {% for data in content_rumah %}
+    <br>
+    {% for data in result_not_refer_rumah %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td>{{data.3}}</td>
+      <td>{{data.4}}</td>
+      <form action = "/read-koleksi/" method = "POST">
+        {% csrf_token %} 
+        <button hidden name = "update" value = "{{data.0}}">Update</button>
+        <button type = "submit" name = "delete" value = "{{data.0}}">Delete</button>
+          </form>
+      </td>
+    </tr>
+    {% endfor %}
+    {% for data in result_rumah %}
     <tr>
         <br>
         <td>{{data.0}}</td> 
-        <td>{{data.4}}</td>
-        <td>{{data.6}}</td>
-        <td>{{data.3}}</td>
         <td>{{data.1}}</td>
-        <td>
-            <a href="#">Update</a>
-            <td>Delete</td>
+        <td>{{data.2}}</td>
+        <td>{{data.3}}</td>
+        <td>{{data.4}}</td>
+        <form action = "/read-koleksi/" method = "POST">
+          {% csrf_token %} 
+          <button hidden name = "update" value = "{{data.0}}">Update</button>
+        </form>
+            
+            
         </td>
     </tr>
     {% endfor %}
     </div>
 <br>
-<button onclick="barangFunct()">Barang</button>
+<button onclick="barangFunct()">Barang</button> <br>
 <div id="barang">
     <td>Id</td>
     <td>Nama</td>
@@ -105,23 +160,43 @@
     <td>Harga Beli</td>
     <td>Tingkat Energi</td>
     <td>Action</td>
-    {% for data in content_barang %}
+    <br>
+    {% for data in result_not_refer_barang %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td>{{data.3}}</td>
+      <td>{{data.4}}</td>
+      <form action = "/read-koleksi/" method = "POST">
+        {% csrf_token %} 
+        <button hidden name = "update" value = "{{data.0}}">Update</button>
+        <button type = "submit" name = "delete" value = "{{data.0}}">Delete</button>
+          </form>
+      </td>
+    </tr>
+    {% endfor %}
+    {% for data in result_barang %}
     <tr>
         <br>
         <td>{{data.0}}</td> 
-        <td>{{data.4}}</td>
-        <td>{{data.6}}</td>
-        <td>{{data.3}}</td>
         <td>{{data.1}}</td>
-        <td>
-            <a href="#">Update</a>
-            <td>Delete</td>
+        <td>{{data.2}}</td>
+        <td>{{data.3}}</td>
+        <td>{{data.4}}</td>
+        <form action = "/read-koleksi/" method = "POST">
+          {% csrf_token %} 
+          <button hidden name = "update" value = "{{data.0}}">Update</button>
+        </form>
+            
+            
         </td>
     </tr>
     {% endfor %}
     </div>
 <br>
-<button onclick="apparelFunct()">Apparel</button>
+<button onclick="apparelFunct()">Apparel</button><br>
 <div id="apparel">
     <td>Id</td>
     <td>Nama</td>
@@ -130,18 +205,39 @@
     <td>Kategori Apparel</td>
     <td>Nama Pekerjaan</td>
     <td>Action</td>
-    {% for data in content_apparel %}
+    <br>
+    {% for data in result_not_refer_apparel %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td>{{data.3}}</td>
+      <td>{{data.4}}</td>
+      <td>{{data.5}}</td>
+      <form action = "/read-koleksi/" method = "POST">
+        {% csrf_token %} 
+        <button hidden name = "update" value = "{{data.0}}">Update</button>
+        <button type = "submit" name = "delete" value = "{{data.0}}">Delete</button>
+          </form>
+      </td>
+    </tr>
+    {% endfor %}
+    {% for data in result_apparel %}
     <tr>
         <br>
         <td>{{data.0}}</td> 
-        <td>{{data.6}}</td>
-        <td>{{data.8}}</td>
-        <td>{{data.5}}</td>
-        <td>{{data.2}}</td>
         <td>{{data.1}}</td>
-        <td>
-            <a href="#">Update</a>
-            <td>Delete</td>
+        <td>{{data.2}}</td>
+        <td>{{data.3}}</td>
+        <td>{{data.4}}</td>
+        <td>{{data.5}}</td>
+        <form action = "/read-koleksi/" method = "POST">
+          {% csrf_token %} 
+          <button hidden name = "update" value = "{{data.0}}">Update</button>
+        </form>
+            
+            
         </td>
     </tr>
     {% endfor %}

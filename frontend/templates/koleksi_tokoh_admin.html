@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
@@ -13,14 +13,12 @@
     <td>id_koleksi</td>
     <td>username_pengguna</td>
     <td>nama_tokoh</td>
-    <td>action</td>
     {% for data in content %}
     <tr>
         <br>
         <td>{{data.0}}</td> 
         <td>{{data.1}}</td>
         <td>{{data.2}}</td>
-        <td>jual</td>
     </tr>
     {% endfor %}
     <td></td>

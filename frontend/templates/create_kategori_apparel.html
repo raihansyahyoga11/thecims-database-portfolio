@@ -1,19 +1,17 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
 {% block meta %}
-<title>The Cims</title>
+<title>Create Kategori Apparel</title>
 {% endblock meta %}
 
 {% block content %}
-<p>Form untuk create kategori apparel</p>
+<h3>Form untuk create kategori apparel</h3>
 
-<h3> Kategori Apparel</h3>
-<form>
-    <label>Nama Kategori Apparel:</label>
-    <input type="text">
-    <br>
-    <button>Simpan</button>
+<form action ="/create-kategori-apparel/" method = "POST">
+    {% csrf_token %} 
+    Nama Kategori Apparel: <input type = "text" name = "nama_kategori" required><br>
+    <button type = "submit" name = "submit_kategori_apparel" href = "/read-kategori-apparel">Simpan</button>
 </form>
 {% endblock content %}

@@ -1,16 +1,16 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
 {% block meta %}
-<title>The Cims</title>
+<title>Kategori Apparel</title>
 {% endblock meta %}
 
 {% block content %}
  {% if content %}
 
     <table></table>
-    <td>Nama Kategori</td>
+    <td>Nama Kategori: </td>
     {% for data in content %}
     <tr>
         <br>

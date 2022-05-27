@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
@@ -7,11 +7,11 @@
 {% endblock meta %}
 
 {% block content %}
-{% if content_rambut %}
-{% if content_mata %}
-{% if content_rumah %}
-{% if content_barang %}
-{% if content_apparel %}
+{% if result_rambut %}
+{% if result_mata %}
+{% if result_rumah %}
+{% if result_barang %}
+{% if result_apparel %}
 
 <style>
     #rambut{
@@ -38,13 +38,21 @@
     <td>Id</td>
     <td>Harga Jual</td>
     <td>Tipe Rambut</td>
-    {% for data in content_rambut %}
+    {% for data in result_rambut %}
     <tr>
         <br>
-        <td>{{data.2}}</td> 
-        <td>{{data.3}}</td>
+        <td>{{data.0}}</td> 
         <td>{{data.1}}</td>
+        <td>{{data.2}}</td>
     </tr>
+    {% endfor %}
+    {% for data in result_not_refer_rambut %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td>
     {% endfor %}
     </div>
 <br>
@@ -53,13 +61,21 @@
     <td>Id</td>
     <td>Harga Jual</td>
     <td>Warna Mata</td>
-    {% for data in content_mata %}
+    {% for data in result_mata %}
     <tr>
         <br>
-        <td>{{data.2}}</td> 
-        <td>{{data.3}}</td>
+        <td>{{data.0}}</td> 
         <td>{{data.1}}</td>
+        <td>{{data.2}}</td>
     </tr>
+    {% endfor %}
+    {% for data in result_not_refer_mata %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td>
     {% endfor %}
     </div>
 <br>
@@ -70,15 +86,25 @@
     <td>Harga Jual</td>
     <td>Harga Beli</td>
     <td>Kapasitas Barang</td>
-    {% for data in content_rumah %}
+    {% for data in result_rumah %}
     <tr>
         <br>
         <td>{{data.0}}</td> 
-        <td>{{data.4}}</td>
-        <td>{{data.6}}</td>
-        <td>{{data.3}}</td>
         <td>{{data.1}}</td>
+        <td>{{data.2}}</td>
+        <td>{{data.3}}</td>
+        <td>{{data.4}}</td>
     </tr>
+    {% endfor %}
+    {% for data in result_not_refer_rumah %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td>{{data.3}}</td>
+      <td>{{data.4}}</td>
+      <td>
     {% endfor %}
     </div>
 <br>
@@ -89,15 +115,25 @@
     <td>Harga Jual</td>
     <td>Harga Beli</td>
     <td>Tingkat Energi</td>
-    {% for data in content_barang %}
+    {% for data in result_barang %}
     <tr>
         <br>
         <td>{{data.0}}</td> 
-        <td>{{data.4}}</td>
-        <td>{{data.6}}</td>
-        <td>{{data.3}}</td>
         <td>{{data.1}}</td>
+        <td>{{data.2}}</td>
+        <td>{{data.3}}</td>
+        <td>{{data.4}}</td>
     </tr>
+    {% endfor %}
+    {% for data in result_not_refer_barang %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td>{{data.3}}</td>
+      <td>{{data.4}}</td>
+      <td>
     {% endfor %}
     </div>
 <br>
@@ -109,16 +145,27 @@
     <td>Harga Beli</td>
     <td>Kategori Apparel</td>
     <td>Nama Pekerjaan</td>
-    {% for data in content_apparel %}
+    {% for data in result_apparel %}
     <tr>
         <br>
         <td>{{data.0}}</td> 
-        <td>{{data.6}}</td>
-        <td>{{data.8}}</td>
-        <td>{{data.5}}</td>
-        <td>{{data.2}}</td>
         <td>{{data.1}}</td>
+        <td>{{data.2}}</td>
+        <td>{{data.3}}</td>
+        <td>{{data.4}}</td>
+        <td>{{data.5}}</td>
     </tr>
+    {% endfor %}
+    {% for data in result_not_refer_apparel %}
+    <tr>
+      <br>
+      <td>{{data.0}}</td> 
+      <td>{{data.1}}</td>
+      <td>{{data.2}}</td>
+      <td>{{data.3}}</td>
+      <td>{{data.4}}</td>
+      <td>{{data.5}}</td>
+      <td>
     {% endfor %}
     </div>
 <br>
