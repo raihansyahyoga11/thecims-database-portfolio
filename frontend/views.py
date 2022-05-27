@@ -508,14 +508,16 @@ def create_makan(request):
                                     FROM Tokoh
                                     WHERE username_pengguna = '{username}' AND nama = '{tokoh_baru}' """)
                 tingkat_kelaparan_tokoh = cursor.fetchone()[0]
+                print(tingkat_kelaparan_tokoh)
                 print('lambda')
                 if tingkat_kelaparan_tokoh < 0 :
                     cursor.execute(f"""UPDATE tokoh
-                                        SET kelaparan ='0';
+                                        SET kelaparan ='0'
                                         WHERE username_pengguna = '{username}' AND nama = '{tokoh_baru}' """)
+                    print('kak')
                 return redirect("/makan")
 
-            except:
+            except :
                 messages.error(request, "Maaf koin pemain tidak cukup untuk memakan makanan ini")
                 return render(request, 'makan/create_makan.html', response)
 
