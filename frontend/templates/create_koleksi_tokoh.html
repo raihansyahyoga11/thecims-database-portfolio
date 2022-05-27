@@ -1,32 +1,35 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
 {% block meta %}
-<title>The Cims</title>
+<title>Create Koleksi Tokoh</title>
 {% endblock meta %}
 
 {% block content %}
-{% if content_dt %}
-{% if content_ik %}
+{% if result_dt %}
+{% if result_ik %}
 
-<p>Form untuk create koleksi tokoh</p>
-<form>
+<h3>Form untuk create koleksi tokoh</h3>
+<form  action ="/create-koleksi-tokoh/" method = "POST">
+    {% csrf_token %} 
     <label>Nama Tokoh: </label>
-    <select>
-        {% for data in content_dt %}
-            <option>{{data.0}}</option>
+    <select name = "nama_tokoh" required>
+        {% for data in result_dt %}
+            <option value = "{{data.0}}">{{data.0}}</option>
         {% endfor %}
     </select>
     <br>
+
+
     <label>ID Koleksi: </label>
-    <select>
-        {% for data in content_ik %}
-            <option>{{data.0}}</option>
+    <select name = "id_koleksi" required>
+        {% for data in result_ik %}
+            <option value = "{{data.0}}" >{{data.0}}</option>
         {% endfor %}
     </select>
     <br>
-    <button>Simpan</button>
+    <button type = "submit" name = "submit_create_koleksi_tokoh" href = "/read-koleksi-tokoh">Simpan</button>
 </form>
 
 {% endif %}

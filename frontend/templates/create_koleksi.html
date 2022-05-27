@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
@@ -7,8 +7,8 @@
 {% endblock meta %}
 
 {% block content %}
-{% if content_app %}
-{% if content_pek %}
+{% if result_app %}
+{% if result_pek %}
 
 <style>
     #rambut{
@@ -33,82 +33,103 @@
 <button onclick="rambutFunct()">Rambut</button>
     <div id="rambut">
     <p>Form untuk Rambut</p>
-    <label>Id</label>
-    <input type = "text" disabled> <br>
-    <label>Harga Jual</label>
-    <input type = "text"> <br>
-    <label>Tipe Rambut</label>
-    <input type = "text"> <br>
-    <button>Submit</button>
+    <form action="/create-koleksi/" method = "POST">
+      {% csrf_token %} 
+      <label>Id</label>
+      <input type = "text" disabled> <br>
+      <label>Harga Jual</label>
+      <input type = "text" name="harga_rambut" required> <br>
+      <label>Tipe Rambut</label>
+      <input type = "text" name="tipe_rambut" required> <br>
+      <button type = "submit" name = "rambut">Submit</button>
+    </form>
     </div>
 <br>
 <button onclick="mataFunct()">Mata</button>
 <div id="mata">
     <p>Form untuk Rambut</p>
-    <label>Id</label>
-    <input type = "text" disabled> <br>
-    <label>Harga Jual</label>
-    <input type = "text"> <br>
-    <label>Warna Mata</label>
-    <input type = "text"> <br>
-    <button>Submit</button>
-    </div>
+    <form action="/create-koleksi/" method = "POST">
+      {% csrf_token %} 
+      <label>Id</label>
+      <input type = "text" disabled> <br>
+      <label>Harga Jual</label>
+      <input type = "text" name="harga_mata" required> <br>
+      <label>Warna Mata</label>
+      <input type = "text" name="warna_mata" required> <br>
+      <button type = "submit" name = "mata">Submit</button>
+    </form>
+  </div>
+    
 <br>
 <button onclick="rumahFunct()">Rumah</button>
 <div id="rumah">
-    <label>Id</label>
-    <input type = "text" disabled> <br>
-    <label>Nama</label>
-    <input type = "text"> <br>
-    <label>Harga Jual</label>
-    <input type = "text"> <br>
-    <label>Harga Beli</label>
-    <input type = "text"> <br>
-    <label>Kapasitas Barang</label>
-    <input type = "text"> <br>
-    <button>Submit</button>
+    <form action="/create-koleksi/" method = "POST">
+      {% csrf_token %} 
+      <label>Id</label>
+      <input type = "text" disabled> <br>
+      <label>Nama</label>
+      <input type = "text" name="nama_rumah" required> <br>
+      <label>Harga Jual</label>
+      <input type = "text" name="harga_jual_rumah" required> <br>
+      <label>Harga Beli</label>
+      <input type = "text" name="harga_beli_rumah" required> <br>
+      <label>Kapasitas Barang</label>
+      <input type = "text" name="kapasitas_barang" required> <br>
+      <button type = "submit" name = "rumah">Submit</button>
+    </form>
     </div>
 <br>
+
 <button onclick="barangFunct()">Barang</button>
 <div id="barang">
-    <label>Id</label>
-    <input type = "text" disabled> <br>
-    <label>Nama</label>
-    <input type = "text"> <br>
-    <label>Harga Jual</label>
-    <input type = "text"> <br>
-    <label>Harga Beli</label>
-    <input type = "text"> <br>
-    <label>Tingkat Energi</label>
-    <input type = "text"> <br>
-    <button>Submit</button>
+    <form action="/create-koleksi/" method = "POST">
+      {% csrf_token %} 
+      <label>Id</label>
+      <input type = "text" disabled> <br>
+      <label>Nama</label>
+      <input type = "text" name="nama_barang" required> <br>
+      <label>Harga Jual</label>
+      <input type = "text" name="harga_jual_barang" required> <br>
+      <label>Harga Beli</label>
+      <input type = "text" name="harga_beli_barang" required> <br>
+      <label>Tingkat Energi</label>
+      <input type = "text" name="tingkat_energi"> <br>
+      <button type = "submit" name = "barang">Submit</button>
+    </form>
     </div>
 <br>
+
 <button onclick="apparelFunct()">Apparel</button>
 <div id="apparel">
+  <form action="/create-koleksi/" method = "POST">
+    {% csrf_token %} 
     <label>Id</label>
     <input type = "text" disabled> <br>
     <label>Nama</label>
-    <input type = "text"> <br>
+    <input type = "text" name="nama_apparel" required> <br>
     <label>Harga Jual</label>
-    <input type = "text"> <br>
+    <input type = "text" name="harga_jual_apparel" required> <br>
     <label>Harga Beli</label>
-    <input type = "text"> <br>
+    <input type = "text" name="harga_beli_apparel" required> <br>
+    <label>Warna Apparel</label>
+    <input type = "text" name="warna_apparel" required> <br>
     <label>Kategori Apparel</label>
-    <select>
-        {% for data in content_app %}
+    <select name = "kategori_apparel" required>
+        {% for data in result_app %}
             <option>{{data.0}}</option>
         {% endfor %}
     </select>
     <br>
     <label>Nama Pekerjaan</label>
-    <select>
-        {% for data in content_pek %}
+    <select name = "nama_pekerjaan" required>
+        {% for data in result_pek %}
             <option>{{data.0}}</option>
         {% endfor %}
     </select>
     <br>
-    <button>Submit</button>
+    <button type = "submit" name = "apparel">Submit</button>
+  </form>
+    
     </div>
 <br>
 

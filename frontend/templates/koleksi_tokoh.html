@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 
 {% load static %}
 
@@ -7,22 +7,33 @@
 {% endblock meta %}
 
 {% block content %}
-{% if content %}
+
 
 <table></table>
     <td>id_koleksi</td>
-    <td>username_pengguna</td>
     <td>nama_tokoh</td>
-    {% for data in content %}
+    <td>action</td>
+    {% for data in result_not_refer %}
+    <tr>
+        <form action = "/read-koleksi-tokoh/" method = "POST" >
+            {% csrf_token %}
+            <td>{{data.0}}</td>
+            <td>{{data.1}}</td>
+        
+            <button type = "submit" value = "{{data.0}}" name = 'delete' href = "/read-koleksi-tokoh">Jual</button>
+        </form>
+    </tr>
+    {% endfor %}
+
+    {% for data in result_refer %}
     <tr>
         <br>
         <td>{{data.0}}</td> 
         <td>{{data.1}}</td>
-        <td>{{data.2}}</td>
     </tr>
     {% endfor %}
-    <td></td>
-    </table>
 
-{% endif %}
+</table>
+
+
 {% endblock content %}

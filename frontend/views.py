@@ -944,38 +944,152 @@ def menggunakan_apparel(request):
 
 def read_kategori_apparel(request):
     cursor = connection.cursor()
+    cursor.execute("set search_path to public")
+    try :
+        role = request.session.get('account-type')
+    except:
+        return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
+
     query = f"select nama_kategori from KELUARGA_YOGA.kategori_apparel"
     cursor.execute(query)
     result = cursor.fetchall()
+
     if request.session['account-type'] == 'pemain':
-        return render(request, 'kategori_apparel.html', {'content': result})
+        response = {
+            'content' : result,
+            'account_type': role
+        }
+        return render(request, 'kategori_apparel.html', response)
     elif request.session['account-type'] == 'admin':
-        return render(request, 'kategori_apparel_admin.html', {'content': result})
+        cursor.execute("select distinct kategori_apparel from apparel")
+        result_refer = cursor.fetchall()
+        cursor.execute("select nama_kategori from kategori_apparel EXCEPT select kategori_apparel from apparel")
+        result_not_refer = cursor.fetchall()
+        
+        response = {
+            'content' : result,
+            'account_type': role,
+            'result_refer' : result_refer,
+            'result_not_refer' : result_not_refer  
+        }
+
+        if (request.method == 'POST'):
+            deleted = request.POST.get('delete')
+            if deleted != None:
+                print(deleted)
+                cursor.execute(f"""delete from kategori_apparel where nama_kategori = '{deleted}' """)
+                return redirect("/read-kategori-apparel")
+
+        return render(request, 'kategori_apparel_admin.html', response)
 
 def create_kategori_apparel(request):
+    cursor = connection.cursor()
+    cursor.execute("set search_path to public")
+    try :
+        role = request.session.get('account-type')
+    except:
+        return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
+
+    response = {
+            'account_type': role
+        }
+
     if request.session['account-type'] == 'pemain':
-        return render(request, 'home.html')
+        username = request.session.get('username')
+        role = request.session.get('account-type')
+        query = f"select username, email, no_hp, koin from KELUARGA_YOGA.pemain where username='{username}'"
+        cursor.execute(query)
+        user_terpilih = cursor.fetchall()
+        response = {
+        'username': user_terpilih[0][0],
+        'email': user_terpilih[0][1],
+        'no_hp':"0" + user_terpilih[0][2],
+        'koin': user_terpilih[0][3],
+        'account_type':role
+        }
+        return render(request, 'home_and_dashboard/user_dashboard.html', response)
     elif request.session['account-type'] == 'admin':
-        return render(request, 'create_kategori_apparel.html')
+        if (request.method == 'POST'):
+            nama_kategori = request.POST.get('nama_kategori')
+            cursor.execute("INSERT INTO kategori_apparel (nama_kategori) VALUES ('%s')" %(nama_kategori))
+            return redirect("/read-kategori-apparel")
+        return render(request, 'create_kategori_apparel.html', response)
+        
 
 def read_koleksi_tokoh(request):
-    username = request.session.get('username')
     cursor = connection.cursor()
+    cursor.execute("set search_path to public")
+    try :
+        role = request.session.get('account-type')
+    except:
+        return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
+    username = request.session.get('username')
+
     if request.session['account-type'] == 'pemain':
-        query = f"select * from keluarga_yoga.koleksi_tokoh WHERE username_pengguna = '{username}' order by username_pengguna"
-        cursor.execute(query)
-        result = cursor.fetchall()
-        return render(request, 'koleksi_tokoh.html', {'content': result})
+        cursor.execute(f"""select id_koleksi, nama_tokoh from koleksi_tokoh join koleksi on 
+                    id = id_koleksi where username_pengguna = '{username}' EXCEPT (
+                        select K.id, KT.nama_tokoh from koleksi as K join koleksi_tokoh as KT on KT.id_koleksi = K.id JOIN koleksi_jual_beli as KJB on KT.id_koleksi = KJB.id_koleksi
+                        where username_pengguna = '{username}' AND id not in (
+                        select distinct id_mata from tokoh as T join koleksi_tokoh as KT on (T.username_pengguna, T.nama) = (KT.username_pengguna, KT.nama_tokoh) 
+                        where T.username_pengguna = '{username}' UNION select distinct id_rambut from tokoh as T join koleksi_tokoh as KT on (T.username_pengguna, T.nama) =
+                        (KT.username_pengguna, KT.nama_tokoh) where T.username_pengguna = '{username}' UNION select distinct id_rumah from tokoh as T join 
+                        koleksi_tokoh as KT on (T.username_pengguna, T.nama) = (KT.username_pengguna, KT.nama_tokoh) where T.username_pengguna = '{username}' UNION select distinct
+                        id_barang from tokoh as T join menggunakan_barang as MB on (T.username_pengguna, T.nama) = (MB.username_pengguna, MB.nama_tokoh) where T.username_pengguna = '{username}'
+                        UNION select distinct id_koleksi from tokoh as T join menggunakan_apparel as MA on (T.username_pengguna, T.nama) = (MA.username_pengguna, MA.nama_tokoh)
+                        where T.username_pengguna = '{username}'))""")
+        result_refer = cursor.fetchall()
+        cursor.execute(f""" select K.id, KT.nama_tokoh from koleksi as K join koleksi_tokoh as KT on KT.id_koleksi = K.id JOIN koleksi_jual_beli as KJB on KT.id_koleksi = KJB.id_koleksi
+                            where username_pengguna = '{username}' AND id not in (
+                            select distinct id_mata from tokoh as T join koleksi_tokoh as KT on (T.username_pengguna, T.nama) = (KT.username_pengguna, KT.nama_tokoh) 
+                            where T.username_pengguna = '{username}' UNION select distinct id_rambut from tokoh as T join koleksi_tokoh as KT on (T.username_pengguna, T.nama) =
+                            (KT.username_pengguna, KT.nama_tokoh) where T.username_pengguna = '{username}' UNION select distinct id_rumah from tokoh as T join 
+                            koleksi_tokoh as KT on (T.username_pengguna, T.nama) = (KT.username_pengguna, KT.nama_tokoh) where T.username_pengguna = '{username}' UNION select distinct
+                            id_barang from tokoh as T join menggunakan_barang as MB on (T.username_pengguna, T.nama) = (MB.username_pengguna, MB.nama_tokoh) where T.username_pengguna = '{username}'
+                            UNION select distinct id_koleksi from tokoh as T join menggunakan_apparel as MA on (T.username_pengguna, T.nama) = (MA.username_pengguna, MA.nama_tokoh)
+                            where T.username_pengguna = '{username}')
+                            """)
+        result_not_refer = cursor.fetchall()
+
+        response = {
+            'account_type': role,
+            'result_refer' : result_refer,
+            'result_not_refer' : result_not_refer
+        }
+
+        if (request.method == 'POST'):
+            deleted = request.POST.get('delete')
+            if deleted != None:
+                print(deleted)
+                cursor.execute(f"""delete from koleksi_tokoh where id_koleksi = '{deleted}' 
+                                AND username_pengguna = '{username}' """)
+                return redirect("/read-koleksi-tokoh")
+
+        return render (request, 'koleksi_tokoh.html', response)
     elif request.session['account-type'] == 'admin':
         query = f"select * from keluarga_yoga.koleksi_tokoh order by username_pengguna"
         cursor.execute(query)
         result = cursor.fetchall()
-        return render(request, 'koleksi_tokoh_admin.html', {'content': result})
+        response = {
+            'content' : result,
+            'account_type': role
+        }
+        return render (request, 'koleksi_tokoh_admin.html', response)
 
 def create_koleksi_tokoh(request):
     cursor = connection.cursor()
-    if request.session['account-type'] == 'admin':
-        username = request.session.get('username')
+    cursor.execute("set search_path to public")
+    try :
+        role = request.session.get('account-type')
+    except:
+        return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
+    username = request.session.get('username')
+
+    if request.session['account-type'] == 'pemain': 
+        print("ehem")
         query_daftar_tokoh = f"select distinct nama_tokoh from keluarga_yoga.koleksi_tokoh WHERE username_pengguna = '{username}'"
         cursor.execute(query_daftar_tokoh)
         result_dt = cursor.fetchall()
@@ -983,49 +1097,321 @@ def create_koleksi_tokoh(request):
         query_id_koleksi = f"select id from keluarga_yoga.koleksi"
         cursor.execute(query_id_koleksi)
         result_ik = cursor.fetchall()
-        return render(request, 'create_koleksi_tokoh.html', {'content_dt': result_dt, 'content_ik': result_ik})
-    elif request.session['account-type'] == 'pemain':
-        return render(request, 'home.html')
+        response = {
+            'account_type': role,
+            'result_dt' : result_dt,
+            'result_ik' : result_ik
+        }
+
+        if (request.method == 'POST'):
+            print(test)
+            nama_tokoh = request.POST.get('nama_tokoh')
+            id_koleksi = request.POST.get('id_koleksi')
+            print(id_koleksi)
+            cursor.execute("INSERT INTO koleksi_tokoh (id_koleksi, username_pengguna, nama_tokoh) VALUES ('%s','%s','%s')" %(id_koleksi, username, nama_tokoh)) 
+            return redirect("/read-koleksi-tokoh")
+
+        return render(request, 'create_koleksi_tokoh.html', response)
+    elif request.session['account-type'] == 'admin': 
+        response = {
+            'account_type': role,
+            'username' : username
+        }
+        return render(request, 'home_and_dashboard/admin_dashboard.html', response)
 
 def read_koleksi(request):
     cursor = connection.cursor()
+    cursor.execute("set search_path to public")
+    try :
+        role = request.session.get('account-type')
+    except:
+        return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
+    username = request.session.get('username')
 
-    query_rambut = f"select * from keluarga_yoga.rambut as R, keluarga_yoga.koleksi as K where R.id_koleksi = K.id"
-    cursor.execute(query_rambut)
+
+    query_rambut = f""" select R.id_koleksi, K.harga, R.tipe from rambut as R join koleksi as K on R.id_koleksi = K.id EXCEPT 
+                           select R.id_koleksi, K.harga, R.tipe from rambut as R join koleksi as K on R.id_koleksi = K.id 
+                           where id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh)
+                    """
+    cursor.execute(query_rambut)   
     result_rambut = cursor.fetchall()
+    query_not_refer_rambut = f""" select R.id_koleksi, K.harga, R.tipe from rambut as R join koleksi as K on R.id_koleksi = K.id 
+                           where id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh) """
+    cursor.execute(query_not_refer_rambut)
+    result_not_refer_rambut = cursor.fetchall()
 
-    query_mata = f"select * from keluarga_yoga.mata as M, keluarga_yoga.koleksi as K where M.id_koleksi = K.id"
+
+    query_mata =   f""" select M.id_koleksi, K.harga, M.warna from mata as M join koleksi as K on M.id_koleksi = K.id EXCEPT
+                           select M.id_koleksi, K.harga, M.warna from mata as M join koleksi as K on M.id_koleksi = K.id 
+                           where id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh)
+                    """
     cursor.execute(query_mata)
     result_mata = cursor.fetchall()
+    query_not_refer_mata = f""" select M.id_koleksi, K.harga, M.warna from mata as M join koleksi as K on M.id_koleksi = K.id 
+                           where id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh) """
+    cursor.execute(query_not_refer_mata)
+    result_not_refer_mata = cursor.fetchall()
 
-    query_rumah = f"select * from keluarga_yoga.rumah as R, keluarga_yoga.koleksi_jual_beli as KJB, keluarga_yoga.koleksi as K where R.id_koleksi = KJB.id_koleksi AND KJB.id_koleksi = K.id"
+
+    query_rumah = f""" select R.id_koleksi, KJB.nama, K.harga, KJB.harga_beli, R.kapasitas_barang from rumah as R join koleksi_jual_beli as KJB
+                           on R.id_koleksi = KJB.id_koleksi JOIN koleksi as K on KJB.id_koleksi = K.id
+                           EXCEPT 
+                           select R.id_koleksi, KJB.nama, K.harga, KJB.harga_beli, R.kapasitas_barang from rumah as R join koleksi_jual_beli as KJB
+                           on R.id_koleksi = KJB.id_koleksi JOIN koleksi as K on KJB.id_koleksi = K.id 
+                           where R.id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh)
+                   """
     cursor.execute(query_rumah)
     result_rumah = cursor.fetchall()
+    query_not_refer_rumah = f""" select R.id_koleksi, KJB.nama, K.harga, KJB.harga_beli, R.kapasitas_barang from rumah as R join koleksi_jual_beli as KJB
+                           on R.id_koleksi = KJB.id_koleksi JOIN koleksi as K on KJB.id_koleksi = K.id 
+                           where R.id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh) """
+    cursor.execute(query_not_refer_rumah)
+    result_not_refer_rumah = cursor.fetchall()
 
-    query_barang = f"select * from keluarga_yoga.barang as B, keluarga_yoga.koleksi_jual_beli as KJB, keluarga_yoga.koleksi as K where B.id_koleksi = KJB.id_koleksi AND KJB.id_koleksi = K.id"
+
+    query_barang = f""" select B.id_koleksi, KJB.nama, K.harga, KJB.harga_beli, B.tingkat_energi from barang as B join koleksi_jual_beli as KJB
+                           on B.id_koleksi = KJB.id_koleksi JOIN koleksi as K on KJB.id_koleksi = K.id 
+                           EXCEPT 
+                           select B.id_koleksi, KJB.nama, K.harga, KJB.harga_beli, B.tingkat_energi from barang as B join koleksi_jual_beli as KJB
+                           on B.id_koleksi = KJB.id_koleksi JOIN koleksi as K on KJB.id_koleksi = K.id 
+                           where B.id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh)
+                    """
     cursor.execute(query_barang)
     result_barang = cursor.fetchall()
+    query_not_refer_barang = f""" select B.id_koleksi, KJB.nama, K.harga, KJB.harga_beli, B.tingkat_energi from barang as B join koleksi_jual_beli as KJB
+                           on B.id_koleksi = KJB.id_koleksi JOIN koleksi as K on KJB.id_koleksi = K.id 
+                           where B.id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh) """
+    cursor.execute(query_not_refer_barang)
+    result_not_refer_barang = cursor.fetchall()
 
-    query_apparel = f"select * from keluarga_yoga.apparel as A, keluarga_yoga.koleksi_jual_beli as KJB, keluarga_yoga.koleksi as K where A.id_koleksi = KJB.id_koleksi AND KJB.id_koleksi = K.id"
+
+    query_apparel = f""" select A.id_koleksi, KJB.nama, K.harga, KJB.harga_beli, A.kategori_apparel, A.nama_pekerjaan from apparel as A join koleksi_jual_beli as KJB 
+                           on A.id_koleksi = KJB.id_koleksi JOIN koleksi as K on KJB.id_koleksi = K.id
+                           EXCEPT 
+                           select A.id_koleksi, KJB.nama, K.harga, KJB.harga_beli, A.kategori_apparel, A.nama_pekerjaan from apparel as A join koleksi_jual_beli as KJB 
+                           on A.id_koleksi = KJB.id_koleksi JOIN koleksi as K on KJB.id_koleksi = K.id 
+                           where A.id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh)
+                     """
     cursor.execute(query_apparel)
     result_apparel = cursor.fetchall()
+    query_not_refer_apparel = f""" select A.id_koleksi, KJB.nama, K.harga, KJB.harga_beli, A.kategori_apparel, A.nama_pekerjaan from apparel as A join koleksi_jual_beli as KJB 
+                           on A.id_koleksi = KJB.id_koleksi JOIN koleksi as K on KJB.id_koleksi = K.id 
+                           where A.id_koleksi not in (select id_rambut from tokoh union 
+                           select id_mata from tokoh union select id_rumah from tokoh union 
+                           select id_barang from menggunakan_barang union select id_koleksi from menggunakan_apparel union
+                           select id_koleksi from koleksi_tokoh) """
+    cursor.execute(query_not_refer_apparel)
+    result_not_refer_apparel = cursor.fetchall()
+
+
+    response = {
+            'account_type': role,
+            'result_rambut' : result_rambut,
+            'result_not_refer_rambut' : result_not_refer_rambut,
+            'result_mata' : result_mata,
+            'result_not_refer_mata' : result_not_refer_mata,
+            'result_rumah' : result_rumah,
+            'result_not_refer_rumah' : result_not_refer_rumah,
+            'result_barang' : result_barang,
+            'result_not_refer_barang' : result_not_refer_barang,
+            'result_apparel' : result_apparel,
+            'result_not_refer_apparel' : result_not_refer_apparel
+        }
 
     if request.session['account-type'] == 'admin':
-        return render(request, 'koleksi_admin.html', {'content_rambut': result_rambut, 'content_mata': result_mata, 'content_rumah': result_rumah, 'content_barang': result_barang, 'content_apparel': result_apparel})
+        if (request.method == 'POST') :
+            deleted = request.POST.get('delete')
+            updated = request.POST.get('update')
+            if deleted != None:
+                cursor.execute(f""" DELETE FROM KOLEKSI WHERE ID = '{deleted}' """)
+                return redirect("/read-koleksi/")
+            elif updated != None:
+                response = {
+                    'account_type' : role,
+                    'updated' : updated
+                }
+                return render(request,'ubah_koleksi.html', response)
+        return render(request, 'koleksi_admin.html', response)
     elif request.session['account-type'] == 'pemain':
-        return render(request, 'koleksi.html', {'content_rambut': result_rambut, 'content_mata': result_mata, 'content_rumah': result_rumah, 'content_barang': result_barang, 'content_apparel': result_apparel})
+        return render(request, 'koleksi.html', response)
 
 def create_koleksi(request):
     cursor = connection.cursor()
-    if request.session['account-type'] == 'admin':
-        query_apparel = f"select nama_kategori from keluarga_yoga.kategori_apparel"
+    cursor.execute("set search_path to public")
+    try :
+        role = request.session.get('account-type')
+    except:
+        return redirect('/')
+    cursor.execute("set search_path to keluarga_yoga")
+
+    if request.session['account-type'] == 'admin': 
+        query_apparel = f"select nama_kategori from kategori_apparel"
         cursor.execute(query_apparel)
         result_app = cursor.fetchall()
 
-        query_pekerjaan = f"select nama from keluarga_yoga.pekerjaan"
+        query_pekerjaan = f"select nama from pekerjaan"
         cursor.execute(query_pekerjaan)
         result_pek = cursor.fetchall()
 
-        return render(request, 'create_koleksi.html', {'content_app': result_app, 'content_pek': result_pek})
-    elif request.session['account-type'] == 'pemain':
-        return render(request, 'home.html')
+        response = {
+            'account_type': role,
+            'result_app' : result_app,
+            'result_pek' : result_pek
+        }
+
+        rambut = request.POST.get('rambut') 
+        mata = request.POST.get('mata')
+        rumah = request.POST.get('rumah')
+        barang = request.POST.get('barang')
+        apparel = request.POST.get('apparel')
+
+        if(request.method == 'POST'):
+            if (rambut != None) :
+                cursor.execute(f""" select MAX(RIGHT(id_koleksi, 2)) from rambut """)
+                last_id = cursor.fetchone()[0]
+                int_last_id = int(last_id)
+                int_last_id += 1
+                if (int_last_id >9) :
+                    last_id_add = str("0") + str(int_last_id)
+                elif (int_last_id <=9):
+                    last_id_add = str("00") + str(int_last_id)
+
+                harga_rambut = request.POST.get('harga_rambut')
+                tipe_rambut = request.POST.get('tipe_rambut')
+
+                cursor.execute(f""" insert into koleksi values ('RB{last_id_add}', '{harga_rambut}') """)
+                cursor.execute(f"""  insert into rambut values ('RB{last_id_add}', '{tipe_rambut}') """)
+                return redirect("/read-koleksi")
+
+            elif (mata != None) :
+                cursor.execute(f""" select MAX(RIGHT(id_koleksi, 2)) from mata """)
+                last_id = cursor.fetchone()[0]
+                int_last_id = int(last_id)
+                int_last_id += 1
+                if (int_last_id >9) :
+                    last_id_add = str("0") + str(int_last_id)
+                elif (int_last_id <=9):
+                    last_id_add = str("00") + str(int_last_id)
+
+                harga_mata = request.POST.get('harga_mata')
+                warna_mata = request.POST.get('warna_mata')
+
+                cursor.execute(f""" insert into koleksi values ('MT{last_id_add}', '{harga_mata}') """)
+                cursor.execute(f"""  insert into mata values ('MT{last_id_add}', '{warna_mata}') """)
+                return redirect("/read-koleksi")
+
+            elif (rumah != None) :
+                cursor.execute(f""" select MAX(RIGHT(id_koleksi,2)) from rumah """)
+                last_id = cursor.fetchone()[0]
+                int_last_id = int(last_id)
+                int_last_id += 1
+                if (int_last_id >9) :
+                    last_id_add = str("0") + str(int_last_id)
+                elif (int_last_id <=9):
+                    last_id_add = str("00") + str(int_last_id)
+
+                nama_rumah = request.POST.get('nama_rumah')
+                harga_jual_rumah = request.POST.get('harga_jual_rumah')
+                harga_beli_rumah = request.POST.get('harga_beli_rumah')
+                kapasitas_barang = request.POST.get('kapasitas_barang')
+
+                cursor.execute(f""" insert into koleksi values ('RM{last_id_add}', '{harga_jual_rumah}') """)
+                cursor.execute(f""" insert into koleksi_jual_beli values ('RM{last_id_add}', '{harga_beli_rumah}', '{nama_rumah}') """)
+                cursor.execute(f"""  insert into rumah values ('RM{last_id_add}', '{kapasitas_barang}') """)
+                return redirect("/read-koleksi")
+
+            elif (barang != None) :
+                cursor.execute(f""" select MAX(RIGHT(id_koleksi,2)) from barang """)
+                last_id = cursor.fetchone()[0]
+                int_last_id = int(last_id)
+                int_last_id += 1
+                if (int_last_id >9) :
+                    last_id_add = str("0") + str(int_last_id)
+                elif (int_last_id <=9):
+                    last_id_add = str("00") + str(int_last_id)
+
+                nama_barang = request.POST.get('nama_barang')
+                harga_jual_barang = request.POST.get('harga_jual_barang')
+                harga_beli_barang = request.POST.get('harga_beli_barang')
+                tingkat_energi = request.POST.get('tingkat_energi')
+
+                cursor.execute(f""" insert into koleksi values ('B{last_id_add}', '{harga_jual_barang}') """)
+                cursor.execute(f""" insert into koleksi_jual_beli values ('B{last_id_add}', '{harga_beli_barang}', '{nama_barang}') """)
+                cursor.execute(f"""  insert into barang values ('B{last_id_add}', '{tingkat_energi}') """)
+                return redirect("/read-koleksi")
+
+            elif (apparel != None) :
+                cursor.execute(f""" select MAX(RIGHT(id_koleksi,2)) from apparel """)
+                last_id = cursor.fetchone()[0]
+                int_last_id = int(last_id)
+                int_last_id += 1
+                if (int_last_id >9) :
+                    last_id_add = str("0") + str(int_last_id)
+                elif (int_last_id <=9):
+                    last_id_add = str("00") + str(int_last_id)
+
+                nama_apparel= request.POST.get('nama_apparel')
+                harga_jual_apparel = request.POST.get('harga_jual_apparel')
+                harga_beli_apparel = request.POST.get('harga_beli_apparel')
+                tingkat_energi = request.POST.get('tingkat_energi')
+                kategori_apparel = request.POST.get('kategori_apparel')
+                nama_pekerjaan = request.POST.get('nama_pekerjaan')
+                warna_apparel = request.POST.get('warna_apparel')
+
+                cursor.execute(f""" insert into koleksi values ('A{last_id_add}', '{harga_jual_apparel}') """)
+                cursor.execute(f""" insert into koleksi_jual_beli values ('A{last_id_add}', '{harga_beli_apparel}', '{nama_apparel}') """)
+                cursor.execute(f"""  insert into apparel values ('A{last_id_add}', '{nama_pekerjaan}', '{kategori_apparel}', '{warna_apparel}') """)
+                return redirect("/read-koleksi")
+
+        return render(request, 'create_koleksi.html', response)
+    elif request.session['account-type'] == 'pemain': 
+        return redirect('/')
+
+def ubah_koleksi(request) :
+    cursor = connection.cursor()
+    try :
+        role = request.session.get('account-type')
+    except:
+        return redirect('/')
+    response = {
+        'account-type' : role
+    }
+
+    if request.session['account-type'] == 'admin' :
+        cursor.execute("set search_path to keluarga_yoga")
+        
+        if (request.method =="POST") :
+
+            return redirect("/read-koleksi/")
+        return render(request, 'ubah_koleksi.html', response)
+
+    else :
+        return redirect('/')
