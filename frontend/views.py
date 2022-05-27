@@ -840,9 +840,10 @@ def update_tokoh(request, nama_tokoh):
 
 def read_detail_tokoh(request, nama_tokoh):
     cursor = connection.cursor()
-    query_detail_tokoh = f"select nama, id_mata, id_rambut, id_rumah, warna_kulit, pekerjaan from KELUARGA_YOGA.tokoh where nama='{nama_tokoh}'"
+    query_detail_tokoh = f"select nama, id_mata, id_rambut, id_rumah, warna_kulit, pekerjaan from KELUARGA_YOGA.tokoh where nama='{nama_tokoh}';"
     cursor.execute(query_detail_tokoh)
     hasil = cursor.fetchall()
+    print(hasil)
     response = {
         'nama_tokoh': hasil[0][0],
         'id_rambut': hasil[0][1],
@@ -1090,7 +1091,7 @@ def create_koleksi_tokoh(request):
 
     if request.session['account-type'] == 'pemain': 
         print("ehem")
-        query_daftar_tokoh = f"select distinct nama_tokoh from keluarga_yoga.koleksi_tokoh WHERE username_pengguna = '{username}'"
+        query_daftar_tokoh = f"select distinct nama from keluarga_yoga.tokoh WHERE username_pengguna = '{username}'"
         cursor.execute(query_daftar_tokoh)
         result_dt = cursor.fetchall()
 
