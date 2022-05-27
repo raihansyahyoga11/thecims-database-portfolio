@@ -659,7 +659,9 @@ def update_pekerjaan(request):  # DONE
         query_view_pekerjaan = f"SELECT * FROM KELUARGA_YOGA.pekerjaan;"
         cursor.execute(query_view_pekerjaan)
         hasil = cursor.fetchall()
+        print("hello world!")
         if (request.method == 'POST'):
+            print("masuk")
             form_pekerjaan = request.POST
             selected_pekerjaan = form_pekerjaan['pekerjaan-terpilih']
             base_honor = form_pekerjaan['base-honor']
@@ -814,10 +816,13 @@ def create_tokoh(request):
             warna_kulit = form_data2['warna_kulit']  # dropdown
             sifat = form_data2['sifat']  # dropdown
             input_pekerjaan = form_data2['input-nama-pekerjaan']
-
-            query_create_tokoh = f"INSERT INTO KELUARGA_YOGA.tokoh VALUES ('{username}','{create_nama_tokoh}','{jenis_kelamin}','Aktif',{poin_xp},{poin_energi},{poin_kelaparan},{poin_hubungan_sosial},'{warna_kulit}',1,'{sifat}', '{input_pekerjaan}', 'RB001', 'MT001', 'RM001')"
-
             cursor = connection.cursor()
+            query_koin_default = f"UPDATE keluarga_yoga.pemain set koin=450060000 where username='{username}';"
+            cursor.execute(query_koin_default)
+
+            query_create_tokoh = f"INSERT INTO KELUARGA_YOGA.tokoh VALUES ('{username}','{create_nama_tokoh}','{jenis_kelamin}','Aktif',{poin_xp},{poin_energi},{poin_kelaparan},{poin_hubungan_sosial},'{warna_kulit}',1,'{sifat}', '{input_pekerjaan}', 'RB001', 'MT001', 'RM001');"
+
+            cursor.execute("SET search_path to KELUARGA_YOGA;")
             cursor.execute(query_create_tokoh)
     return render(request, 'create_tokoh.html', {'account_type': role, 'list_pekerjaan': list_pekerjaan})
 
@@ -1024,6 +1029,7 @@ def menggunakan_apparel(request):
     cursor = connection.cursor()
     # query = f"select * from KELUARGA_YOGA.KOLEKSI_TOKOH"
     # cursor.execute(query)
+    print(request.session['account-type'])
 
     if request.session['account-type'] == 'pemain':
         username = request.session.get('username')
@@ -1044,7 +1050,7 @@ def menggunakan_apparel(request):
                                 MA.nama_tokoh = '{list_value[0]}' AND 
                                 MA.id_koleksi = '{list_value[1]}'""")
             return redirect("/menggunakan-apparel")
-        return render(request, 'R_menggunakan_apparel_pengguna.html', {'content' : result})
+        return render(request, 'R_menggunakan_apparel_pengguna.html', {'content' : result, 'account_type': request.session['account-type']})
 
     if request.session['account-type'] == 'admin' : 
         cursor.execute(f"""SELECT MA.username_pengguna, MA.nama_tokoh, KJB.nama, A.warna_apparel, A.nama_pekerjaan, A.kategori_apparel
@@ -1054,7 +1060,7 @@ def menggunakan_apparel(request):
                             JOIN KELUARGA_YOGA.KOLEKSI_JUAL_BELI KJB ON
                             A.id_koleksi = KJB.id_koleksi;""")
         result = cursor.fetchall()
-        return render(request, 'R_menggunakan_apparel_admin.html', {'content': result})
+        return render(request, 'R_menggunakan_apparel_admin.html', {'content': result, 'account_type': request.session['account-type']})
 
     # return render(request, 'home.html')
     

@@ -40,12 +40,12 @@
                 <input type="text" class="form-control" id="pekerjaan-terpilih" style="display: none" name="pekerjaan-terpilih">
                 <h3>Set Base Honor</h3>  
                 <input type="text" class="form-control" id="id-base-honor" aria-describedby="help-input-username" name="base-honor">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+              </div>
             </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Update</button>
-        </div>
       </div>
     </div>
   </div>
@@ -54,6 +54,8 @@
 function jsUpdateHonor(x1, x2) {
     var nama_pekerjaan = x1
     var base_honor = x2
+    console.log(nama_pekerjaan)
+    console.log(base_honor)
     document.getElementById('exampleModalLabel').innerHTML = 'Mengupdate ' + nama_pekerjaan
     document.getElementById('pekerjaan-terpilih').value = nama_pekerjaan
 }
