@@ -19,8 +19,7 @@
             <td>{{data.0}}</td>
         <form action="/detail-misi-utama/" method="post" >
             {% csrf_token %} 
-            <input type="hidden" value="{{data.0}}" name="misi_detail">
-            <td><button type="submit"   name="submit_misi_detail">[Detail] </a></td>
+            <td><button type="submit"  value="{{data.0}}" name="detail">[Detail] </a></td>
         </form>
           </tr>
           {% endfor %}

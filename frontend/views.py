@@ -133,6 +133,17 @@ def read_misi_utama(request):
             'content': result,
             'account_type': role
         }
+        if (request.method == 'POST'):
+            row_diambil_detail = request.POST.get('detail')
+            cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp
+                    FROM MISI 
+                    WHERE nama = '{row_diambil_detail}' ;""")
+            result = cursor.fetchall()
+            response = {
+                'content': result,
+                'account_type': role
+            }
+            return render(request, "misi_utama/detail_misi_utama.html", response)
         return render(request, 'misi_utama/misi_utama_user.html', response)
 
     elif request.session['account-type'] == 'admin':
