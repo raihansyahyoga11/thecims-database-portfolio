@@ -17,7 +17,7 @@
         {% for data in content %}
           <tr>
             <td>{{data.0}}</td>
-        <form action="/detail-misi-utama/" method="post" >
+        <form action="/misi-utama/" method="post" >
             {% csrf_token %} 
             <td><button type="submit"  value="{{data.0}}" name="detail">[Detail] </a></td>
         </form>

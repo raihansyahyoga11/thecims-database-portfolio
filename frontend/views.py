@@ -134,6 +134,7 @@ def read_misi_utama(request):
             'account_type': role
         }
         if (request.method == 'POST'):
+            print('yeahh')
             row_diambil_detail = request.POST.get('detail')
             cursor.execute(f"""SELECT nama, efek_energi,efek_hubungan_sosial, efek_kelaparan, syarat_energi, syarat_hubungan_sosial, syarat_kelaparan, completion_time, reward_koin, reward_xp
                     FROM MISI 
