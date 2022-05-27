@@ -500,20 +500,20 @@ def create_makan(request):
                 makanan_baru = request.POST.get('nama-makanan')
                 waktu_sekarang = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 cursor.execute(f""" INSERT INTO makan (username_pengguna, nama_tokoh, waktu, nama_makanan) 
-                        VALUES('%s', '%s', '%s', '%s')
+                        VALUES('%s', '%s', '%s', '%s');
                     """ %(username, tokoh_baru, waktu_sekarang, makanan_baru))
 
 
                 cursor.execute(f"""SELECT kelaparan
                                     FROM Tokoh
-                                    WHERE username_pengguna = '{username}' AND nama = '{tokoh_baru}' """)
+                                    WHERE username_pengguna = '{username}' AND nama = '{tokoh_baru}'; """)
                 tingkat_kelaparan_tokoh = cursor.fetchone()[0]
                 print(tingkat_kelaparan_tokoh)
                 print('lambda')
                 if tingkat_kelaparan_tokoh < 0 :
                     cursor.execute(f"""UPDATE tokoh
                                         SET kelaparan ='0'
-                                        WHERE username_pengguna = '{username}' AND nama = '{tokoh_baru}' """)
+                                        WHERE username_pengguna = '{username}' AND nama = '{tokoh_baru}'; """)
                     print('kak')
                 return redirect("/makan")
 
