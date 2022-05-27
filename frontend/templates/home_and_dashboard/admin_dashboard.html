@@ -1,19 +1,110 @@
-{% include 'navbar.html' %}
+{% extends 'navbar.html' %}
 {% load static %}
 
+
 {% block meta %}
-<title>Login page</title>
+<title>{{ username }} Dashboard</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 {% endblock meta %}
 
 {% block content %}
+<body>
+  <div class="terminal">
+    <span class="dollar"></span> Welcome home admin, {{ username }}
+    <br/>
+    <span class="dollar"></span> What do you want to do?
+    <br/>
+  </div>
+
+</body>
+
+</html>
 <style>
-    html {
-        background-color: #CFE4EC;
-    }
+    * {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  width: 100%;
+}
+
+body {
+  font: 18px "Monaco", Inconsolata, monospace;
+  background: #110A0D;
+  color: #E8CF77;
+}
+
+.nav-bar {
+    background-color: #110A0D;
+}
+
+.terminal {
+  background: transparent;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -50px;
+  margin-left: -180px;
+  text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.4);
+  width: 400px;
+  font: inherit;
+  border: none;
+  outline: none;
+  color: inherit;
+}
+
+.dollar:before {
+  content: '$';
+  color: #FFEE96;
+}
+
+.home {
+  color: #e28d47;
+  padding-bottom: 3px;
+}
+
+a {
+  font: 12px "Monaco", Inconsolata, monospace;
+  text-decoration: underline;
+  color: #E8CF77;
+}
 </style>
 
-<div class="hero-container">
-    <h1>Halo {{ username }}</h1>
-    <a href="{% url 'frontend:logout' %}">Logout</a>
-</div>
+<script>
+    // Typewriter.js
+// https://github.com/ronv/Typewriter.js
+
+$.fn.typewriter = function() {
+  this.each(function() {
+    var c = $(this),
+      b = c.html(),
+      a = 0,
+      d = 0;
+    c.html("");
+    var e = function() {
+      if ("<" == b.substring(a, a + 1)) {
+        var f = new RegExp(/<span class="instant"/),
+          g = new RegExp(/<span class="clear"/);
+        if (b.substring(a, b.length).match(f)) a += b.substring(a, b.length).indexOf("</span>") + 7;
+        else if (b.substring(a, b.length).match(g)) d = a, a += b.substring(a, b.length).indexOf("</span>") + 7;
+        else
+          for (;
+            ">" != b.substring(a, a + 1);) a++
+      }
+      c.html(b.substring(d, a++) + (a & 1 ? "_" : ""));
+      a >= b.length || setTimeout(e, 20 + 60 *
+        Math.random())
+    };
+    e()
+  });
+  return this
+};
+$(".terminal").typewriter();
+</script>
 {% endblock content %}
