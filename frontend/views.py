@@ -503,7 +503,7 @@ def create_makan(request):
                                         WHERE username_pengguna = '{username}' AND nama = '{tokoh_baru}' """)
                 return redirect("/makan")
 
-            except Exception as e:
+            except Exception:
                 messages.error(request, "Maaf koin pemain tidak cukup untuk memakan makanan ini")
                 return render(request, 'makan/create_makan.html', response)
 
