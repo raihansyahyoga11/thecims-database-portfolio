@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 {% load static %}
 
 {% block meta %}
@@ -6,7 +6,6 @@
 {% endblock meta %}
 
 {% block content %}
-    {% if content %}
     <center>
     <table>
         <tr>
@@ -14,17 +13,41 @@
              <th>XP</th>
              <th>Action</th>
         </tr>
-        {% for data in content %}
+        {% if level_deleteable %}
+        {% for data in level_deleteable %}
 
         <tr>
             <td>{{data.0}}</td> 
             <td>{{data.1}}</td>
-            <td>[Delete] <br> [Update]</td>
+            <form action = "/level/" method="post">
+                {% csrf_token %}     
+                <td>
+                    <button type="submit" value="{{data.0}}"  name="update_level">[Update] </a>
+                    <button type="submit" value="{{data.0}}"  name="delete_level">[Delete] </a></td>
+                    {% endfor %}
+                    {% endif %}
+            </form>
         </tr>
-        {% endfor %}
+
+        {% if level_non_deleteable %}
+        {% for data in level_non_deleteable %}
+
+        <tr>
+            <td>{{data.0}}</td> 
+            <td>{{data.1}}</td>
+            <form action = "/level/" method="post">
+                {% csrf_token %}     
+                <td>
+                    <button type="submit" value="{{data.0}}"  name="update_level">[Update] </a></td>
+                    {% endfor %}
+                    {% endif %}
+            </form>
+        </tr>
+        
+        
     </table>
     </center>
-    {% endif %}
+
 {% endblock content %}
 
 

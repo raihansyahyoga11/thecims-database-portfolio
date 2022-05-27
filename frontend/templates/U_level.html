@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 {% load static %}
 
 {% block meta %}
@@ -12,13 +12,13 @@
             <th>FORM UBAH LEVEL</th>
         </tr>
         <tr>
-            <form action = "/level/" method="post">
+            <form action = "/update-level/" method="post">
                 {% csrf_token %}
                 <td> 
-                    Level : <input disabled>
+                    Level : {{level_diupdate}} <input type="hidden" value="{{level_diupdate}}" name="level_update">
                     <br>
                     <br>
-                    XP : <input type="text"><input type="number">
+                    XP : <input type="number" name="XP_new" required>
                     <br>
                     <br>
                     <br>
@@ -26,6 +26,7 @@
                     <button type="submit" >SIMPAN</button>
 
                 </td>
+            </form>
         </tr>
 
     </table>

@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 {% load static %}
 
 {% block meta %}
@@ -6,25 +6,47 @@
 {% endblock meta %}
 
 {% block content %}
-    {% if content %}
+    
     <center>
     <table>
         <tr>
              <th>Kode</th>
              <th>Action</th>
         </tr>
-        {% for data in content %}
+
+        {% if warna_kulit_deleteable %}
+        {% for data in warna_kulit_deleteable %}
 
         <tr>
             <td>{{data.0}}</td>
-            <td>[Delete]</td> 
 
+            <form action = "/warna-kulit/" method="post">
+                {% csrf_token %}     
+                <td>
+                    <button type="submit" value="{{data.0}}"  name="delete_warna_kulit">[Delete] </a></td>
+                    {% endfor %}
+                    {% endif %}
+            </form>
+
+            
         </tr>
+
+        {% if warna_kulit_non_deleteable %}
+        {% for data in warna_kulit_non_deleteable %}
+
+        <tr>
+            <td>{{data.0}}</td>
         {% endfor %}
+        {% endif %}
+            
+        </tr>
+
+
+
+        
     </table>
     </center>
-    {% endif %}
+
+
+
 {% endblock content %}
-
-
-   

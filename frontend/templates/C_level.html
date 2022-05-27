@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 {% load static %}
 
 {% block meta %}
@@ -12,13 +12,13 @@
             <th>FORM BUAT LEVEL</th>
         </tr>
         <tr>
-            <form action = "/level/" method="post">
+            <form action = "/create-level/" method="post">
                 {% csrf_token %}
                 <td> 
-                    Level : <input type="text">
+                    Level : <input type="text" name="level" required>
                     <br>
                     <br>
-                    XP : <input type="text">
+                    XP : <input type="text" name="XP" required>
                     <br>
                     <br>
                     <br>
