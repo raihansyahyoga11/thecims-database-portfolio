@@ -870,82 +870,183 @@ def read_detail_tokoh(request, nama_tokoh):
 
 def warna_kulit(request):
     cursor = connection.cursor()
-    query = f"select kode from KELUARGA_YOGA.WARNA_KULIT"
-    cursor.execute(query)
 
-    if request.session['account-type'] == 'pemain':
+    if request.session['account-type'] == 'pemain' :
+        query = f"select kode from KELUARGA_YOGA.WARNA_KULIT"
+        cursor.execute(query)
         result = cursor.fetchall()
         return render(request, 'R_warna_kulit_pengguna.html', {'content': result})
 
-    elif request.session['account-type'] == 'admin':
-        result = cursor.fetchall()
-        return render(request, 'R_warna_kulit_admin.html', {'content': result})
+    elif request.session['account-type'] == 'admin' :
+        cursor.execute(f"""SELECT DISTINCT W.kode  
+                           FROM KELUARGA_YOGA.WARNA_KULIT W, KELUARGA_YOGA.TOKOH T
+                           WHERE T.warna_kulit = W.kode""")
+        warna_kulit_non_deleteable = cursor.fetchall()
+        cursor.execute(f"""SELECT DISTINCT W.kode
+                           FROM KELUARGA_YOGA.WARNA_KULIT W
+                           EXCEPT 
+                           SELECT W.kode  
+                           FROM KELUARGA_YOGA.WARNA_KULIT W, KELUARGA_YOGA.TOKOH T
+                           WHERE T.warna_kulit = W.kode""")
+        warna_kulit_deleteable = cursor.fetchall()
+        response = {
+            'warna_kulit_non_deleteable' :  warna_kulit_non_deleteable,
+            'warna_kulit_deleteable' : warna_kulit_deleteable,
+        }
 
-def create_warna_kulit(request):
-    if request.session['account-type'] == 'admin':
+        if request.method == 'POST' :
+            value_delete = request.POST.get('delete_warna_kulit')
+            if value_delete != None :
+                cursor.execute(f"""DELETE FROM KELUARGA_YOGA.WARNA_KULIT
+                                   WHERE kode = '{value_delete}'""")
+            return redirect("/warna-kulit")
+        return render(request, 'R_warna_kulit_admin.html', response)
+             
+def create_warna_kulit(request) : 
+    cursor = connection.cursor()
+    if request.session['account-type'] == 'admin' :
+        if (request.method == 'POST'):
+            kode_warna = request.POST.get('kode_warna')
+            cursor.execute(f"""INSERT INTO KELUARGA_YOGA.WARNA_KULIT VALUES ('%s')"""%(kode_warna))
+            return redirect("/warna-kulit")
         return render(request, 'C_warna_kulit.html')
     else:
         return redirect('/')
 
+
 def level(request):
     cursor = connection.cursor()
-    query = f"select * from KELUARGA_YOGA.LEVEL"
-    cursor.execute(query)
 
-    if request.session['account-type'] == 'pemain':
+    if request.session['account-type'] == 'pemain' :
+        query = f"select * from KELUARGA_YOGA.LEVEL"
+        cursor.execute(query)
         result = cursor.fetchall()
         return render(request, 'R_level_pengguna.html', {'content': result})
 
-    elif request.session['account-type'] == 'admin':
-        result = cursor.fetchall()
-        return render(request, 'R_level_admin.html', {'content': result})
+    elif request.session['account-type'] == 'admin' :
+        cursor.execute(f"""SELECT DISTINCT L.level, L.XP 
+                           FROM KELUARGA_YOGA.LEVEL L, KELUARGA_YOGA.TOKOH T
+                           WHERE T.level = L.level
+                           ORDER BY L.level ASC""")
+        level_non_deleteable = cursor.fetchall()
+        cursor.execute(f"""SELECT DISTINCT L.level, L.XP
+                           FROM KELUARGA_YOGA.LEVEL L
+                           EXCEPT 
+                           SELECT L.level, L.XP
+                           FROM KELUARGA_YOGA.LEVEL L, KELUARGA_YOGA.TOKOH T
+                           WHERE T.level = L.level""")
+        level_deleteable = cursor.fetchall()
+        response = {
+            'level_non_deleteable' :  level_non_deleteable,
+            'level_deleteable' : level_deleteable,
+        }
 
-def create_level(request):
-    if request.session['account-type'] == 'admin':
+        if request.method == 'POST' :
+            value_update = request.POST.get('update_level')
+            value_delete = request.POST.get('delete_level')
+            if  value_update != None :
+                response = {
+                    'level_diupdate' : value_update,
+                }
+                return render(request, 'U_level.html', response)
+            elif value_delete != None :
+                cursor.execute(f"""DELETE FROM KELUARGA_YOGA.LEVEL
+                                   WHERE level = '{value_delete}'""")
+            return redirect("/level")
+        return render(request, 'R_level_admin.html', response)
+          
+
+def create_level(request) :
+    cursor = connection.cursor()
+    if request.session['account-type'] == 'admin' :
+        if (request.method == 'POST'):
+            Level = request.POST.get('level')
+            XP = request.POST.get('XP')
+            cursor.execute(f"""INSERT INTO KELUARGA_YOGA.LEVEL VALUES ('%s', '%s')"""%(Level, XP))
+            return redirect("/level")
         return render(request, 'C_level.html')
     else:
         return redirect('/')
 
-def update_level(request):
-    if request.session['account-type'] == 'admin':
+def update_level(request) :
+    cursor = connection.cursor()
+
+    if request.session['account-type'] == 'admin' :
+        query = f"select * from KELUARGA_YOGA.LEVEL"
+        cursor.execute(query)
+        if (request.method == "POST") :
+            level_update = request.POST.get('level_update')
+            XP_new = request.POST.get('XP_new')
+            cursor.execute(f"""UPDATE KELUARGA_YOGA.LEVEL
+                            SET XP = '{XP_new}'
+                            WHERE level = '{level_update}'""")
+            return redirect('/level')
         return render(request, 'U_level.html')
     else:
         return redirect('/')
 
 def create_menggunakan_apparel(request):
     cursor = connection.cursor()
-    query = f"select * from KELUARGA_YOGA.KOLEKSI_TOKOH"
-    cursor.execute(query)
-
-    if request.session['account-type'] == 'pemain':
+    # query = f"select * from KELUARGA_YOGA.KOLEKSI_TOKOH"
+    # cursor.execute(query)
+   
+    if request.session['account-type'] == 'pemain' :
         username = request.session.get('username')
-        cursor.execute(f"""SELECT KT.nama_tokoh, KT.id_koleksi
-                           FROM KELUARGA_YOGA.KOLEKSI_TOKOH KT 
-                           WHERE KT.id_koleksi LIKE 'A%' AND KT.username_pengguna = '{username}';""")
+        cursor.execute(f"""SELECT DISTINCT T.nama
+                        FROM KELUARGA_YOGA.TOKOH T
+                        WHERE T.username_pengguna = '{username}';""")
+        value_nama = cursor.fetchall()
+        print(value_nama);
+        cursor.execute(f"""SELECT DISTINCT KT.id_koleksi
+                        FROM KELUARGA_YOGA.KOLEKSI_TOKOH KT 
+                        WHERE KT.id_koleksi LIKE 'A%'
+                        ORDER BY KT.id_koleksi ASC;""")
+        value_apparel = cursor.fetchall()
+        print(value_apparel);
+        response = {
+            'value_nama' :  value_nama,
+            'value_apparel' : value_apparel
+        }
 
-        result = cursor.fetchall()
-        return render(request, 'C_menggunakan_apparel.html', {'content': result})
-    else:
-        return redirect('/')
+        if (request.method == 'POST'):
+            nama_tokoh = request.POST.get('nama_tokoh')
+            apparel = request.POST.get('apparel')
+            cursor.execute(f"""INSERT INTO KELUARGA_YOGA.MENGGUNAKAN_APPAREL VALUES ('%s', '%s', '%s')"""%(username, nama_tokoh, apparel))
+            return redirect("/menggunakan-apparel")
+
+        return render(request, 'C_menggunakan_apparel.html', response)
+
+    else :
+        return home(request)
+    
 
 def menggunakan_apparel(request):
     cursor = connection.cursor()
-    query = f"select * from KELUARGA_YOGA.MENGGUNAKAN_APPAREL"
-    cursor.execute(query)
+    # query = f"select * from KELUARGA_YOGA.KOLEKSI_TOKOH"
+    # cursor.execute(query)
 
     if request.session['account-type'] == 'pemain':
         username = request.session.get('username')
-        cursor.execute(f"""SELECT MA.nama_tokoh, KJB.nama, A.warna_apparel, A.nama_pekerjaan, A.kategori_apparel
+        cursor.execute(f"""SELECT MA.nama_tokoh, KJB.nama, A.warna_apparel, A.nama_pekerjaan, A.kategori_apparel, MA.id_koleksi
                             FROM KELUARGA_YOGA.APPAREL A 
                             FULL OUTER JOIN KELUARGA_YOGA.MENGGUNAKAN_APPAREL MA ON
                             A.id_koleksi = MA.id_koleksi
                             JOIN KELUARGA_YOGA.KOLEKSI_JUAL_BELI KJB ON
                             A.id_koleksi = KJB.id_koleksi
-                            WHERE MA.username_pengguna = '{username}';""")
+                            WHERE MA.username_pengguna = '{username}'""")
         result = cursor.fetchall()
-        return render(request, 'R_menggunakan_apparel_pengguna.html', {'content': result})
+        if request.method == 'POST' :
+            value_delete = request.POST.get('delete_menggunakan_apparel')
+            list_value = value_delete.split(",")
+            if value_delete != None :
+                cursor.execute(f"""DELETE FROM KELUARGA_YOGA.MENGGUNAKAN_APPAREL MA
+                                WHERE MA.username_pengguna = '{username}' AND 
+                                MA.nama_tokoh = '{list_value[0]}' AND 
+                                MA.id_koleksi = '{list_value[1]}'""")
+            return redirect("/menggunakan-apparel")
+        return render(request, 'R_menggunakan_apparel_pengguna.html', {'content' : result})
 
-    if request.session['account-type'] == 'admin':
+    if request.session['account-type'] == 'admin' : 
         cursor.execute(f"""SELECT MA.username_pengguna, MA.nama_tokoh, KJB.nama, A.warna_apparel, A.nama_pekerjaan, A.kategori_apparel
                             FROM KELUARGA_YOGA.APPAREL A 
                             FULL OUTER JOIN KELUARGA_YOGA.MENGGUNAKAN_APPAREL MA ON
@@ -955,8 +1056,8 @@ def menggunakan_apparel(request):
         result = cursor.fetchall()
         return render(request, 'R_menggunakan_apparel_admin.html', {'content': result})
 
-    return render(request, 'home.html')
-
+    # return render(request, 'home.html')
+    
 def read_kategori_apparel(request):
     cursor = connection.cursor()
     cursor.execute("set search_path to public")

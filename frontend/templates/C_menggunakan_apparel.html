@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 {% load static %}
 
 {% block meta %}
@@ -6,29 +6,29 @@
 {% endblock meta %}
 
 {% block content %}
-{% if content %}
+
     <center> 
     <table>
         <tr>
             <th>FORM BUAT MENGGUNAKAN APPAREL</th>
         </tr>
         <tr>
-            <form action = "/menggunakan-apparel/" method="post">
+            <form action = "/create-menggunakan-apparel/" method="post">
                 {% csrf_token %}
                 <td> 
                     
-                    <label for="nama_tokoh">Nama Tokoh : </label>
+                    <label>Nama Tokoh : </label>
                     <select id="nama_tokoh" name="nama_tokoh">
-                        {% for data in content %}
+                        {% for data in value_nama %}
                             <option>{{data.0}}</option>
                         {% endfor %}
                     </select>
                     <br>
                     <br>
-                    <label for="apparel">Apparel : </label>
+                    <label>Apparel : </label>
                     <select id="apparel" name="apparel">
-                        {% for data in content %}
-                            <option>{{data.1}}</option>
+                        {% for data in value_apparel %}
+                            <option>{{data.0}}</option>
                         {% endfor %}
                     </select>
                     <br>
@@ -42,7 +42,7 @@
 
     </table>
     </center>
-{% endif %}
+
 {% endblock content %}
 
 

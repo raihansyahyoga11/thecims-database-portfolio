@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 {% load static %}
 
 {% block meta %}
@@ -12,10 +12,10 @@
             <th>FORM BUAT WARNA</th>
         </tr>
         <tr>
-            <form action = "/warna-kulit/" method="post">
+            <form action = "/create-warna-kulit/" method="post">
                 {% csrf_token %}
                 <td> 
-                    Kode : <input type="text">
+                    Kode : <input type="text" name="kode_warna" required>
                     <br>
                     <br>
                     <br>

@@ -1,4 +1,4 @@
-{% extends 'base_with_navbar.html' %}
+{% extends 'navbar.html' %}
 {% load static %}
 
 {% block meta %}
@@ -25,7 +25,13 @@
             <td>{{data.2}}</td> 
             <td>{{data.3}}</td>
             <td>{{data.4}}</td> 
-            <td>[Lepas]</td>
+            
+            <form action = "/menggunakan-apparel/" method="post">
+                {% csrf_token %}     
+                <td>
+                    <button type="submit" value="{{data.0}},{{data.5}}" name="delete_menggunakan_apparel">[Lepas]</a></td>
+            </form>
+
         </tr>
         {% endfor %}
     </table>
